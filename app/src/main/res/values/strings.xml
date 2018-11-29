@@ -7,4 +7,8 @@
     <string name="lamps">lampy</string>
     <string name="tables">stoly</string>
     <string name="wardrobes">skříně</string>
+    <string name="products">produkty</string>
+    <string name="all">vše</string>
+    <string name="favourite">oblíbené</string>
+    <string name="empty_list_description">zatím nemáte žádné oblíbené produkty</string>
 </resources>
