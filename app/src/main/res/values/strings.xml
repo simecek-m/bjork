@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Bjork</string>
+    <string name="name">Björk</string>
+    <string name="beds">postele</string>
+    <string name="couches">pohovky</string>
+    <string name="lights">světla</string>
+    <string name="lamps">lampy</string>
+    <string name="tables">stoly</string>
+    <string name="wardrobes">skříně</string>
 </resources>
