@@ -11,4 +11,7 @@
     <string name="all">vše</string>
     <string name="favourite">oblíbené</string>
     <string name="empty_list_description">zatím nemáte žádné oblíbené produkty</string>
+    <string name="unlogged_user">nejste přihlášení</string>
+    <string name="login">přihlásit se</string>
+    <string name="feature_not_available">funkce není dostupná</string>
 </resources>
