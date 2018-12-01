@@ -3,6 +3,7 @@ package com.example.app.bjork.fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -46,6 +47,9 @@ public class ProductListFragment extends Fragment {
 
         adapter = new ProductsListAdapter(getContext(), productsList);
         recyclerView.setAdapter(adapter);
+
+        DividerItemDecoration divider = new DividerItemDecoration(getContext(), layoutManager.getOrientation());
+        recyclerView.addItemDecoration(divider);
 
         loadData();
 

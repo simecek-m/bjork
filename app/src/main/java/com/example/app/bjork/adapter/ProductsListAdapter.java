@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.app.bjork.R;
 import com.example.app.bjork.model.Product;
 
@@ -40,11 +41,14 @@ public class ProductsListAdapter extends RecyclerView.Adapter<ProductsListAdapte
         Drawable icon = getTypeIcon(product.getType());
         holder.icon.setBackground(icon);
         holder.price.setText(product.getPrice() + ",- Kč");
+        Glide.with(context)
+                .load(product.getImageUrl())
+                .into(holder.image);
+        System.out.println("product.getImageUrl: " + product.getImageUrl());
     }
 
     @Override
     public int getItemCount() {
-        System.out.println("size: " + productsList.size());
         return productsList.size();
     }
 
