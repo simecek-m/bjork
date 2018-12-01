@@ -44,7 +44,6 @@ public class ProductsListAdapter extends RecyclerView.Adapter<ProductsListAdapte
         Glide.with(context)
                 .load(product.getImageUrl())
                 .into(holder.image);
-        System.out.println("product.getImageUrl: " + product.getImageUrl());
     }
 
     @Override
@@ -73,6 +72,8 @@ public class ProductsListAdapter extends RecyclerView.Adapter<ProductsListAdapte
     public Drawable getTypeIcon(String type){
         switch (type){
             default:
+                return context.getDrawable(R.drawable.ic_question_mark);
+            case "bed":
                 return context.getDrawable(R.drawable.ic_bed);
             case "closet":
                 return context.getDrawable(R.drawable.ic_closet);
