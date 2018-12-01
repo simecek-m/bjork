@@ -55,7 +55,7 @@
         android:tint="@color/colorPrimary"
         app:layout_constraintStart_toStartOf="@+id/guideline_vertical_left"
         app:layout_constraintTop_toTopOf="@+id/guideline_horizontal_middle"
-        app:srcCompat="@drawable/ic_double_king_size_bed" />
+        app:srcCompat="@drawable/ic_bed" />
 
     <TextView
         android:id="@+id/imageText1"
@@ -173,7 +173,7 @@
         android:tint="@color/colorPrimary"
         app:layout_constraintEnd_toStartOf="@+id/guideline_vertical_right"
         app:layout_constraintTop_toBottomOf="@+id/imageText5"
-        app:srcCompat="@drawable/ic_closet" />
+        app:srcCompat="@drawable/ic_toy" />
 
     <TextView
         android:id="@+id/imageText6"
@@ -181,7 +181,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:fontFamily="@font/roboto_bold"
-        android:text="@string/lights"
+        android:text="@string/toys"
         android:textAllCaps="true"
         android:textColor="@color/colorPrimary"
         android:textSize="20sp"

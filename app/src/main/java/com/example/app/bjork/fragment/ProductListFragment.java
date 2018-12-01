@@ -3,12 +3,15 @@ package com.example.app.bjork.fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.app.bjork.R;
+import com.example.app.bjork.adapter.ProductsListAdapter;
 import com.example.app.bjork.api.Database;
 import com.example.app.bjork.model.Product;
 import com.google.firebase.database.DataSnapshot;
@@ -24,20 +27,42 @@ public class ProductListFragment extends Fragment {
 
     private static final String TAG = "ProductListFragment";
 
-    List<Product> productList = new ArrayList<>();
+    private List<Product> productsList = new ArrayList<>();
+
+    private RecyclerView recyclerView;
+    private LinearLayoutManager layoutManager;
+    private ProductsListAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        
+
+        View view = inflater.inflate(R.layout.fragment_product_list, container, false);
+
+        recyclerView = view.findViewById(R.id.productsList);
+        recyclerView.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(layoutManager);
+
+        adapter = new ProductsListAdapter(getContext(), productsList);
+        recyclerView.setAdapter(adapter);
+
+        loadData();
+
+        return view;
+    }
+
+    public void loadData(){
         Database database = new Database();
         DatabaseReference productsReference = database.getAllProducts();
         productsReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot productsSnapshot) {
                 for(DataSnapshot productSnapshot: productsSnapshot.getChildren()){
-                    productList.add(productSnapshot.getValue(Product.class));
+                    productsList.add(productSnapshot.getValue(Product.class));
                 }
+                adapter.setList(productsList);
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -45,8 +70,6 @@ public class ProductListFragment extends Fragment {
                 Log.i(TAG, "Failed to load products");
             }
         });
-
-        return inflater.inflate(R.layout.fragment_product_list, container, false);
     }
 }
 
