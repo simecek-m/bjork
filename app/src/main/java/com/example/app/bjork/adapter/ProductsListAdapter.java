@@ -9,8 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.app.bjork.R;
 import com.example.app.bjork.model.Product;
 
@@ -28,8 +30,18 @@ public class ProductsListAdapter extends RecyclerView.Adapter<ProductsListAdapte
 
     @NonNull
     @Override
-    public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ProductViewHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.product_element, parent,false);
+        final ImageView heartIcon = view.findViewById(R.id.like);
+        heartIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(context, R.string.feature_not_available, Toast.LENGTH_LONG).show();
+                Drawable heart = context.getDrawable(R.drawable.ic_favorite_heart);
+                heart.setTint(context.getResources().getColor(R.color.colorPrimary));
+                heartIcon.setImageDrawable(heart);
+            }
+        });
         ProductViewHolder viewHolder = new ProductViewHolder(view);
         return viewHolder;
     }
@@ -41,7 +53,10 @@ public class ProductsListAdapter extends RecyclerView.Adapter<ProductsListAdapte
         Drawable icon = getTypeIcon(product.getType());
         holder.icon.setBackground(icon);
         holder.price.setText(product.getPrice() + ",- Kč");
+        RequestOptions options = new RequestOptions();
+        options.placeholder(R.drawable.loading).error(R.drawable.error).fallback(R.drawable.error);
         Glide.with(context)
+                .setDefaultRequestOptions(options)
                 .load(product.getImageUrl())
                 .into(holder.image);
     }

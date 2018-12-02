@@ -4,6 +4,7 @@ import java.util.List;
 
 public class Product {
 
+    private String id;
     private String name;
     private List<String> colors;
     private int price;
@@ -14,13 +15,12 @@ public class Product {
     public Product() {
     }
 
-    public Product(String name, List<String> colors, int price, String type, String imageUrl, String description) {
-        this.name = name;
-        this.colors = colors;
-        this.price = price;
-        this.type = type;
-        this.imageUrl = imageUrl;
-        this.description = description;
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {

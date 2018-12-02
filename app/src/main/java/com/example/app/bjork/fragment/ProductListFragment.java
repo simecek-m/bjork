@@ -63,7 +63,10 @@ public class ProductListFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot productsSnapshot) {
                 for(DataSnapshot productSnapshot: productsSnapshot.getChildren()){
-                    productsList.add(productSnapshot.getValue(Product.class));
+                    String id = productSnapshot.getKey();
+                    Product product = productSnapshot.getValue(Product.class);
+                    product.setId(id);
+                    productsList.add(product);
                 }
                 adapter.setList(productsList);
                 adapter.notifyDataSetChanged();
