@@ -1,19 +1,22 @@
 <resources>
-    <string name="app_name">Bjork</string>
-    <string name="name">Björk</string>
-    <string name="beds">postele</string>
-    <string name="couches">pohovky</string>
-    <string name="lights">světla</string>
-    <string name="lamps">lampy</string>
-    <string name="tables">stoly</string>
-    <string name="toys">hračky</string>
-    <string name="decoration">dekorace</string>
-    <string name="wardrobes">skříně</string>
-    <string name="products">produkty</string>
-    <string name="all">vše</string>
-    <string name="favourite">oblíbené</string>
+    <string name="app_name">Björk</string>
+    <string name="beds">Postele</string>
+    <string name="couches">Pohovky</string>
+    <string name="lights">Světla</string>
+    <string name="lamps">Lampy</string>
+    <string name="tables">Stoly</string>
+    <string name="toys">Hračky</string>
+    <string name="decoration">Dekorace</string>
+    <string name="wardrobes">Skříně</string>
+    <string name="products">Produkty</string>
+    <string name="cart">Košík</string>
+    <string name="store">Prodejna</string>
+    <string name="profile">Profil</string>
+    <string name="about">O aplikaci</string>
+    <string name="all">Vše</string>
+    <string name="favourite">Oblíbené</string>
     <string name="empty_list_description">zatím nemáte žádné oblíbené produkty</string>
     <string name="unlogged_user">nejste přihlášení</string>
-    <string name="login">přihlásit se</string>
+    <string name="login">Přihlásit se</string>
     <string name="feature_not_available">funkce není dostupná</string>
 </resources>
