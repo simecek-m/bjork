@@ -14,4 +14,8 @@ public class Database {
     public DatabaseReference getAllProducts(){
         return db.getReference("products");
     }
+
+    public DatabaseReference getNearestStore(){
+        return db.getReference("nearest_store");
+    }
 }
