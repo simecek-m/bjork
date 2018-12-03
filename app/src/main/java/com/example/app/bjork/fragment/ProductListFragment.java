@@ -74,7 +74,7 @@ public class ProductListFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.i(TAG, "Failed to load products");
+                Log.w(TAG, "Failed to load products");
             }
         });
     }

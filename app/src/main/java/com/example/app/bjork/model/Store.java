@@ -1,12 +1,14 @@
 package com.example.app.bjork.model;
 
+import java.util.HashMap;
+
 public class Store {
 
     private String name;
     private float latitude;
     private float longitude;
     private String imageUrl;
-    private String[] openingTime;
+    private HashMap<String, String> openingTime;
 
     public Store() {
     }
@@ -43,11 +45,11 @@ public class Store {
         this.imageUrl = imageUrl;
     }
 
-    public String[] getOpeningTime() {
+    public HashMap<String, String> getOpeningTime() {
         return openingTime;
     }
 
-    public void setOpeningTime(String[] openingTime) {
+    public void setOpeningTime(HashMap<String, String> openingTime) {
         this.openingTime = openingTime;
     }
 }
