@@ -20,6 +20,7 @@
     <string name="login">Přihlásit se</string>
     <string name="feature_not_available">funkce není dostupná</string>
     <string name="navigate">Navigovat</string>
-    <string name="toCart">Do košíku</string>
+    <string name="add_to_cart">Do košíku</string>
+    <string name="detail_product">Detail produktu</string>
     <string name="title_activity_maps">Map</string>
 </resources>

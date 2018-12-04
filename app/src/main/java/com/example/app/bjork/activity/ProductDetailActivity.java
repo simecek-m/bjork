@@ -4,8 +4,12 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -57,9 +61,23 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         int iconId = Product.getTypeIconId(product.getType());
         typeIcon.setImageResource(iconId);
-////        size.setText(product.);
         color.setText(product.getColors().get(0));
         money.setText(product.getPrice() + ",- Kč");
         description.setText(product.getDescription());
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.product_detail_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.nav_cart){
+            Toast.makeText(this, getString(R.string.feature_not_available), Toast.LENGTH_LONG).show();
+        }
+        return true;
     }
 }
