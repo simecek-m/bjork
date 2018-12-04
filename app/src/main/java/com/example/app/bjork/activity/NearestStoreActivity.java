@@ -38,7 +38,7 @@ public class NearestStoreActivity extends AppCompatActivity {
 
     private static final String TAG = "NearestStoreActivity";
     private static final String GOOGLE_MAPS_APP_PACKAGE = "com.google.android.apps.maps";
-    private static final int MAP_ZOOM_LEVEL = 10;
+    private static final int MAP_ZOOM_LEVEL = 15;
 
     private Store store;
     private Button navigateButton;
