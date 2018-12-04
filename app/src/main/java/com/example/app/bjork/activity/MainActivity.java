@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private PagerAdapter pagerAdapter;
     private DrawerLayout drawerLayout;
-    NavigationView navigationView;
+    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +49,8 @@ public class MainActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                drawerLayout.closeDrawer(Gravity.START, false);
-                item.setChecked(true);
+                boolean animation = item.getItemId() == R.id.nav_products;
+                drawerLayout.closeDrawer(Gravity.START, animation);
                 openItemActivity(item);
                 return false;
             }
@@ -74,14 +74,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openItemActivity(MenuItem item){
-        Intent intent = null;
+        Intent intent;
         switch (item.getItemId()){
             default:
                 break;
             case R.id.nav_store:
+                item.setChecked(true);
                 intent = new Intent(this, NearestStoreActivity.class);
+                startActivity(intent);
                 break;
         }
-        startActivity(intent);
     }
 }
