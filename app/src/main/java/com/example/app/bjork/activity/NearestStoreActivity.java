@@ -56,7 +56,6 @@ public class NearestStoreActivity extends AppCompatActivity {
         storeReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                System.out.println(dataSnapshot);
                 store = dataSnapshot.getValue(Store.class);
                 mapFragment.getMapAsync(new OnMapReadyCallback() {
                     @Override

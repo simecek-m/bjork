@@ -58,24 +58,65 @@
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="15dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         android:src="@drawable/ic_heart"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/image" />
 
     <TextView
-        android:id="@+id/price"
+        android:id="@+id/defaultPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        android:fontFamily="@font/roboto_bold"
+        android:layout_marginBottom="8dp"
+        android:fontFamily="@font/roboto_medium"
         android:text="29070,- Kč"
+        android:textColor="@color/greyDarker"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/discountPrice"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toBottomOf="@+id/image" />
+
+    <TextView
+        android:id="@+id/discountPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="8dp"
+        android:fontFamily="@font/roboto_bold"
+        android:text="29070,- Kč"
+        android:textColor="@color/red"
+        android:textSize="20sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/defaultPrice" />
+
+    <ImageView
+        android:id="@+id/discountIcon"
+        android:visibility="gone"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:tint="@color/red"
+        android:layout_marginEnd="0dp"
+        android:src="@drawable/ic_circle"
+        app:layout_constraintBottom_toBottomOf="@+id/image"
+        app:layout_constraintEnd_toEndOf="@+id/image" />
+
+    <TextView
+        android:id="@+id/discountText"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/raleway_bold"
+        android:text="10%"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/discountIcon"
+        app:layout_constraintEnd_toEndOf="@+id/discountIcon"
+        app:layout_constraintStart_toStartOf="@+id/discountIcon"
+        app:layout_constraintTop_toTopOf="@+id/discountIcon" />
 
 </android.support.constraint.ConstraintLayout>

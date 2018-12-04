@@ -6,7 +6,7 @@
     android:layout_height="200dp"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="@color/grey_checked"
+    android:background="@color/grey"
     android:theme="@style/ThemeOverlay.AppCompat.Light">
 
     <ImageView

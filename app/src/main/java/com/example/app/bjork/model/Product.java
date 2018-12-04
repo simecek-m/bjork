@@ -6,6 +6,7 @@ public class Product {
 
     private String id;
     private String name;
+    private int discountPercentage;
     private List<String> colors;
     private int price;
     private String type;
@@ -29,6 +30,14 @@ public class Product {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getDiscountPercentage() {
+        return discountPercentage;
+    }
+
+    public void setDiscountPercentage(int discountPercentage) {
+        this.discountPercentage = discountPercentage;
     }
 
     public List<String> getColors() {
@@ -69,5 +78,19 @@ public class Product {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", discountPercentage=" + discountPercentage +
+                ", colors=" + colors +
+                ", price=" + price +
+                ", type='" + type + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", description='" + description + '\'' +
+                '}';
     }
 }

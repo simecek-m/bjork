@@ -18,4 +18,12 @@
         <item name="color">@android:color/white</item>
     </style>
 
+    <style name="RobotoItalicFont">
+        <item name="android:fontFamily">@font/roboto_italic</item>
+    </style>
+
+    <style name="RobotoBoldFont">
+        <item name="android:fontFamily">@font/roboto_bold</item>
+    </style>
+
 </resources>

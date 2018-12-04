@@ -1,6 +1,7 @@
 package com.example.app.bjork.adapter;
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -52,13 +53,42 @@ public class ProductsListAdapter extends RecyclerView.Adapter<ProductsListAdapte
         holder.name.setText(product.getName());
         Drawable icon = getTypeIcon(product.getType());
         holder.icon.setBackground(icon);
-        holder.price.setText(product.getPrice() + ",- Kč");
+        holder.defaultPrice.setText(product.getPrice() + ",- Kč");
         RequestOptions options = new RequestOptions();
         options.placeholder(R.drawable.loading).error(R.drawable.error).fallback(R.drawable.error);
         Glide.with(context)
                 .setDefaultRequestOptions(options)
                 .load(product.getImageUrl())
                 .into(holder.image);
+        int discount = product.getDiscountPercentage();
+        if(discount != 0){
+            styleDiscountItem(holder, product);
+        }else{
+            styleNormalItem(holder, product);
+        }
+    }
+
+    public void styleDiscountItem(ProductViewHolder holder, Product product){
+        float defaultPrice = product.getPrice();
+        float discount = (defaultPrice/100)*product.getDiscountPercentage();
+        int newPrice = Math.round(defaultPrice) - Math.round(discount);
+        holder.defaultPrice.setPaintFlags(holder.defaultPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        holder.defaultPrice.setTextColor(context.getResources().getColor(R.color.greyDarker));
+        holder.defaultPrice.setTextAppearance(context, R.style.RobotoItalicFont);
+        holder.discountIcon.setVisibility(View.VISIBLE);
+        holder.discountText.setVisibility(View.VISIBLE);
+        holder.discountPrice.setVisibility(View.VISIBLE);
+        holder.discountPrice.setText(newPrice + ",- Kč");
+        holder.discountText.setText(product.getDiscountPercentage()+"%");
+    }
+
+    public void styleNormalItem(ProductViewHolder holder, Product product){
+        holder.defaultPrice.setPaintFlags(0);
+        holder.defaultPrice.setTextColor(context.getResources().getColor(R.color.black));
+        holder.defaultPrice.setTextAppearance(context, R.style.RobotoBoldFont);
+        holder.discountIcon.setVisibility(View.GONE);
+        holder.discountText.setVisibility(View.GONE);
+        holder.discountPrice.setVisibility(View.GONE);
     }
 
     @Override
@@ -72,7 +102,11 @@ public class ProductsListAdapter extends RecyclerView.Adapter<ProductsListAdapte
         private ImageView icon;
         private ImageView image;
         private ImageView like;
-        private TextView price;
+        private TextView defaultPrice;
+        private TextView discountPrice;
+        private ImageView discountIcon;
+        private TextView discountText;
+
 
         public ProductViewHolder(View itemView) {
             super(itemView);
@@ -80,7 +114,10 @@ public class ProductsListAdapter extends RecyclerView.Adapter<ProductsListAdapte
             icon = itemView.findViewById(R.id.typeIcon);
             image = itemView.findViewById(R.id.image);
             like = itemView.findViewById(R.id.like);
-            price = itemView.findViewById(R.id.price);
+            defaultPrice = (TextView) itemView.findViewById(R.id.defaultPrice);
+            discountPrice = itemView.findViewById(R.id.discountPrice);
+            discountIcon = itemView.findViewById(R.id.discountIcon);
+            discountText = itemView.findViewById(R.id.discountText);
         }
     }
 
