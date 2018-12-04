@@ -69,7 +69,6 @@ public class NearestStoreActivity extends AppCompatActivity {
                     @Override
                     public void onMapReady(GoogleMap googleMap) {
                         map = googleMap;
-
                         LatLng storeLocation = new LatLng(store.getLatitude(), store.getLongitude());
                         map.addMarker(new MarkerOptions().position(storeLocation).title(store.getName()));
                         map.animateCamera(CameraUpdateFactory.newLatLngZoom(storeLocation, MAP_ZOOM_LEVEL));

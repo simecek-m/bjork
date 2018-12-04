@@ -1,6 +1,7 @@
 package com.example.app.bjork.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.app.bjork.R;
+import com.example.app.bjork.activity.ProductDetailActivity;
 import com.example.app.bjork.model.Product;
 
 import java.util.List;
@@ -49,10 +51,10 @@ public class ProductsListAdapter extends RecyclerView.Adapter<ProductsListAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
-        Product product = productsList.get(position);
+        final Product product = productsList.get(position);
         holder.name.setText(product.getName());
-        Drawable icon = getTypeIcon(product.getType());
-        holder.icon.setBackground(icon);
+        int iconId = Product.getTypeIconId(product.getType());
+        holder.icon.setImageResource(iconId);
         holder.defaultPrice.setText(product.getPrice() + ",- Kč");
         RequestOptions options = new RequestOptions();
         options.placeholder(R.drawable.loading).error(R.drawable.error).fallback(R.drawable.error);
@@ -63,9 +65,17 @@ public class ProductsListAdapter extends RecyclerView.Adapter<ProductsListAdapte
         int discount = product.getDiscountPercentage();
         if(discount != 0){
             styleDiscountItem(holder, product);
-        }else{
+        }else {
             styleNormalItem(holder, product);
         }
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, ProductDetailActivity.class);
+                intent.putExtra("product", product);
+                context.startActivity(intent);
+            }
+        });
     }
 
     public void styleDiscountItem(ProductViewHolder holder, Product product){
@@ -118,29 +128,6 @@ public class ProductsListAdapter extends RecyclerView.Adapter<ProductsListAdapte
             discountPrice = itemView.findViewById(R.id.discountPrice);
             discountIcon = itemView.findViewById(R.id.discountIcon);
             discountText = itemView.findViewById(R.id.discountText);
-        }
-    }
-
-    public Drawable getTypeIcon(String type){
-        switch (type){
-            default:
-                return context.getDrawable(R.drawable.ic_question_mark);
-            case "bed":
-                return context.getDrawable(R.drawable.ic_bed);
-            case "closet":
-                return context.getDrawable(R.drawable.ic_closet);
-            case "couch":
-                return context.getDrawable(R.drawable.ic_couch);
-            case "lamp":
-                return context.getDrawable(R.drawable.ic_lamp);
-            case "spotlight":
-                return context.getDrawable(R.drawable.ic_spotlight);
-            case "table":
-                return context.getDrawable(R.drawable.ic_table);
-            case "toy":
-                return context.getDrawable(R.drawable.ic_toy);
-            case "decoration":
-                return context.getDrawable(R.drawable.ic_decoration);
         }
     }
 

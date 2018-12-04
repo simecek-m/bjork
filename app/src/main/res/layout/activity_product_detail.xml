@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.ProductDetailActivity"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        app:title="@string/app_name"
+        android:elevation="10dp"
+        android:theme="@style/BlueToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </android.support.v7.widget.Toolbar>
+
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".activity.ProductDetailActivity">
+
+            <android.support.constraint.Guideline
+                android:id="@+id/guideline_vertical_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.1" />
+
+            <android.support.constraint.Guideline
+                android:id="@+id/guideline_vertical_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.9" />
+
+            <ImageView
+                android:id="@+id/image"
+                android:layout_width="0dp"
+                android:layout_height="200dp"
+                android:layout_marginTop="24dp"
+                android:src="@drawable/loading"
+                app:layout_constraintEnd_toStartOf="@+id/guideline_vertical_right"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/guideline_vertical_left"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:fontFamily="@font/pacifico"
+                android:text="Fresvik"
+                android:textColor="@color/colorPrimary"
+                android:textSize="32sp"
+                app:layout_constraintStart_toStartOf="@+id/guideline_vertical_left"
+                app:layout_constraintTop_toBottomOf="@+id/image" />
+
+            <ImageView
+                android:id="@+id/typeIcon"
+                android:src="@drawable/ic_bed"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginEnd="0dp"
+                android:layout_marginBottom="8dp"
+                android:tint="@color/colorPrimary"
+                app:layout_constraintBottom_toBottomOf="@+id/name"
+                app:layout_constraintEnd_toStartOf="@+id/guideline_vertical_right"
+                app:layout_constraintTop_toTopOf="@+id/name" />
+
+            <ImageView
+                android:id="@+id/sizeIcon"
+                android:src="@drawable/ic_size"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="12dp"
+                app:layout_constraintStart_toStartOf="@+id/guideline_vertical_left"
+                app:layout_constraintTop_toBottomOf="@+id/name" />
+
+            <TextView
+                android:id="@+id/sizeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:textSize="20sp"
+                android:fontFamily="@font/roboto_bold"
+                android:textColor="@color/black"
+                app:layout_constraintBottom_toBottomOf="@+id/sizeIcon"
+                app:layout_constraintStart_toEndOf="@+id/sizeIcon"
+                app:layout_constraintTop_toTopOf="@+id/sizeIcon"
+                app:layout_constraintVertical_bias="0.5" />
+
+            <ImageView
+                android:id="@+id/colorIcon"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="12dp"
+                android:src="@drawable/ic_palette"
+                app:layout_constraintStart_toStartOf="@+id/guideline_vertical_left"
+                app:layout_constraintTop_toBottomOf="@+id/sizeIcon" />
+
+            <TextView
+                android:id="@+id/colorText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:textSize="20sp"
+                android:fontFamily="@font/roboto_bold"
+                android:textColor="@color/black"
+                app:layout_constraintBottom_toBottomOf="@+id/colorIcon"
+                app:layout_constraintStart_toEndOf="@+id/colorIcon"
+                app:layout_constraintTop_toTopOf="@+id/colorIcon"
+                app:layout_constraintVertical_bias="0.5" />
+
+            <ImageView
+                android:id="@+id/moneyIcon"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="8dp"
+                android:src="@drawable/ic_money"
+                app:layout_constraintStart_toStartOf="@+id/colorIcon"
+                app:layout_constraintTop_toBottomOf="@+id/colorIcon" />
+
+            <TextView
+                android:id="@+id/moneyText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:textSize="20sp"
+                android:fontFamily="@font/roboto_bold"
+                android:textColor="@color/black"
+                app:layout_constraintBottom_toBottomOf="@+id/moneyIcon"
+                app:layout_constraintStart_toEndOf="@+id/moneyIcon"
+                app:layout_constraintTop_toTopOf="@+id/moneyIcon"
+                app:layout_constraintVertical_bias="0.5" />
+
+            <TextView
+                android:id="@+id/description"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="24dp"
+                android:fontFamily="@font/roboto"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toStartOf="@+id/guideline_vertical_right"
+                app:layout_constraintStart_toStartOf="@+id/guideline_vertical_left"
+                app:layout_constraintTop_toBottomOf="@+id/moneyIcon" />
+
+            <Button
+                android:id="@+id/addToCart"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="24dp"
+                android:background="@color/colorPrimary"
+                android:text="@string/toCart"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/guideline_vertical_right"
+                app:layout_constraintStart_toStartOf="@+id/guideline_vertical_left"
+                app:layout_constraintTop_toBottomOf="@+id/description" />
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
+</LinearLayout>
