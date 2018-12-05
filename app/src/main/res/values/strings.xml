@@ -14,6 +14,7 @@
     <string name="profile">Profil</string>
     <string name="about">O aplikaci</string>
     <string name="all">Vše</string>
+    <string name="feedback">Feedback</string>
     <string name="favourite">Oblíbené</string>
     <string name="empty_list_description">zatím nemáte žádné oblíbené produkty</string>
     <string name="unlogged_user">nejste přihlášení</string>
@@ -23,5 +24,6 @@
     <string name="add_to_cart">Do košíku</string>
     <string name="detail_product">Detail produktu</string>
     <string name="nearest_store">Nejbližší prodejna</string>
-    <string name="title_activity_maps">Map</string>
+    <string name="system_version">Android OS</string>
+    <string name="version">Verze</string>
 </resources>

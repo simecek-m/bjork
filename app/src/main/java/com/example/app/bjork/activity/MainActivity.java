@@ -83,6 +83,11 @@ public class MainActivity extends AppCompatActivity {
                 intent = new Intent(this, NearestStoreActivity.class);
                 startActivity(intent);
                 break;
+            case R.id.nav_about:
+                item.setChecked(true);
+                intent = new Intent(this, AboutApplicationActivity.class);
+                startActivity(intent);
+                break;
         }
     }
 }

@@ -33,10 +33,14 @@
             android:name=".activity.NearestStoreActivity"
             android:parentActivityName=".activity.MainActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.ProductDetailActivity"
+        <activity
+            android:name=".activity.ProductDetailActivity"
             android:parentActivityName=".activity.MainActivity"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".activity.AboutApplicationActivity"
+            android:parentActivityName=".activity.MainActivity"
+            android:screenOrientation="portrait"/>
 
         <meta-data
             android:name="preloaded_fonts"
