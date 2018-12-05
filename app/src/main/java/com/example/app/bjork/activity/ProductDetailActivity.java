@@ -61,7 +61,8 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         int iconId = Product.getTypeIconId(product.getType());
         typeIcon.setImageResource(iconId);
-        color.setText(product.getColors().get(0));
+        size.setText(product.getSize());
+        color.setText(product.getAllColors());
         money.setText(product.getPrice() + ",- Kč");
         description.setText(product.getDescription());
     }
@@ -75,9 +76,11 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.nav_cart){
-            Toast.makeText(this, getString(R.string.feature_not_available), Toast.LENGTH_LONG).show();
+        switch (item.getItemId()){
+            case R.id.nav_cart:
+                Toast.makeText(this, getString(R.string.feature_not_available), Toast.LENGTH_LONG).show();
+                return true;
         }
-        return true;
+        return super.onOptionsItemSelected(item);
     }
 }

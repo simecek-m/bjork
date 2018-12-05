@@ -13,6 +13,7 @@ public class Product implements Serializable {
     private String name;
     private int discountPercentage;
     private List<String> colors;
+    private String size;
     private int price;
     private String type;
     private String imageUrl;
@@ -51,6 +52,14 @@ public class Product implements Serializable {
 
     public void setColors(List<String> colors) {
         this.colors = colors;
+    }
+
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
     }
 
     public int getPrice() {
@@ -106,6 +115,17 @@ public class Product implements Serializable {
             case "decoration":
                 return R.drawable.ic_decoration;
         }
+    }
+
+    public String getAllColors(){
+        String delimiter = " / ";
+        StringBuilder allColors = new StringBuilder();
+        for (String color: colors){
+            allColors.append(color);
+            allColors.append(delimiter);
+        }
+        allColors.delete(allColors.lastIndexOf(delimiter), allColors.length());
+        return allColors.toString();
     }
 
     @Override

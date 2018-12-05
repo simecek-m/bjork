@@ -11,9 +11,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="0dp"
+        android:elevation="10dp"
         android:theme="@style/BlueToolbar"
         app:layout_constraintTop_toTopOf="parent"
-        app:title="@string/app_name"></android.support.v7.widget.Toolbar>
+        app:title="@string/nearest_store">
+    </android.support.v7.widget.Toolbar>
 
     <ImageView
         android:id="@+id/timeIcon"
