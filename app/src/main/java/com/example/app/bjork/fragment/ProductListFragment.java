@@ -51,17 +51,17 @@ public class ProductListFragment extends Fragment {
         DividerItemDecoration divider = new DividerItemDecoration(getContext(), layoutManager.getOrientation());
         recyclerView.addItemDecoration(divider);
 
-        loadData();
-
+        loadList();
         return view;
     }
 
-    public void loadData(){
+    public void loadList(){
         Database database = new Database();
         DatabaseReference productsReference = database.getAllProducts();
         productsReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot productsSnapshot) {
+                productsList.clear();
                 for(DataSnapshot productSnapshot: productsSnapshot.getChildren()){
                     String id = productSnapshot.getKey();
                     Product product = productSnapshot.getValue(Product.class);
