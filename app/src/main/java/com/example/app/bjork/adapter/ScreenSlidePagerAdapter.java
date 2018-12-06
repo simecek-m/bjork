@@ -6,8 +6,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.example.app.bjork.R;
-import com.example.app.bjork.fragment.FavouriteListFragment;
 import com.example.app.bjork.fragment.ProductListFragment;
+import com.example.app.bjork.fragment.RootFavouriteListFragment;
 
 public class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
 
@@ -25,7 +25,7 @@ public class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
             default:
                 return new ProductListFragment();
             case 1:
-                return new FavouriteListFragment();
+                return new RootFavouriteListFragment();
         }
     }
 

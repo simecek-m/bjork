@@ -17,6 +17,8 @@ import android.view.MenuItem;
 
 import com.example.app.bjork.R;
 import com.example.app.bjork.adapter.ScreenSlidePagerAdapter;
+import com.google.firebase.auth.FirebaseAuth;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private PagerAdapter pagerAdapter;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         hamburgerIcon.setTint(getResources().getColor(R.color.white));
         actionBar.setHomeAsUpIndicator(hamburgerIcon);
 
+        mAuth = FirebaseAuth.getInstance();
         viewPager = findViewById(R.id.viewPager);
         pagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager(), this);
         viewPager.setAdapter(pagerAdapter);
@@ -82,6 +86,10 @@ public class MainActivity extends AppCompatActivity {
                 item.setChecked(true);
                 intent = new Intent(this, NearestStoreActivity.class);
                 startActivity(intent);
+                break;
+            case R.id.nav_profile:
+                item.setChecked(true);
+                mAuth.signOut();
                 break;
             case R.id.nav_about:
                 item.setChecked(true);
