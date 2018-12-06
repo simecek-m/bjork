@@ -16,9 +16,11 @@
     <string name="all">Vše</string>
     <string name="feedback">Feedback</string>
     <string name="favourite">Oblíbené</string>
+    <string name="login">Přihlášení</string>
+    <string name="email">Email</string>
+    <string name="password">Heslo</string>
     <string name="empty_list_description">zatím nemáte žádné oblíbené produkty</string>
     <string name="unlogged_user">nejste přihlášení</string>
-    <string name="login">Přihlásit se</string>
     <string name="feature_not_available">funkce není dostupná</string>
     <string name="navigate">Navigovat</string>
     <string name="add_to_cart">Do košíku</string>
@@ -26,4 +28,5 @@
     <string name="nearest_store">Nejbližší prodejna</string>
     <string name="system_version">Android OS</string>
     <string name="version">Verze</string>
+    <string name="wrongCredentials">Chybný email nebo heslo</string>
 </resources>

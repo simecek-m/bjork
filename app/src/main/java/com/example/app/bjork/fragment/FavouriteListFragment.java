@@ -4,6 +4,7 @@ package com.example.app.bjork.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,10 +12,14 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.app.bjork.R;
+import com.example.app.bjork.activity.LoginActivity;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class FavouriteListFragment extends Fragment {
 
 
+    FirebaseAuth mAuth;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -31,7 +36,8 @@ public class FavouriteListFragment extends Fragment {
             loginBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(getActivity(), getString(R.string.feature_not_available), Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(getContext(), LoginActivity.class);
+                    startActivity(intent);
                 }
             });
         }
