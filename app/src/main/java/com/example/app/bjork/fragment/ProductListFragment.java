@@ -2,6 +2,7 @@ package com.example.app.bjork.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,6 +31,8 @@ public class ProductListFragment extends Fragment {
     private LinearLayoutManager layoutManager;
     private ProductsListAdapter adapter;
 
+    private SwipeRefreshLayout swipeRefreshLayout;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -46,6 +49,13 @@ public class ProductListFragment extends Fragment {
 
         DividerItemDecoration divider = new DividerItemDecoration(getContext(), layoutManager.getOrientation());
         recyclerView.addItemDecoration(divider);
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefresh);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                loadList();
+            }
+        });
 
         loadList();
         return view;
@@ -62,6 +72,7 @@ public class ProductListFragment extends Fragment {
                         productsList = queryDocumentSnapshots.toObjects(Product.class);
                         adapter.setList(productsList);
                         adapter.notifyDataSetChanged();
+                        swipeRefreshLayout.setRefreshing(false);
                     }
                 });
     }
