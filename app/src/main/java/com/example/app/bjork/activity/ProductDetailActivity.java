@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.app.bjork.R;
 import com.example.app.bjork.model.Product;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class ProductDetailActivity extends AppCompatActivity {
 
@@ -28,6 +29,8 @@ public class ProductDetailActivity extends AppCompatActivity {
     private TextView color;
     private TextView money;
     private TextView description;
+
+    private FirebaseAuth mAuth;
 
 
     @Override
@@ -65,6 +68,8 @@ public class ProductDetailActivity extends AppCompatActivity {
         color.setText(product.getAllColors());
         money.setText(product.getPrice() + ",- Kč");
         description.setText(product.getDescription());
+
+        mAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -78,9 +83,17 @@ public class ProductDetailActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.nav_cart:
-                Toast.makeText(this, getString(R.string.feature_not_available), Toast.LENGTH_LONG).show();
+                addToCart();
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void addToCart(){
+        if(mAuth.getCurrentUser() == null){
+            Toast.makeText(this, R.string.unlogged_user, Toast.LENGTH_LONG).show();
+        }else{
+            //TODO: přidání produktu do košíku zákazníka
+        }
     }
 }

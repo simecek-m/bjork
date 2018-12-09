@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "337761818920",
-    "firebase_url": "https://bjork-baf4d.firebaseio.com",
-    "project_id": "bjork-baf4d",
-    "storage_bucket": "bjork-baf4d.appspot.com"
+    "project_number": "959364361655",
+    "firebase_url": "https://bjork-a5190.firebaseio.com",
+    "project_id": "bjork-a5190",
+    "storage_bucket": "bjork-a5190.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:337761818920:android:85d134122bdd4b15",
+        "mobilesdk_app_id": "1:959364361655:android:85d134122bdd4b15",
         "android_client_info": {
           "package_name": "com.example.app.bjork"
         }
       },
       "oauth_client": [
         {
-          "client_id": "337761818920-lckjog6p6sltu495ut14vbvmn2ippuo9.apps.googleusercontent.com",
+          "client_id": "959364361655-2sg2lfavfbpr27bj4450lo8iaivshjl1.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.app.bjork",
@@ -23,13 +23,13 @@
           }
         },
         {
-          "client_id": "337761818920-2raiua4eu64qa432sirdae3jq8bp5clo.apps.googleusercontent.com",
+          "client_id": "959364361655-svlc1sovpevrrh4mstguskoolnu5h1v8.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDR2HpLvYlOMEhSbQ5SGT_73ErQuTtApW8"
+          "current_key": "AIzaSyDHFz1F0HOVDsPmkyefRMHS4R2ptqoL2ak"
         }
       ],
       "services": {
@@ -40,7 +40,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "337761818920-2raiua4eu64qa432sirdae3jq8bp5clo.apps.googleusercontent.com",
+              "client_id": "959364361655-svlc1sovpevrrh4mstguskoolnu5h1v8.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
