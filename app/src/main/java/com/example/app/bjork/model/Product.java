@@ -5,10 +5,12 @@ import android.graphics.drawable.Drawable;
 import com.example.app.bjork.R;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Product implements Serializable {
 
+    private String id;
     private String name;
     private int discountPercentage;
     private List<String> colors;
@@ -17,8 +19,17 @@ public class Product implements Serializable {
     private String type;
     private String imageUrl;
     private String description;
+    private List<String> likes = new ArrayList<>();
 
     public Product() {
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -85,6 +96,14 @@ public class Product implements Serializable {
         this.description = description;
     }
 
+    public List<String> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(List<String> likes) {
+        this.likes = likes;
+    }
+
     public static int getTypeIconId(String type){
         switch (type){
             default:
@@ -130,5 +149,17 @@ public class Product implements Serializable {
                 ", imageUrl='" + imageUrl + '\'' +
                 ", description='" + description + '\'' +
                 '}';
+    }
+
+    public boolean likedByUser(String userId){
+        return likes.contains(userId);
+    }
+
+    public void likeProduct(String userId){
+        if(likes.contains(userId)){
+            likes.remove(userId);
+        }else{
+            likes.add(userId);
+        }
     }
 }

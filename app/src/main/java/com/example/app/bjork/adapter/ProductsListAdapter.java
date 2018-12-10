@@ -17,7 +17,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.app.bjork.R;
 import com.example.app.bjork.activity.ProductDetailActivity;
+import com.example.app.bjork.api.BjorkAPI;
 import com.example.app.bjork.model.Product;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
 
@@ -25,32 +27,24 @@ public class ProductsListAdapter extends RecyclerView.Adapter<ProductsListAdapte
 
     private Context context;
     private List<Product> productsList;
+    private FirebaseAuth mAuth;
 
     public ProductsListAdapter(Context context, List<Product> productsList) {
         this.context = context;
         this.productsList = productsList;
+        mAuth = FirebaseAuth.getInstance();
     }
 
     @NonNull
     @Override
     public ProductViewHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.product_element, parent,false);
-        final ImageView heartIcon = view.findViewById(R.id.like);
-        heartIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(context, R.string.feature_not_available, Toast.LENGTH_LONG).show();
-                Drawable heart = context.getDrawable(R.drawable.ic_favorite_heart);
-                heart.setTint(context.getResources().getColor(R.color.colorPrimary));
-                heartIcon.setImageDrawable(heart);
-            }
-        });
         ProductViewHolder viewHolder = new ProductViewHolder(view);
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ProductViewHolder holder, int position) {
         final Product product = productsList.get(position);
         holder.name.setText(product.getName());
         int iconId = Product.getTypeIconId(product.getType());
@@ -63,12 +57,27 @@ public class ProductsListAdapter extends RecyclerView.Adapter<ProductsListAdapte
                 .load(product.getImageUrl())
                 .into(holder.image);
         int discount = product.getDiscountPercentage();
+        if(product.likedByUser(mAuth.getUid())){
+            Drawable heartIcon = context.getDrawable(R.drawable.ic_favorite_heart);
+            heartIcon.setTint(context.getResources().getColor(R.color.colorPrimary));
+            holder.like.setImageDrawable(heartIcon);
+        }else{
+            holder.like.setImageDrawable(context.getDrawable(R.drawable.ic_heart));
+        }
+        holder.like.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                product.likeProduct(mAuth.getUid());
+                switchHeartIcon(holder, product);
+                BjorkAPI.likeProduct(product);
+            }
+        });
         if(discount != 0){
             styleDiscountItem(holder, product);
         }else {
             styleNormalItem(holder, product);
         }
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+        holder.image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, ProductDetailActivity.class);
@@ -134,6 +143,16 @@ public class ProductsListAdapter extends RecyclerView.Adapter<ProductsListAdapte
     public void setList(List<Product> productsList){
         if(!productsList.equals(this.productsList)){
             this.productsList = productsList;
+        }
+    }
+
+    public void switchHeartIcon(ProductViewHolder holder, Product product){
+        if(product.likedByUser(mAuth.getUid())){
+            Drawable fullHeartIcon = context.getDrawable(R.drawable.ic_favorite_heart);
+            fullHeartIcon.setTint(context.getResources().getColor(R.color.colorPrimary));
+            holder.like.setImageDrawable(fullHeartIcon);
+        }else{
+            holder.like.setImageDrawable(context.getDrawable(R.drawable.ic_heart));
         }
     }
 }

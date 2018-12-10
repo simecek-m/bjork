@@ -13,7 +13,7 @@ import java.util.List;
 
 public class RootFavouriteListFragment extends Fragment {
 
-    FirebaseAuth mAuth;
+    private FirebaseAuth mAuth;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -34,8 +34,6 @@ public class RootFavouriteListFragment extends Fragment {
 
     public void checkCorrectFragment(){
         mAuth = FirebaseAuth.getInstance();
-        List<Fragment> fragments = getChildFragmentManager().getFragments();
-        Fragment attachedFragment = fragments.get(0);
 
         if(mAuth.getCurrentUser() == null ){
             getChildFragmentManager()

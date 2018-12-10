@@ -15,6 +15,7 @@ import com.example.app.bjork.adapter.ProductsListAdapter;
 import com.example.app.bjork.model.Product;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -70,12 +71,23 @@ public class ProductListFragment extends Fragment {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         productsList.clear();
-                        productsList = queryDocumentSnapshots.toObjects(Product.class);
+                        Product product;
+                        for(QueryDocumentSnapshot snapshot: queryDocumentSnapshots){
+                            product = snapshot.toObject(Product.class);
+                            product.setId(snapshot.getId());
+                            productsList.add(product);
+                        }
                         adapter.setList(productsList);
                         adapter.notifyDataSetChanged();
                         swipeRefreshLayout.setRefreshing(false);
                     }
                 });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadList();
     }
 }
 
