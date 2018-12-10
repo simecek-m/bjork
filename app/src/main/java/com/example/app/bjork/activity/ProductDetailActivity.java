@@ -66,7 +66,11 @@ public class ProductDetailActivity extends AppCompatActivity {
         typeIcon.setImageResource(iconId);
         size.setText(product.getSize());
         color.setText(product.getAllColors());
-        money.setText(product.getPrice() + ",- Kč");
+        if(product.getDiscountPercentage() == 0){
+            money.setText(product.getPrice() + ",- Kč");
+        }else{
+            money.setText(getNewPrice() + ",- Kč");
+        }
         description.setText(product.getDescription());
 
         mAuth = FirebaseAuth.getInstance();
@@ -95,5 +99,11 @@ public class ProductDetailActivity extends AppCompatActivity {
         }else{
             //TODO: přidání produktu do košíku zákazníka
         }
+    }
+
+    public int getNewPrice(){
+        float defaultPrice = product.getPrice();
+        float discount = (defaultPrice/100)*product.getDiscountPercentage();
+        return Math.round(defaultPrice) - Math.round(discount);
     }
 }
