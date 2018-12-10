@@ -6,6 +6,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowAnimationStyle">@style/ActivityTransition</item>
     </style>
 
     <style name="ToolbarPrimary" parent="Theme.AppCompat.Light.NoActionBar">
@@ -35,6 +36,10 @@
 
     <style name="RobotoBoldFont">
         <item name="android:fontFamily">@font/roboto_bold</item>
+    </style>
+    
+    <style name="ActivityTransition"  parent="@android:style/Animation.Activity">
+        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
     </style>
 
 </resources>

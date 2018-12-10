@@ -56,6 +56,7 @@ public class ProductListFragment extends Fragment {
                 loadList();
             }
         });
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
 
         loadList();
         return view;
