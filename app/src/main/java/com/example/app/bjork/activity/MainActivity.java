@@ -102,7 +102,8 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.nav_profile:
                 item.setChecked(true);
-                mAuth.signOut();
+                intent = new Intent(this, ProfileActivity.class);
+                startActivity(intent);
                 break;
             case R.id.nav_about:
                 item.setChecked(true);

@@ -17,6 +17,7 @@
     <string name="feedback">Feedback</string>
     <string name="favourite">Oblíbené</string>
     <string name="login">Přihlášení</string>
+    <string name="logout">Odhlášení</string>
     <string name="email">Email</string>
     <string name="password">Heslo</string>
     <string name="empty_list_description">zatím nemáte žádné oblíbené produkty</string>
@@ -29,4 +30,6 @@
     <string name="system_version">Android OS</string>
     <string name="version">Verze</string>
     <string name="wrongCredentials">Chybný email nebo heslo</string>
+    <string name="firstname">Jméno</string>
+    <string name="lastname">Přijmení</string>
 </resources>
