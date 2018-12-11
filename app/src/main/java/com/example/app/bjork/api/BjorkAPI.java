@@ -25,7 +25,6 @@ public class BjorkAPI {
     }
 
     public static Task<QuerySnapshot> loadFavouritesProducts(String userId){
-        System.out.println("user id: " + userId);
         return db.collection("products")
                 .whereArrayContains("likes", userId)
                 .get();

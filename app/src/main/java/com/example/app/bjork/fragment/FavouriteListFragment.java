@@ -36,36 +36,17 @@ public class FavouriteListFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_favourite_list, container, false);
         emptyListLayout = view.findViewById(R.id.empty_list);
-        System.out.println("empty list: " + emptyListLayout);
         favouritesListLayout = view.findViewById(R.id.favourite_list);
-        System.out.println("fav list: " + favouritesListLayout);
 
         favouriteProducts = new ArrayList<>();
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
-        System.out.println("current user: " + auth.getCurrentUser());
-        if(auth.getUid() != null) {
-            System.out.println("auth not null: " + auth.getUid());
-            BjorkAPI.loadFavouritesProducts(auth.getUid())
-                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                        @Override
-                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                            System.out.println("products: " + queryDocumentSnapshots.size());
-                            Product product;
-                            for(QueryDocumentSnapshot snapshot: queryDocumentSnapshots){
-                                product = snapshot.toObject(Product.class);
-                                product.setId(snapshot.getId());
-                                favouriteProducts.add(product);
-                            }
-                        }
-                    });
-        }
+        loadList();
         return view;
     }
 
     public void addFavouriteProduct(Product product){
-        System.out.println("add product: " + favouriteProducts.size());
         if(favouriteProducts.size() == 0){
             emptyListLayout.setVisibility(View.GONE);
             favouritesListLayout.setVisibility(View.VISIBLE);
@@ -77,13 +58,34 @@ public class FavouriteListFragment extends Fragment {
 
     public void removeFavouriteProduct(Product product){
         favouriteProducts.remove(product);
-        System.out.println("remove product: " + favouriteProducts.size());
         if(favouriteProducts.size() == 0){
             emptyListLayout.setVisibility(View.VISIBLE);
             favouritesListLayout.setVisibility(View.GONE);
         }
+    }
 
-        TextView view = favouritesListLayout.findViewById(R.id.favText);
-        view.setText("favs: " + favouriteProducts.size());
+    public void loadList(){
+        if(auth.getUid() != null) {
+            BjorkAPI.loadFavouritesProducts(auth.getUid())
+                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                            Product product;
+                            for(QueryDocumentSnapshot snapshot: queryDocumentSnapshots){
+                                product = snapshot.toObject(Product.class);
+                                product.setId(snapshot.getId());
+                                favouriteProducts.add(product);
+                            }
+                            if(favouriteProducts.size() != 0){
+                                emptyListLayout.setVisibility(View.GONE);
+                                favouritesListLayout.setVisibility(View.VISIBLE);
+                            }
+                            TextView view = favouritesListLayout.findViewById(R.id.favText);
+                            view.setText("favs: " + favouriteProducts.size());
+                        }
+                    });
+        }else{
+            emptyListLayout.setVisibility(View.VISIBLE);
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.app.bjork.activity;
 
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import com.example.app.bjork.R;
 import com.example.app.bjork.adapter.ProductsListAdapter;
 import com.example.app.bjork.adapter.ScreenSlidePagerAdapter;
 import com.example.app.bjork.fragment.FavouriteListFragment;
+import com.example.app.bjork.fragment.ProductListFragment;
 import com.example.app.bjork.model.Product;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -29,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private FirebaseAuth mAuth;
+    private String loggedUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         actionBar.setHomeAsUpIndicator(hamburgerIcon);
 
         mAuth = FirebaseAuth.getInstance();
+        loggedUserId = mAuth.getUid();
         viewPager = findViewById(R.id.viewPager);
         pagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager(), this);
         pagerAdapter.addOnLikeClickListener(new ProductsListAdapter.OnLikeClickListener() {
@@ -88,6 +92,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         navigationView.setCheckedItem(R.id.nav_products);
+        if(loggedUserChanged()){
+            loggedUserId = mAuth.getUid();
+            ProductListFragment productListFragment = (ProductListFragment) pagerAdapter.getItem(0);
+            FavouriteListFragment favouriteListFragment = (FavouriteListFragment) pagerAdapter.getItem(1);
+            productListFragment.loadList();
+            favouriteListFragment.loadList();
+        }
     }
 
     public void openItemActivity(MenuItem item){
@@ -111,5 +122,9 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
                 break;
         }
+    }
+
+    public boolean loggedUserChanged(){
+        return this.loggedUserId != mAuth.getUid();
     }
 }
