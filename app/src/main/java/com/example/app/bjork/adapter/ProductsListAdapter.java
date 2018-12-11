@@ -29,6 +29,8 @@ public class ProductsListAdapter extends RecyclerView.Adapter<ProductsListAdapte
     private List<Product> productsList;
     private FirebaseAuth mAuth;
 
+    private OnLikeClickListener onLikeClickListener;
+
     public ProductsListAdapter(Context context, List<Product> productsList) {
         this.context = context;
         this.productsList = productsList;
@@ -67,9 +69,16 @@ public class ProductsListAdapter extends RecyclerView.Adapter<ProductsListAdapte
         holder.like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                product.likeProduct(mAuth.getUid());
-                switchHeartIcon(holder, product);
-                BjorkAPI.likeProduct(product);
+                if(mAuth.getUid() != null){
+                    product.likeProduct(mAuth.getUid());
+                    switchHeartIcon(holder, product);
+                    BjorkAPI.likeProduct(product);
+                    if(onLikeClickListener != null){
+                        onLikeClickListener.onLikeClick(product);
+                    }
+                }else{
+                    Toast.makeText(context, R.string.unlogged_user, Toast.LENGTH_SHORT).show();
+                }
             }
         });
         if(discount != 0){
@@ -154,5 +163,13 @@ public class ProductsListAdapter extends RecyclerView.Adapter<ProductsListAdapte
         }else{
             holder.like.setImageDrawable(context.getDrawable(R.drawable.ic_heart));
         }
+    }
+
+    public void addOnLikeClickListener(OnLikeClickListener onLikeClickListener){
+        this.onLikeClickListener = onLikeClickListener;
+    }
+
+    public interface OnLikeClickListener{
+        void onLikeClick(Product product);
     }
 }

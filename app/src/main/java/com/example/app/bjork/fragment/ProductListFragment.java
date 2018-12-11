@@ -34,6 +34,8 @@ public class ProductListFragment extends Fragment {
 
     private SwipeRefreshLayout swipeRefreshLayout;
 
+    private ProductsListAdapter.OnLikeClickListener onLikeClickListener;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -46,6 +48,7 @@ public class ProductListFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
 
         adapter = new ProductsListAdapter(getContext(), productsList);
+        adapter.addOnLikeClickListener(onLikeClickListener);
         recyclerView.setAdapter(adapter);
 
         DividerItemDecoration divider = new DividerItemDecoration(getContext(), layoutManager.getOrientation());
@@ -84,10 +87,8 @@ public class ProductListFragment extends Fragment {
                 });
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        loadList();
+    public void addOnLikeClickListener(ProductsListAdapter.OnLikeClickListener onLikeClickListener){
+        this.onLikeClickListener = onLikeClickListener;
     }
 }
 

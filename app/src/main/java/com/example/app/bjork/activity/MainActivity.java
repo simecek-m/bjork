@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -16,14 +15,17 @@ import android.view.Gravity;
 import android.view.MenuItem;
 
 import com.example.app.bjork.R;
+import com.example.app.bjork.adapter.ProductsListAdapter;
 import com.example.app.bjork.adapter.ScreenSlidePagerAdapter;
+import com.example.app.bjork.fragment.FavouriteListFragment;
+import com.example.app.bjork.model.Product;
 import com.google.firebase.auth.FirebaseAuth;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private ViewPager viewPager;
-    private PagerAdapter pagerAdapter;
+    private ScreenSlidePagerAdapter pagerAdapter;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private FirebaseAuth mAuth;
@@ -44,6 +46,17 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         viewPager = findViewById(R.id.viewPager);
         pagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager(), this);
+        pagerAdapter.addOnLikeClickListener(new ProductsListAdapter.OnLikeClickListener() {
+            @Override
+            public void onLikeClick(Product product) {
+                FavouriteListFragment favouriteFragment = (FavouriteListFragment) pagerAdapter.getItem(1);
+                if(product.likedByUser(mAuth.getUid())){
+                    favouriteFragment.addFavouriteProduct(product);
+                }else{
+                    favouriteFragment.removeFavouriteProduct(product);
+                }
+            }
+        });
         viewPager.setAdapter(pagerAdapter);
 
         drawerLayout = findViewById(R.id.drawer_layout);

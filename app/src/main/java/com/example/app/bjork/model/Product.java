@@ -1,12 +1,11 @@
 package com.example.app.bjork.model;
 
-import android.graphics.drawable.Drawable;
-
 import com.example.app.bjork.R;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Product implements Serializable {
 
@@ -141,13 +140,14 @@ public class Product implements Serializable {
     @Override
     public String toString() {
         return "Product{" +
+                "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", discountPercentage=" + discountPercentage +
                 ", colors=" + colors +
+                ", size='" + size + '\'' +
                 ", price=" + price +
                 ", type='" + type + '\'' +
-                ", imageUrl='" + imageUrl + '\'' +
-                ", description='" + description + '\'' +
+                ", likes=" + likes +
                 '}';
     }
 
@@ -161,5 +161,19 @@ public class Product implements Serializable {
         }else{
             likes.add(userId);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Product)) return false;
+        Product product = (Product) o;
+        return Objects.equals(getId(), product.getId());
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(getId());
     }
 }
