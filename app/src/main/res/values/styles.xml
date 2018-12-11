@@ -30,6 +30,15 @@
         <item name="colorAccent">@color/colorPrimary</item>
     </style>
 
+    <style name="EditTextGreen" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorAccent">@color/green</item>
+
+    </style>
+
+    <style name="EditTextTransparent" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:background">@null</item>
+    </style>
+
     <style name="RobotoItalicFont">
         <item name="android:fontFamily">@font/roboto_italic</item>
     </style>

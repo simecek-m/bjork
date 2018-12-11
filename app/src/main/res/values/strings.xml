@@ -32,4 +32,12 @@
     <string name="wrongCredentials">Chybný email nebo heslo</string>
     <string name="firstname">Jméno</string>
     <string name="lastname">Přijmení</string>
+    <string name="address">Adresa</string>
+    <string name="change">Změnit</string>
+    <string name="incompleteProfile">Váš profil není kompletní!</string>
+
+    <string-array name="gender">
+        <item>Muž</item>
+        <item>Žena</item>
+    </string-array>
 </resources>

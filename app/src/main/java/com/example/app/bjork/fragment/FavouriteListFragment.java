@@ -53,7 +53,7 @@ public class FavouriteListFragment extends Fragment {
         }
         favouriteProducts.add(product);
         TextView view = favouritesListLayout.findViewById(R.id.favText);
-        view.setText("favs: " + favouriteProducts.size());
+        view.setText("faves: " + favouriteProducts.size());
     }
 
     public void removeFavouriteProduct(Product product){
@@ -62,6 +62,8 @@ public class FavouriteListFragment extends Fragment {
             emptyListLayout.setVisibility(View.VISIBLE);
             favouritesListLayout.setVisibility(View.GONE);
         }
+        TextView view = favouritesListLayout.findViewById(R.id.favText);
+        view.setText("faves: " + favouriteProducts.size());
     }
 
     public void loadList(){
@@ -85,6 +87,7 @@ public class FavouriteListFragment extends Fragment {
                         }
                     });
         }else{
+            favouriteProducts.clear();
             emptyListLayout.setVisibility(View.VISIBLE);
         }
     }
