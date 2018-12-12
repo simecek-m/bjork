@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.constraint.ConstraintLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -45,6 +47,12 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             finish();
         }else{
             setContentView(R.layout.activity_profile);
+
+            Toolbar toolbar = findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
+            ActionBar ab = getSupportActionBar();
+            ab.setDisplayHomeAsUpEnabled(true);
+
             firstnameText = findViewById(R.id.firstnameText);
             lastnameText = findViewById(R.id.lastnameText);
             addressText = findViewById(R.id.addressText);
