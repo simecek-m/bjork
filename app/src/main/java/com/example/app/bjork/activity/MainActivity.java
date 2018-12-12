@@ -1,6 +1,5 @@
 package com.example.app.bjork.activity;
 
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;

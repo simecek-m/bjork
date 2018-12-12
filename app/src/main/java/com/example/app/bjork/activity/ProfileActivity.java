@@ -1,5 +1,6 @@
 package com.example.app.bjork.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.constraint.ConstraintLayout;
@@ -7,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -29,55 +31,54 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private Button logoutButton;
     private Button saveUserInfoButton;
     private boolean defaultState = true;
+    private FirebaseAuth auth;
 
-    private Drawable defaultLine;
+    private UserInfo defaultUserInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
-
-        final FirebaseAuth auth = FirebaseAuth.getInstance();
+        auth = FirebaseAuth.getInstance();
         if(auth.getUid() == null){
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             finish();
+        }else{
+            setContentView(R.layout.activity_profile);
+            firstnameText = findViewById(R.id.firstnameText);
+            lastnameText = findViewById(R.id.lastnameText);
+            addressText = findViewById(R.id.addressText);
+            genderSpinner = findViewById(R.id.gender);
+            logoutButton = findViewById(R.id.logoutButton);
+            saveUserInfoButton = findViewById(R.id.saveUserInfoButton);
+            logoutButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    auth.signOut();
+                    finish();
+                }
+            });
+            error = findViewById(R.id.error);
+            error.setVisibility(View.GONE);
+            saveUserInfoButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String firstname = firstnameText.getText().toString();
+                    String lastname = lastnameText.getText().toString();
+                    String address = addressText.getText().toString();
+                    String gender = genderSpinner.getSelectedItem().toString();
+
+                    defaultUserInfo = new UserInfo(auth.getUid(), firstname, lastname, address, gender);
+                    BjorkAPI.addUserInfo(defaultUserInfo);
+                    defaultRender();
+                }
+            });
+            firstnameText.setOnClickListener(this);
+            lastnameText.setOnClickListener(this);
+            addressText.setOnClickListener(this);
+            defaultRender();
+            loadUserInfo(auth.getUid());
         }
-
-        firstnameText = findViewById(R.id.firstnameText);
-        lastnameText = findViewById(R.id.lastnameText);
-        addressText = findViewById(R.id.addressText);
-        genderSpinner = findViewById(R.id.gender);
-        logoutButton = findViewById(R.id.logoutButton);
-        saveUserInfoButton = findViewById(R.id.saveUserInfoButton);
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                auth.signOut();
-                finish();
-            }
-        });
-        error = findViewById(R.id.error);
-        error.setVisibility(View.GONE);
-        saveUserInfoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String firstname = firstnameText.getText().toString();
-                String lastname = lastnameText.getText().toString();
-                String address = addressText.getText().toString();
-                String gender = genderSpinner.getSelectedItem().toString();
-
-                UserInfo userInfo = new UserInfo(auth.getUid(), firstname, lastname, address, gender);
-                BjorkAPI.addUserInfo(userInfo);
-                defaultRender();
-            }
-        });
-        firstnameText.setOnClickListener(this);
-        lastnameText.setOnClickListener(this);
-        addressText.setOnClickListener(this);
-
-        defaultLine = firstnameText.getBackground();
-        loadUserInfo(auth.getUid());
     }
 
     public void editUser(){
@@ -116,6 +117,11 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View v) {
         if (v instanceof EditText && defaultState) {
             editUser();
+            EditText focusText = (EditText) v;
+            focusText.requestFocus();
+            focusText.setSelection(focusText.getText().length());
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(focusText, InputMethodManager.SHOW_IMPLICIT);
         }
     }
 
@@ -130,14 +136,25 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        UserInfo userInfo = documentSnapshot.toObject(UserInfo.class);
-                        userInfo.setId(documentSnapshot.getId());
-                        System.out.println(userInfo);
-                        firstnameText.setText(userInfo.getFirstname());
-                        lastnameText.setText(userInfo.getLastname());
-                        addressText.setText(userInfo.getAddress());
+                        defaultUserInfo = documentSnapshot.toObject(UserInfo.class);
+                        defaultUserInfo.setId(documentSnapshot.getId());
+                        firstnameText.setText(defaultUserInfo.getFirstname());
+                        lastnameText.setText(defaultUserInfo.getLastname());
+                        addressText.setText(defaultUserInfo.getAddress());
                         defaultRender();
                     }
                 });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(defaultState){
+            super.onBackPressed();
+        }else{
+            firstnameText.setText(defaultUserInfo.getFirstname());
+            lastnameText.setText(defaultUserInfo.getLastname());
+            addressText.setText(defaultUserInfo.getAddress());
+            defaultRender();
+        }
     }
 }
