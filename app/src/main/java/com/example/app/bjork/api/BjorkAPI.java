@@ -1,8 +1,10 @@
 package com.example.app.bjork.api;
 
+import com.example.app.bjork.model.CartItem;
 import com.example.app.bjork.model.Product;
 import com.example.app.bjork.model.UserInfo;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -42,5 +44,19 @@ public class BjorkAPI {
         db.collection("user_info")
                 .document(userInfo.getId())
                 .set(userInfo);
+    }
+
+    public static void addToCart(String userId, Product product){
+
+        DocumentReference ref = db.collection("products")
+                .document(product.getId());
+
+        //TODO: doplnit barvu a počet podle uživatele - bottom sheet po kliknutí na košík v aktivitě detailu produktu
+        CartItem item = new CartItem(userId, "černá", 1, ref);
+
+        db.collection("carts")
+                .document(userId)
+                .collection("cart_items")
+                .add(item);
     }
 }

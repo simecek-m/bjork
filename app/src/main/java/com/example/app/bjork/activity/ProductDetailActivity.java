@@ -1,5 +1,6 @@
 package com.example.app.bjork.activity;
 
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,13 +8,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.app.bjork.R;
+import com.example.app.bjork.api.BjorkAPI;
 import com.example.app.bjork.model.Product;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -30,6 +32,9 @@ public class ProductDetailActivity extends AppCompatActivity {
     private TextView money;
     private TextView description;
 
+    private View bottomSheet;
+    private BottomSheetBehavior sheetBehavior;
+
     private FirebaseAuth mAuth;
 
 
@@ -42,6 +47,9 @@ public class ProductDetailActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
+
+        bottomSheet = findViewById(R.id.login_bottom_sheet);
+        sheetBehavior = BottomSheetBehavior.from(bottomSheet);
 
         image = findViewById(R.id.image);
         name = findViewById(R.id.name);
@@ -94,10 +102,10 @@ public class ProductDetailActivity extends AppCompatActivity {
     }
 
     public void addToCart(){
-        if(mAuth.getCurrentUser() == null){
-            Toast.makeText(this, R.string.unlogged_user, Toast.LENGTH_LONG).show();
+        if(mAuth.getUid() == null){
+            sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         }else{
-            //TODO: přidání produktu do košíku zákazníka
+            BjorkAPI.addToCart(mAuth.getUid(), product);
         }
     }
 
