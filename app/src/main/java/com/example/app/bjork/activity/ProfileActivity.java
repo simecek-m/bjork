@@ -36,10 +36,12 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private FirebaseAuth auth;
 
     private UserInfo defaultUserInfo;
+    private Intent resultIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        resultIntent = new Intent();
         auth = FirebaseAuth.getInstance();
         if(auth.getUid() == null){
             Intent intent = new Intent(this, LoginActivity.class);
@@ -76,9 +78,11 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     String address = addressText.getText().toString();
                     String gender = genderSpinner.getSelectedItem().toString();
 
-                    defaultUserInfo = new UserInfo(auth.getUid(), firstname, lastname, address, gender);
+                    defaultUserInfo = new UserInfo(auth.getUid(), auth.getCurrentUser().getEmail() ,firstname, lastname, address, gender);
                     BjorkAPI.addUserInfo(defaultUserInfo);
-                    defaultRender();
+                    resultIntent.putExtra("userInfo", defaultUserInfo);
+                    setResult(RESULT_OK, resultIntent);
+                    finish();
                 }
             });
             firstnameText.setOnClickListener(this);

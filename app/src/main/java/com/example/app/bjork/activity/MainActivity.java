@@ -15,6 +15,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.app.bjork.R;
 import com.example.app.bjork.adapter.ProductsListAdapter;
@@ -22,10 +24,17 @@ import com.example.app.bjork.adapter.ScreenSlidePagerAdapter;
 import com.example.app.bjork.fragment.FavouriteListFragment;
 import com.example.app.bjork.fragment.ProductListFragment;
 import com.example.app.bjork.model.Product;
+import com.example.app.bjork.model.UserInfo;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final int CHANGE_PROFILE_INFO_REQUEST = 1;
+    private static final String GENDER_MALE = "Muž";
 
     private ViewPager viewPager;
     private ScreenSlidePagerAdapter pagerAdapter;
@@ -37,6 +46,11 @@ public class MainActivity extends AppCompatActivity {
     private BottomSheetDialog loginBottomSheet;
     private Toolbar toolbar;
 
+    private TextView name;
+    private TextView email;
+    private ImageView profileImage;
+    private FirebaseFirestore db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
 
         createToolbar();
         createLoginBottomSheet();
+
+        db = FirebaseFirestore.getInstance();
 
         mAuth = FirebaseAuth.getInstance();
         loggedUserId = mAuth.getUid();
@@ -80,6 +96,13 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        View header = navigationView.getHeaderView(0);
+        name = header.findViewById(R.id.name);
+        email = header.findViewById(R.id.email);
+        profileImage = header.findViewById(R.id.profileImage);
+
+        updateUserInfo();
     }
 
     @Override
@@ -102,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
             FavouriteListFragment favouriteListFragment = (FavouriteListFragment) pagerAdapter.getItem(1);
             productListFragment.loadList();
             favouriteListFragment.loadList();
+            updateUserInfo();
         }
     }
 
@@ -118,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.nav_profile:
                 item.setChecked(true);
                 intent = new Intent(this, ProfileActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, CHANGE_PROFILE_INFO_REQUEST);
                 break;
             case R.id.nav_about:
                 item.setChecked(true);
@@ -154,5 +178,45 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    public void updateUserInfo(){
+        if(mAuth.getUid() != null){
+            db.collection("user_info")
+                    .document(mAuth.getUid())
+                    .get()
+                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            UserInfo user = documentSnapshot.toObject(UserInfo.class);
+                            name.setText(user.getFirstname() + " " + user.getLastname());
+                            email.setText(user.getEmail());
+                            if(user.getGender().equals(GENDER_MALE)){
+                                profileImage.setImageResource(R.drawable.avatar_man);
+                            }else{
+                                profileImage.setImageResource(R.drawable.avatar_woman);
+                            }
+                        }
+                    });
+        }else{
+            name.setText(null);
+            email.setText(R.string.unlogged_user);
+            profileImage.setImageDrawable(null);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == CHANGE_PROFILE_INFO_REQUEST && resultCode == RESULT_OK){
+            UserInfo userInfo = (UserInfo) data.getSerializableExtra("userInfo");
+            name.setText(userInfo.getFirstname() + " " + userInfo.getLastname());
+            email.setText(userInfo.getEmail());
+            if(userInfo.getGender().equals(GENDER_MALE)){
+                profileImage.setImageResource(R.drawable.avatar_man);
+            }else{
+                profileImage.setImageResource(R.drawable.avatar_woman);
+            }
+        }
     }
 }

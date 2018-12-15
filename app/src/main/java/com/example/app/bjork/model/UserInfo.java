@@ -1,18 +1,22 @@
 package com.example.app.bjork.model;
 
-public class UserInfo {
+import java.io.Serializable;
+
+public class UserInfo implements Serializable {
 
     private String id;
     private String firstname;
     private String lastname;
+    private String email;
     private String address;
     private String gender;
 
     public UserInfo() {
     }
 
-    public UserInfo(String id, String firstname, String lastname, String address, String gender) {
+    public UserInfo(String id, String email, String firstname, String lastname, String address, String gender) {
         this.id = id;
+        this.email = email;
         this.firstname = firstname;
         this.lastname = lastname;
         this.address = address;
@@ -41,6 +45,15 @@ public class UserInfo {
 
     public void setLastname(String lastname) {
         this.lastname = lastname;
+    }
+
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getAddress() {
