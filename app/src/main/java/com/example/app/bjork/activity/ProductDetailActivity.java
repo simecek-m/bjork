@@ -1,6 +1,7 @@
 package com.example.app.bjork.activity;
 
-import android.support.design.widget.BottomSheetBehavior;
+import android.content.Intent;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -32,10 +33,9 @@ public class ProductDetailActivity extends AppCompatActivity {
     private TextView money;
     private TextView description;
 
-    private View bottomSheet;
-    private BottomSheetBehavior sheetBehavior;
 
     private FirebaseAuth mAuth;
+    private BottomSheetDialog loginBottomSheet;
 
 
     @Override
@@ -48,8 +48,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
 
-        bottomSheet = findViewById(R.id.login_bottom_sheet);
-        sheetBehavior = BottomSheetBehavior.from(bottomSheet);
+        createLoginBottomSheet();
 
         image = findViewById(R.id.image);
         name = findViewById(R.id.name);
@@ -103,7 +102,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     public void addToCart(){
         if(mAuth.getUid() == null){
-            sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            loginBottomSheet.show();
         }else{
             BjorkAPI.addToCart(mAuth.getUid(), product);
         }
@@ -113,5 +112,20 @@ public class ProductDetailActivity extends AppCompatActivity {
         float defaultPrice = product.getPrice();
         float discount = (defaultPrice/100)*product.getDiscountPercentage();
         return Math.round(defaultPrice) - Math.round(discount);
+    }
+
+    public void createLoginBottomSheet(){
+        loginBottomSheet = new BottomSheetDialog(this, R.style.BottomSheetDialog);
+        loginBottomSheet.setContentView(R.layout.login_bottom_sheet);
+        View login = loginBottomSheet.findViewById(R.id.login);
+        login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loginBottomSheet.dismiss();
+                Intent intent = new Intent(getBaseContext(), LoginActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
 }

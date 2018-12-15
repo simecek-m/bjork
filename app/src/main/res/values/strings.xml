@@ -21,10 +21,10 @@
     <string name="email">Email</string>
     <string name="password">Heslo</string>
     <string name="empty_list_description">zatím nemáte žádné oblíbené produkty</string>
-    <string name="unlogged_user">nejste přihlášení</string>
-    <string name="feature_not_available">funkce není dostupná</string>
+    <string name="unlogged_user">Nejste přihlášen</string>
+    <string name="feature_not_available">Funkce není dostupná</string>
     <string name="navigate">Navigovat</string>
-    <string name="add_to_cart">Do košíku</string>
+    <string name="to_cart">Do košíku</string>
     <string name="detail_product">Detail produktu</string>
     <string name="nearest_store">Nejbližší prodejna</string>
     <string name="system_version">Android OS</string>
@@ -35,6 +35,11 @@
     <string name="address">Adresa</string>
     <string name="change">Změnit</string>
     <string name="incompleteProfile">Váš profil není kompletní!</string>
+    <string name="login_description">Pro používání této funkce se musíte přihlásit</string>
+    <string name="user_not_exist">Uživatel neexistuje</string>
+    <string name="add_to_cart">Přidat do košíku</string>
+    <string name="registration_description">Uživatel s Vámi zadaným emailem neexistuje, chcete se registrovat?</string>
+    <string name="add_to_cart_description">zvolte množství a barvu Vašeho produktu</string>
 
     <string-array name="gender">
         <item>Muž</item>
