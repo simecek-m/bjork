@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -13,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.example.app.bjork.R;
 import com.example.app.bjork.adapter.ProductsListAdapter;
@@ -32,18 +34,16 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private String loggedUserId;
 
+    private BottomSheetDialog loginBottomSheet;
+    private Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        Drawable hamburgerIcon = getDrawable(R.drawable.ic_menu);
-        hamburgerIcon.setTint(getResources().getColor(R.color.white));
-        actionBar.setHomeAsUpIndicator(hamburgerIcon);
+        createToolbar();
+        createLoginBottomSheet();
 
         mAuth = FirebaseAuth.getInstance();
         loggedUserId = mAuth.getUid();
@@ -52,11 +52,16 @@ public class MainActivity extends AppCompatActivity {
         pagerAdapter.addOnLikeClickListener(new ProductsListAdapter.OnLikeClickListener() {
             @Override
             public void onLikeClick(Product product) {
-                FavouriteListFragment favouriteFragment = (FavouriteListFragment) pagerAdapter.getItem(1);
-                if(product.likedByUser(mAuth.getUid())){
-                    favouriteFragment.addFavouriteProduct(product);
+                if(mAuth.getUid() == null){
+                    loginBottomSheet.show();
                 }else{
-                    favouriteFragment.removeFavouriteProduct(product);
+                    FavouriteListFragment favouriteFragment = (FavouriteListFragment) pagerAdapter.getItem(1);
+                    if(product.likedByUser(mAuth.getUid())){
+                        favouriteFragment.addFavouriteProduct(product);
+                    }else{
+                        favouriteFragment.removeFavouriteProduct(product);
+                    }
+
                 }
             }
         });
@@ -125,5 +130,29 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean loggedUserChanged(){
         return this.loggedUserId != mAuth.getUid();
+    }
+
+    public void createToolbar(){
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        Drawable hamburgerIcon = getDrawable(R.drawable.ic_menu);
+        hamburgerIcon.setTint(getResources().getColor(R.color.white));
+        actionBar.setHomeAsUpIndicator(hamburgerIcon);
+    }
+
+    public void createLoginBottomSheet(){
+        loginBottomSheet = new BottomSheetDialog(this, R.style.BottomSheetDialog);
+        loginBottomSheet.setContentView(R.layout.login_bottom_sheet);
+        View login = loginBottomSheet.findViewById(R.id.login);
+        login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loginBottomSheet.dismiss();
+                Intent intent = new Intent(getBaseContext(), LoginActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }
