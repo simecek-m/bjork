@@ -10,7 +10,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -19,6 +21,8 @@ import com.example.app.bjork.R;
 import com.example.app.bjork.api.BjorkAPI;
 import com.example.app.bjork.model.Product;
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.List;
 
 public class ProductDetailActivity extends AppCompatActivity {
 
@@ -36,6 +40,8 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private BottomSheetDialog loginBottomSheet;
+    private BottomSheetDialog addToCartBottomSheet;
+
 
 
     @Override
@@ -59,6 +65,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         description = findViewById(R.id.description);
 
         product = (Product) getIntent().getSerializableExtra("product");
+        createAddToCartBottomSheet();
 
         RequestOptions options = new RequestOptions();
         options.placeholder(R.drawable.loading).error(R.drawable.error).fallback(R.drawable.error);
@@ -104,7 +111,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         if(mAuth.getUid() == null){
             loginBottomSheet.show();
         }else{
-            BjorkAPI.addToCart(mAuth.getUid(), product);
+            addToCartBottomSheet.show();
         }
     }
 
@@ -127,5 +134,52 @@ public class ProductDetailActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    public void createAddToCartBottomSheet(){
+        addToCartBottomSheet = new BottomSheetDialog(this, R.style.BottomSheetDialog);
+        addToCartBottomSheet.setContentView(R.layout.add_to_cart_bottom_sheet);
+
+        final TextView quantityText = addToCartBottomSheet.findViewById(R.id.quantityText);
+        final Spinner colorText = addToCartBottomSheet.findViewById(R.id.colorText);
+        List<String> colorsList = product.getColors();
+        ArrayAdapter<String> colorAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, colorsList);
+        colorAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        colorText.setAdapter(colorAdapter);
+
+        View up = addToCartBottomSheet.findViewById(R.id.quantityUp);
+        up.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Integer quantity = Integer.parseInt(quantityText.getText().toString());
+                quantity++;
+                quantityText.setText(quantity.toString());
+            }
+        });
+
+
+        View down = addToCartBottomSheet.findViewById(R.id.quantityDown);
+        down.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Integer quantity = Integer.parseInt(quantityText.getText().toString());
+                if(quantity > 1){
+                    quantity--;
+                    quantityText.setText(quantity.toString());
+                }
+            }
+        });
+
+        View confirm = addToCartBottomSheet.findViewById(R.id.confirmButton);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String color = colorText.getSelectedItem().toString();
+                Integer quantity = Integer.parseInt(quantityText.getText().toString());
+                addToCartBottomSheet.dismiss();
+                BjorkAPI.addToCart(mAuth.getUid(), product, color, quantity);
+                finish();
+            }
+        });
     }
 }

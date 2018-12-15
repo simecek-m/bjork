@@ -46,13 +46,12 @@ public class BjorkAPI {
                 .set(userInfo);
     }
 
-    public static void addToCart(String userId, Product product){
+    public static void addToCart(String userId, Product product, String color, int quantity){
 
         DocumentReference ref = db.collection("products")
                 .document(product.getId());
 
-        //TODO: doplnit barvu a počet podle uživatele - bottom sheet po kliknutí na košík v aktivitě detailu produktu
-        CartItem item = new CartItem(userId, "černá", 1, ref);
+        CartItem item = new CartItem(color, quantity, ref);
 
         db.collection("carts")
                 .document(userId)

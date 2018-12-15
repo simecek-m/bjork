@@ -6,7 +6,6 @@ import java.io.Serializable;
 
 public class CartItem implements Serializable {
 
-    private String userId;
     private String color;
     private int count;
     private DocumentReference ref;
@@ -14,20 +13,12 @@ public class CartItem implements Serializable {
     public CartItem() {
     }
 
-    public CartItem(String userId, String color, int number, DocumentReference productRef) {
-        this.userId = userId;
+    public CartItem(String color, int number, DocumentReference productRef) {
         this.color = color;
         this.count = number;
         this.ref = productRef;
     }
 
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
 
     public String getColor() {
         return color;
