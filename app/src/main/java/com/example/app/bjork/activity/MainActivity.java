@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.app.bjork.R;
+import com.example.app.bjork.adapter.FavouriteProductsListAdapter;
 import com.example.app.bjork.adapter.ProductsListAdapter;
 import com.example.app.bjork.adapter.ScreenSlidePagerAdapter;
 import com.example.app.bjork.fragment.FavouriteListFragment;
@@ -81,6 +82,15 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        pagerAdapter.addOnLikeClickListener(new FavouriteProductsListAdapter.OnLikeClickListener() {
+            @Override
+            public void onLikeClick(Product product) {
+                    ProductListFragment listFragment = (ProductListFragment) pagerAdapter.getItem(0);
+                    listFragment.removeFavouriteProduct(product, mAuth.getUid());
+            }
+        });
+
         viewPager.setAdapter(pagerAdapter);
 
         drawerLayout = findViewById(R.id.drawer_layout);

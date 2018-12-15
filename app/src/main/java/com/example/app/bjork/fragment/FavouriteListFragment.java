@@ -3,12 +3,15 @@ package com.example.app.bjork.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.example.app.bjork.R;
+import com.example.app.bjork.adapter.FavouriteProductsListAdapter;
 import com.example.app.bjork.api.BjorkAPI;
 import com.example.app.bjork.model.Product;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -28,6 +31,13 @@ public class FavouriteListFragment extends Fragment {
     private View emptyListLayout;
     private View favouritesListLayout;
 
+    private RecyclerView recyclerView;
+    private LinearLayoutManager layoutManager;
+    private FavouriteProductsListAdapter adapter;
+
+    private FavouriteProductsListAdapter.OnLikeClickListener onLikeClickListener;
+
+
     private List<Product> favouriteProducts;
 
 
@@ -39,6 +49,19 @@ public class FavouriteListFragment extends Fragment {
         favouritesListLayout = view.findViewById(R.id.favourite_list);
 
         favouriteProducts = new ArrayList<>();
+
+        recyclerView = view.findViewById(R.id.favouriteProductsList);
+        recyclerView.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(layoutManager);
+
+        adapter = new FavouriteProductsListAdapter(getContext(), favouriteProducts);
+        adapter.addOnLikeClickListener(onLikeClickListener);
+        recyclerView.setAdapter(adapter);
+
+        DividerItemDecoration divider = new DividerItemDecoration(getContext(), layoutManager.getOrientation());
+        recyclerView.addItemDecoration(divider);
+
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
@@ -52,18 +75,16 @@ public class FavouriteListFragment extends Fragment {
             favouritesListLayout.setVisibility(View.VISIBLE);
         }
         favouriteProducts.add(product);
-        TextView view = favouritesListLayout.findViewById(R.id.favText);
-        view.setText("faves: " + favouriteProducts.size());
+        adapter.notifyDataSetChanged();
     }
 
     public void removeFavouriteProduct(Product product){
         favouriteProducts.remove(product);
+        adapter.notifyDataSetChanged();
         if(favouriteProducts.size() == 0){
             emptyListLayout.setVisibility(View.VISIBLE);
             favouritesListLayout.setVisibility(View.GONE);
         }
-        TextView view = favouritesListLayout.findViewById(R.id.favText);
-        view.setText("faves: " + favouriteProducts.size());
     }
 
     public void loadList(){
@@ -78,17 +99,20 @@ public class FavouriteListFragment extends Fragment {
                                 product.setId(snapshot.getId());
                                 favouriteProducts.add(product);
                             }
+                            adapter.notifyDataSetChanged();
                             if(favouriteProducts.size() != 0){
                                 emptyListLayout.setVisibility(View.GONE);
                                 favouritesListLayout.setVisibility(View.VISIBLE);
                             }
-                            TextView view = favouritesListLayout.findViewById(R.id.favText);
-                            view.setText("favs: " + favouriteProducts.size());
                         }
                     });
         }else{
             favouriteProducts.clear();
             emptyListLayout.setVisibility(View.VISIBLE);
         }
+    }
+
+    public void addOnLikeClickListener(FavouriteProductsListAdapter.OnLikeClickListener onLikeClickListener){
+        this.onLikeClickListener = onLikeClickListener;
     }
 }

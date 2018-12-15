@@ -52,4 +52,8 @@ public class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
     public void addOnLikeClickListener(ProductsListAdapter.OnLikeClickListener listener){
         productListFragment.addOnLikeClickListener(listener);
     }
+
+    public void addOnLikeClickListener(FavouriteProductsListAdapter.OnLikeClickListener listener){
+        favouriteListFragment.addOnLikeClickListener(listener);
+    }
 }

@@ -90,6 +90,13 @@ public class ProductListFragment extends Fragment {
     public void addOnLikeClickListener(ProductsListAdapter.OnLikeClickListener onLikeClickListener){
         this.onLikeClickListener = onLikeClickListener;
     }
+
+    public void removeFavouriteProduct(Product product, String userId){
+        int position = productsList.indexOf(product);
+        List<String> likes = productsList.get(position).getLikes();
+        likes.remove(userId);
+        adapter.notifyDataSetChanged();
+    }
 }
 
 
