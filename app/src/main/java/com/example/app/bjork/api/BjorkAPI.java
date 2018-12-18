@@ -1,6 +1,6 @@
 package com.example.app.bjork.api;
 
-import com.example.app.bjork.model.CartItem;
+import com.example.app.bjork.model.CartItemReference;
 import com.example.app.bjork.model.Product;
 import com.example.app.bjork.model.UserInfo;
 import com.google.android.gms.tasks.Task;
@@ -8,6 +8,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.functions.FirebaseFunctions;
+import com.google.firebase.functions.HttpsCallableResult;
 
 import java.util.List;
 
@@ -51,11 +53,18 @@ public class BjorkAPI {
         DocumentReference ref = db.collection("products")
                 .document(product.getId());
 
-        CartItem item = new CartItem(color, quantity, ref);
+        CartItemReference item = new CartItemReference(color, quantity, ref);
 
         db.collection("carts")
                 .document(userId)
                 .collection("cart_items")
                 .add(item);
+    }
+
+    public static Task<HttpsCallableResult> getShoppingCart(){
+        FirebaseFunctions functions = FirebaseFunctions.getInstance();
+        return functions
+                .getHttpsCallable("getShoppingCart")
+                .call();
     }
 }

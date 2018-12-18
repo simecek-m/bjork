@@ -110,11 +110,11 @@
                           <map>
                             <entry key="assetSourceType" value="FILE" />
                             <entry key="color" value="ffffff" />
-                            <entry key="height" value="129" />
-                            <entry key="outputName" value="ic_down_arrow" />
+                            <entry key="height" value="355" />
+                            <entry key="outputName" value="ic_payment_method" />
                             <entry key="overrideSize" value="true" />
-                            <entry key="sourceFile" value="C:\Users\Martin\Creative Cloud Files\bjork\svg\down-arrow.svg" />
-                            <entry key="width" value="129" />
+                            <entry key="sourceFile" value="C:\Users\Martin\Creative Cloud Files\bjork\svg\payment-method.svg" />
+                            <entry key="width" value="355" />
                           </map>
                         </option>
                       </PersistentState>

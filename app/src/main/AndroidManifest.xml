@@ -39,11 +39,16 @@
         <activity
             android:name=".activity.LoginActivity"
             android:parentActivityName=".activity.MainActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.ProfileActivity"
             android:parentActivityName=".activity.MainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.ShoppingCartActivity"
+            android:parentActivityName=".activity.MainActivity"
             android:screenOrientation="portrait"/>
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

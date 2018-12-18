@@ -149,6 +149,11 @@ public class MainActivity extends AppCompatActivity {
                 intent = new Intent(this, NearestStoreActivity.class);
                 startActivity(intent);
                 break;
+            case R.id.nav_cart:
+                item.setChecked(true);
+                intent = new Intent(this, ShoppingCartActivity.class);
+                startActivity(intent);
+                break;
             case R.id.nav_profile:
                 item.setChecked(true);
                 intent = new Intent(this, ProfileActivity.class);

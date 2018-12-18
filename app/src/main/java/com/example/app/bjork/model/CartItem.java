@@ -1,24 +1,47 @@
 package com.example.app.bjork.model;
 
-import com.google.firebase.firestore.DocumentReference;
 
-import java.io.Serializable;
+public class CartItem {
 
-public class CartItem implements Serializable {
-
+    private String name;
+    private String imageUrl;
+    private int pricePerUnit;
     private String color;
-    private int count;
-    private DocumentReference ref;
+    private int quantity;
 
-    public CartItem() {
-    }
-
-    public CartItem(String color, int number, DocumentReference productRef) {
+    public CartItem(Product product, String color, int quantity) {
+        this.name = product.getName();
+        this.imageUrl = product.getImageUrl();
         this.color = color;
-        this.count = number;
-        this.ref = productRef;
+        this.quantity = quantity;
+        float defaultPrice = product.getPrice();
+        float discount = (defaultPrice/100)*product.getDiscountPercentage();
+        this.pricePerUnit = Math.round(defaultPrice) - Math.round(discount);
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public int getPricePerUnit() {
+        return pricePerUnit;
+    }
+
+    public void setPricePerUnit(int pricePerUnit) {
+        this.pricePerUnit = pricePerUnit;
+    }
 
     public String getColor() {
         return color;
@@ -28,19 +51,26 @@ public class CartItem implements Serializable {
         this.color = color;
     }
 
-    public int getCount() {
-        return count;
+    public int getQuantity() {
+        return quantity;
     }
 
-    public void setCount(int number) {
-        this.count = number;
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
-    public DocumentReference getRef() {
-        return ref;
+    @Override
+    public String toString() {
+        return "CartItem{" +
+                "name='" + name + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", pricePerUnit=" + pricePerUnit +
+                ", color='" + color + '\'' +
+                ", quantity=" + quantity +
+                '}';
     }
 
-    public void setRef(DocumentReference ref) {
-        this.ref = ref;
+    public int getPrice(){
+        return quantity*pricePerUnit;
     }
 }
