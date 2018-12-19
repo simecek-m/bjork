@@ -130,8 +130,9 @@ public class ShoppingCartActivity extends AppCompatActivity {
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                BjorkAPI.newOrder();
                 orderBottomSheet.dismiss();
-                //TODO: BjorkAPI.newOrder()
+                finish();
             }
         });
         TextView  user = orderBottomSheet.findViewById(R.id.userText);

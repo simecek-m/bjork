@@ -4,6 +4,7 @@ import com.example.app.bjork.model.CartItemReference;
 import com.example.app.bjork.model.Product;
 import com.example.app.bjork.model.UserInfo;
 import com.google.android.gms.tasks.Task;
+import com.google.api.Http;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -65,6 +66,13 @@ public class BjorkAPI {
         FirebaseFunctions functions = FirebaseFunctions.getInstance();
         return functions
                 .getHttpsCallable("getShoppingCart")
+                .call();
+    }
+
+    public static Task<HttpsCallableResult> newOrder(){
+        FirebaseFunctions functions = FirebaseFunctions.getInstance();
+        return functions
+                .getHttpsCallable("deleteCart")
                 .call();
     }
 }
