@@ -71,6 +71,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
         if(auth.getUid() == null){
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
+            finish();
         }else{
             createOrderBottomSheet();
             loadData();
