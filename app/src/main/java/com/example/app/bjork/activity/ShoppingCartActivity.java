@@ -2,6 +2,7 @@ package com.example.app.bjork.activity;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,11 +10,17 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.app.bjork.R;
 import com.example.app.bjork.adapter.ShoppingCartAdapter;
 import com.example.app.bjork.api.BjorkAPI;
 import com.example.app.bjork.model.CartItem;
+import com.example.app.bjork.model.UserInfo;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,6 +42,10 @@ public class ShoppingCartActivity extends AppCompatActivity {
     private ShoppingCartAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
 
+    private Menu menu;
+    private BottomSheetDialog orderBottomSheet;
+    private UserInfo currentUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,11 +66,13 @@ public class ShoppingCartActivity extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+        currentUser = (UserInfo) getIntent().getSerializableExtra("currentUser");
 
         if(auth.getUid() == null){
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
         }else{
+            createOrderBottomSheet();
             loadData();
         }
     }
@@ -72,19 +85,35 @@ public class ShoppingCartActivity extends AppCompatActivity {
         return result;
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        this.menu = menu;
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.menu_money:
+                orderBottomSheet.show();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     public void loadData(){
         BjorkAPI.getShoppingCart().addOnSuccessListener(new OnSuccessListener<HttpsCallableResult>() {
                     @Override
                     public void onSuccess(HttpsCallableResult httpsCallableResult) {
                         List<Object> result = (List<Object>) httpsCallableResult.getData();
-                        List<CartItem> items = new ArrayList<>();
                         for(Object obj: result) {
                             Gson gson = new Gson();
                             JsonElement element = gson.toJsonTree(obj);
                             CartItem item = gson.fromJson(element, CartItem.class);
-                            items.add(item);
+                            list.add(item);
                         }
-                        adapter.setList(items);
+                        adapter.notifyDataSetChanged();
+                        getMenuInflater().inflate(R.menu.shopping_cart_menu, menu);
+                        updateOrderBottomSheetPrice();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -92,5 +121,27 @@ public class ShoppingCartActivity extends AppCompatActivity {
                         Log.i(TAG, "load getShoppingCart failed: ", e);
                     }
                 });
+    }
+
+    public void createOrderBottomSheet() {
+        orderBottomSheet = new BottomSheetDialog(this, R.style.BottomSheetDialog);
+        orderBottomSheet.setContentView(R.layout.order_bottom_sheet);
+        Button confirmButton = orderBottomSheet.findViewById(R.id.confirmButton);
+        confirmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                orderBottomSheet.dismiss();
+                //TODO: BjorkAPI.newOrder()
+            }
+        });
+        TextView  user = orderBottomSheet.findViewById(R.id.userText);
+        TextView  address = orderBottomSheet.findViewById(R.id.addressText);
+        user.setText(currentUser.getFirstname() + " " + currentUser.getLastname());
+        address.setText(currentUser.getAddress());
+    }
+
+    public void updateOrderBottomSheetPrice(){
+        TextView  money = orderBottomSheet.findViewById(R.id.moneyText);
+        money.setText(getPrice() + ",- Kč");
     }
 }

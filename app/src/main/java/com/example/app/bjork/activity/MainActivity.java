@@ -42,7 +42,8 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private FirebaseAuth mAuth;
-    private String loggedUserId;
+    private String currentUserId;
+    private UserInfo currentUser;
 
     private BottomSheetDialog loginBottomSheet;
     private Toolbar toolbar;
@@ -63,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
 
         mAuth = FirebaseAuth.getInstance();
-        loggedUserId = mAuth.getUid();
+        currentUserId = mAuth.getUid();
         viewPager = findViewById(R.id.viewPager);
         pagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager(), this);
         pagerAdapter.addOnLikeClickListener(new ProductsListAdapter.OnLikeClickListener() {
@@ -129,8 +130,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         navigationView.setCheckedItem(R.id.nav_products);
-        if(loggedUserChanged()){
-            loggedUserId = mAuth.getUid();
+        if(currentUserChanged()){
+            currentUserId = mAuth.getUid();
             ProductListFragment productListFragment = (ProductListFragment) pagerAdapter.getItem(0);
             FavouriteListFragment favouriteListFragment = (FavouriteListFragment) pagerAdapter.getItem(1);
             productListFragment.loadList();
@@ -152,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.nav_cart:
                 item.setChecked(true);
                 intent = new Intent(this, ShoppingCartActivity.class);
+                intent.putExtra("currentUser", currentUser);
                 startActivity(intent);
                 break;
             case R.id.nav_profile:
@@ -167,8 +169,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public boolean loggedUserChanged(){
-        return this.loggedUserId != mAuth.getUid();
+    public boolean currentUserChanged(){
+        return this.currentUserId != mAuth.getUid();
     }
 
     public void createToolbar(){
@@ -203,10 +205,10 @@ public class MainActivity extends AppCompatActivity {
                     .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                         @Override
                         public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            UserInfo user = documentSnapshot.toObject(UserInfo.class);
-                            name.setText(user.getFirstname() + " " + user.getLastname());
-                            email.setText(user.getEmail());
-                            if(user.getGender().equals(GENDER_MALE)){
+                            currentUser = documentSnapshot.toObject(UserInfo.class);
+                            name.setText(currentUser.getFirstname() + " " + currentUser.getLastname());
+                            email.setText(currentUser.getEmail());
+                            if(currentUser.getGender().equals(GENDER_MALE)){
                                 profileImage.setImageResource(R.drawable.avatar_man);
                             }else{
                                 profileImage.setImageResource(R.drawable.avatar_woman);
