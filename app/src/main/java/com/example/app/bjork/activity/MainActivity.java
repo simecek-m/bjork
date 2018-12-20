@@ -13,10 +13,12 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.app.bjork.R;
 import com.example.app.bjork.adapter.FavouriteProductsListAdapter;
@@ -46,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private UserInfo currentUser;
 
     private BottomSheetDialog loginBottomSheet;
+    private BottomSheetDialog sortBottomSheet;
     private Toolbar toolbar;
 
     private TextView name;
@@ -60,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
         createToolbar();
         createLoginBottomSheet();
+        createSortBottomSheet();
 
         db = FirebaseFirestore.getInstance();
 
@@ -121,6 +125,9 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case android.R.id.home:
                 drawerLayout.openDrawer(GravityCompat.START);
+                return true;
+            case R.id.menu_filter:
+                sortBottomSheet.show();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -236,4 +243,16 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.sort_filter_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    public void createSortBottomSheet(){
+        sortBottomSheet = new BottomSheetDialog(this, R.style.BottomSheetDialog);
+        sortBottomSheet.setContentView(R.layout.sort_bottom_sheet);
+    }
+
 }

@@ -45,6 +45,8 @@
     <string name="payment">Platba</string>
     <string name="order_confirmation">Potvrzení objednávky</string>
     <string name="order_description">Zkontrolujte informace o objednávce a zvolte způsob platby</string>
+    <string name="sort_and_filter">Seřazení &amp; Filtrování</string>
+    <string name="sort_and_filter_description">zvolte způsob řazení a typ zobrazených produktů</string>
 
     <string-array name="gender">
         <item>Muž</item>
@@ -53,6 +55,25 @@
 
     <string-array name="payment_methods">
         <item>Dobírka</item>
+    </string-array>
+
+    <string-array name="sort_attributes">
+        <item>Název</item>
+        <item>Cena</item>
+    </string-array>
+
+    <string-array name="sort_types">
+        <item>Vzestupně</item>
+        <item>Sestupně</item>
+    </string-array>
+
+    <string-array name="filter_product_types">
+        <item>Vše</item>
+        <item>Postele</item>
+        <item>Stoly</item>
+        <item>Sedačky</item>
+        <item>Dekorace</item>
+        <item>Hračky</item>
     </string-array>
 
 </resources>
