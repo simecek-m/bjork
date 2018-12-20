@@ -1,6 +1,7 @@
 package com.example.app.bjork.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.app.ActionBar;
@@ -34,7 +35,7 @@ import java.util.List;
 public class ShoppingCartActivity extends AppCompatActivity {
 
     private static final String TAG = "ShoppingCartActivity";
-    
+
     private FirebaseAuth auth;
     private List<CartItem> list;
 
@@ -113,8 +114,10 @@ public class ShoppingCartActivity extends AppCompatActivity {
                             list.add(item);
                         }
                         adapter.notifyDataSetChanged();
-                        getMenuInflater().inflate(R.menu.shopping_cart_menu, menu);
-                        updateOrderBottomSheetPrice();
+                        if(list.size() > 0){
+                            getMenuInflater().inflate(R.menu.shopping_cart_menu, menu);
+                            updateOrderBottomSheetPrice();
+                        }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override

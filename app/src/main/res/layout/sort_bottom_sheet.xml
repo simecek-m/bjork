@@ -55,8 +55,10 @@
         android:id="@+id/attributeLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="0dp"
         android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/header_line">
 
@@ -68,16 +70,16 @@
             android:background="@drawable/ic_attributes" />
 
         <Spinner
-            android:id="@+id/attributeText"
+            android:id="@+id/sortAttributeText"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginStart="16dp"
+            android:entries="@array/sort_attributes"
             android:fontFamily="@font/roboto_bold"
             android:text="@string/login"
             android:textSize="18sp"
             android:theme="@style/Spinner"
-            android:entries="@array/sort_attributes"
             app:layout_constraintBottom_toBottomOf="@+id/attributeIcon"
             app:layout_constraintStart_toEndOf="@+id/attributeIcon"
             app:layout_constraintTop_toTopOf="@+id/attributeIcon" />
@@ -101,7 +103,7 @@
             android:background="@drawable/ic_asc_desc" />
 
         <Spinner
-            android:id="@+id/typeText"
+            android:id="@+id/sortTypeText"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -121,9 +123,9 @@
         android:id="@+id/filterLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="0dp"
         android:layout_marginTop="16dp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/typeLayout"
         app:layout_constraintTop_toBottomOf="@+id/typeLayout">
 
         <ImageView
@@ -134,16 +136,16 @@
             android:background="@drawable/ic_filter" />
 
         <Spinner
-            android:id="@+id/filterText"
+            android:id="@+id/filterTypeText"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginStart="16dp"
-            android:theme="@style/Spinner"
             android:entries="@array/filter_product_types"
             android:fontFamily="@font/roboto_bold"
             android:text="@string/login"
             android:textSize="18sp"
+            android:theme="@style/Spinner"
             app:layout_constraintBottom_toBottomOf="@+id/filterIcon"
             app:layout_constraintStart_toEndOf="@+id/filterIcon"
             app:layout_constraintTop_toTopOf="@+id/filterIcon" />
@@ -151,7 +153,7 @@
     </android.support.constraint.ConstraintLayout>
 
     <Button
-        android:id="@+id/loginButton"
+        android:id="@+id/confirmButton"
         style="@style/buttonPrimary"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
