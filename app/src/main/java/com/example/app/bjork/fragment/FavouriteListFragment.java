@@ -127,6 +127,9 @@ public class FavouriteListFragment extends Fragment {
                             if(favouriteProducts.size() != 0){
                                 emptyListLayout.setVisibility(View.GONE);
                                 favouritesListLayout.setVisibility(View.VISIBLE);
+                            }else{
+                                emptyListLayout.setVisibility(View.VISIBLE);
+                                favouritesListLayout.setVisibility(View.GONE);
                             }
                         }
                     });

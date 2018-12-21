@@ -71,9 +71,6 @@ public class FavouriteProductsListAdapter extends RecyclerView.Adapter<Favourite
                 if(mAuth.getUid() != null){
                     product.getLikes().remove(mAuth.getUid());
                     BjorkAPI.likeProduct(product);
-                    int position = favouriteProductsList.indexOf(product);
-                    favouriteProductsList.remove(product);
-                    notifyItemRemoved(position);
                 }
                 if(onLikeClickListener != null){
                     onLikeClickListener.onLikeClick(product);

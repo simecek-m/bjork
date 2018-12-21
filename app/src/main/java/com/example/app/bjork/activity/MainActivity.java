@@ -102,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
             public void onLikeClick(Product product) {
                     ProductListFragment listFragment = (ProductListFragment) pagerAdapter.getItem(0);
                     listFragment.removeFavouriteProduct(product, mAuth.getUid());
+                    favouriteListFragment.removeFavouriteProduct(product);
             }
         });
 
