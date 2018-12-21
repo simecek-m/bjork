@@ -99,12 +99,12 @@ public class FavouriteListFragment extends Fragment {
     }
 
     public void loadList(){
-        favouriteProducts.clear();
         if(auth.getUid() != null) {
             SharedPreferences settings = getActivity().getPreferences(MODE_PRIVATE);
-            final String attr = settings.getString(SORT_ATTRIBUTE, Constant.SORT_ATTRIBUTES[0]);
-            final String direction = settings.getString(SORT_DIRECTION, Constant.SORT_DIRECTIONS[0]);
-            final String filterType = settings.getString(FILTER_TYPE, Constant.PRODUCT_TYPES[0]);
+            final String attribute = Constant.SORT_ATTRIBUTES[settings.getInt(SORT_ATTRIBUTE, 0)];
+            final String direction = Constant.SORT_DIRECTIONS[settings.getInt(SORT_DIRECTION, 0)];
+            final String filterType = Constant.PRODUCT_TYPES[settings.getInt(FILTER_TYPE, 0)];
+
             Task<QuerySnapshot> task;
             if(filterType == Constant.PRODUCT_TYPES[0]){
                 task = BjorkAPI.loadFavouritesProducts(auth.getUid());
@@ -114,13 +114,14 @@ public class FavouriteListFragment extends Fragment {
             task.addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                         @Override
                         public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                            favouriteProducts.clear();
                             Product product;
                             for(QueryDocumentSnapshot snapshot: queryDocumentSnapshots){
                                 product = snapshot.toObject(Product.class);
                                 product.setId(snapshot.getId());
                                 favouriteProducts.add(product);
                             }
-                            Comparator<Product> comparator = new ProductComparator(attr, direction).getComparator();
+                            Comparator<Product> comparator = new ProductComparator(attribute, direction).getComparator();
                             Collections.sort(favouriteProducts, comparator);
                             adapter.notifyDataSetChanged();
                             if(favouriteProducts.size() != 0){

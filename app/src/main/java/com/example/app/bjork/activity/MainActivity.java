@@ -35,9 +35,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.Arrays;
-import java.util.List;
-
 import static com.example.app.bjork.constant.Constant.*;
 
 
@@ -269,32 +266,32 @@ public class MainActivity extends AppCompatActivity {
         final Spinner sortAttributeText = sortBottomSheet.findViewById(R.id.sortAttributeText);
         final Spinner sortTypeText = sortBottomSheet.findViewById(R.id.sortTypeText);
         final Spinner filterTypeText = sortBottomSheet.findViewById(R.id.filterTypeText);
+
+        SharedPreferences settings = getPreferences(MODE_PRIVATE);
+        sortAttributeText.setSelection(settings.getInt(SORT_ATTRIBUTE, 0));
+        sortTypeText.setSelection(settings.getInt(SORT_DIRECTION, 0));
+        filterTypeText.setSelection(settings.getInt(FILTER_TYPE, 0));
+
         Button button = sortBottomSheet.findViewById(R.id.confirmButton);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String sortAttribute = sortAttributeText.getSelectedItem().toString();
-                String sortType = sortTypeText.getSelectedItem().toString();
-                String filterType = filterTypeText.getSelectedItem().toString();
-                saveFilterSettings(sortAttribute, sortType, filterType);
+                int selectedAttributeIndex  = sortAttributeText.getSelectedItemPosition();
+                int selectedDirectionIndex = sortTypeText.getSelectedItemPosition();
+                int selectedFilterIndex = filterTypeText.getSelectedItemPosition();
+                saveFilterSettings(selectedAttributeIndex, selectedDirectionIndex, selectedFilterIndex);
             }
         });
         sortBottomSheet.show();
     }
 
-    public void saveFilterSettings(String sortAttribute, String sortDirection, String  filterType){
+    public void saveFilterSettings(int selectedAttributeIndex, int selectedDirectionIndex, int selectedFilterIndex){
         SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
-        List<String> localeAttributes = Arrays.asList(getResources().getStringArray(R.array.sort_attributes));
-        int selectedAttributeIndex = localeAttributes.indexOf(sortAttribute);
-        List<String> localeDirection = Arrays.asList(getResources().getStringArray(R.array.sort_directions));
-        int selectedDirectionIndex = localeDirection.indexOf(sortDirection);
-        List<String> localeFilter = Arrays.asList(getResources().getStringArray(R.array.filter_product_types));
-        int selectedFilterIndex = localeFilter.indexOf(filterType);
-
-        editor.putString(SORT_ATTRIBUTE, SORT_ATTRIBUTES[selectedAttributeIndex]);
-        editor.putString(SORT_DIRECTION, SORT_DIRECTIONS[selectedDirectionIndex]);
-        editor.putString(FILTER_TYPE, PRODUCT_TYPES[selectedFilterIndex]);
+        editor.putInt(SORT_ATTRIBUTE, selectedAttributeIndex);
+        editor.putInt(SORT_DIRECTION, selectedDirectionIndex);
+        editor.putInt(FILTER_TYPE, selectedFilterIndex);
         editor.commit();
+
         productListFragment.loadList();
         favouriteListFragment.loadList();
         sortBottomSheet.dismiss();

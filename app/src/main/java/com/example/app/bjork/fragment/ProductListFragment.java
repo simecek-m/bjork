@@ -77,9 +77,9 @@ public class ProductListFragment extends Fragment {
 
     public void loadList(){
         SharedPreferences settings = getActivity().getPreferences(MODE_PRIVATE);
-        final String attr = settings.getString(SORT_ATTRIBUTE, Constant.SORT_ATTRIBUTES[0]);
-        final String direction = settings.getString(SORT_DIRECTION, Constant.SORT_DIRECTIONS[0]);
-        final String filterType = settings.getString(FILTER_TYPE, Constant.PRODUCT_TYPES[0]);
+        final String attribute = Constant.SORT_ATTRIBUTES[settings.getInt(SORT_ATTRIBUTE, 0)];
+        final String direction = Constant.SORT_DIRECTIONS[settings.getInt(SORT_DIRECTION, 0)];
+        final String filterType = Constant.PRODUCT_TYPES[settings.getInt(FILTER_TYPE, 0)];
         Task<QuerySnapshot> task;
         if(filterType == Constant.PRODUCT_TYPES[0]){
             task = BjorkAPI.loadProducts();
@@ -96,7 +96,7 @@ public class ProductListFragment extends Fragment {
                             product.setId(snapshot.getId());
                             productsList.add(product);
                         }
-                        Comparator<Product> comparator = new ProductComparator(attr, direction).getComparator();
+                        Comparator<Product> comparator = new ProductComparator(attribute, direction).getComparator();
                         Collections.sort(productsList, comparator);
                         adapter.setList(productsList);
                         adapter.notifyDataSetChanged();
