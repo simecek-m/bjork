@@ -112,7 +112,7 @@
             android:text="@string/login"
             android:textSize="18sp"
             android:theme="@style/Spinner"
-            android:entries="@array/sort_types"
+            android:entries="@array/sort_directions"
             app:layout_constraintBottom_toBottomOf="@+id/typeIcon"
             app:layout_constraintStart_toEndOf="@+id/typeIcon"
             app:layout_constraintTop_toTopOf="@+id/typeIcon" />

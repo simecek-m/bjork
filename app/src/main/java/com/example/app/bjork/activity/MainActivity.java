@@ -35,17 +35,16 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.HashMap;
+import java.util.Arrays;
+import java.util.List;
+
+import static com.example.app.bjork.constant.Constant.*;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int CHANGE_PROFILE_INFO_REQUEST = 1;
     private String GENDER_MALE;
-
-    public static final String SORT_ATTRIBUTE = "sortAttribute";
-    public static final String SORT_TYPE = "sortType";
-    public static final String FILTER_TYPE = "filterType";
 
     private ViewPager viewPager;
     private ScreenSlidePagerAdapter pagerAdapter;
@@ -58,12 +57,15 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private BottomSheetDialog loginBottomSheet;
     private BottomSheetDialog sortBottomSheet;
-    private HashMap<String, String> filterSettings = new HashMap<>();
 
     private TextView name;
     private TextView email;
     private ImageView profileImage;
     private FirebaseFirestore db;
+
+    ProductListFragment productListFragment;
+    FavouriteListFragment favouriteListFragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +107,9 @@ public class MainActivity extends AppCompatActivity {
                     listFragment.removeFavouriteProduct(product, mAuth.getUid());
             }
         });
+
+        productListFragment = (ProductListFragment) pagerAdapter.getItem(0);
+        favouriteListFragment = (FavouriteListFragment) pagerAdapter.getItem(1);
 
         viewPager.setAdapter(pagerAdapter);
 
@@ -149,8 +154,6 @@ public class MainActivity extends AppCompatActivity {
         navigationView.setCheckedItem(R.id.nav_products);
         if(currentUserChanged()){
             currentUserId = mAuth.getUid();
-            ProductListFragment productListFragment = (ProductListFragment) pagerAdapter.getItem(0);
-            FavouriteListFragment favouriteListFragment = (FavouriteListFragment) pagerAdapter.getItem(1);
             productListFragment.loadList();
             favouriteListFragment.loadList();
             updateUserInfo();
@@ -261,7 +264,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void createSortBottomSheet(){
-        loadFilterSettings();
         sortBottomSheet = new BottomSheetDialog(this, R.style.BottomSheetDialog);
         sortBottomSheet.setContentView(R.layout.sort_bottom_sheet);
         final Spinner sortAttributeText = sortBottomSheet.findViewById(R.id.sortAttributeText);
@@ -280,19 +282,22 @@ public class MainActivity extends AppCompatActivity {
         sortBottomSheet.show();
     }
 
-    public void saveFilterSettings(String sortAttribute, String sortType, String  filterType){
+    public void saveFilterSettings(String sortAttribute, String sortDirection, String  filterType){
         SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
-        editor.putString(SORT_ATTRIBUTE, sortAttribute);
-        editor.putString(SORT_TYPE, sortType);
-        editor.putString(FILTER_TYPE, filterType);
-        editor.commit();
-    }
+        List<String> localeAttributes = Arrays.asList(getResources().getStringArray(R.array.sort_attributes));
+        int selectedAttributeIndex = localeAttributes.indexOf(sortAttribute);
+        List<String> localeDirection = Arrays.asList(getResources().getStringArray(R.array.sort_directions));
+        int selectedDirectionIndex = localeDirection.indexOf(sortDirection);
+        List<String> localeFilter = Arrays.asList(getResources().getStringArray(R.array.filter_product_types));
+        int selectedFilterIndex = localeFilter.indexOf(filterType);
 
-    public void loadFilterSettings(){
-        SharedPreferences settings = getPreferences(MODE_PRIVATE);
-        filterSettings.put(SORT_ATTRIBUTE, settings.getString(SORT_ATTRIBUTE, null));
-        filterSettings.put(SORT_TYPE, settings.getString(SORT_TYPE, null));
-        filterSettings.put(FILTER_TYPE, settings.getString(FILTER_TYPE, null));
+        editor.putString(SORT_ATTRIBUTE, SORT_ATTRIBUTES[selectedAttributeIndex]);
+        editor.putString(SORT_DIRECTION, SORT_DIRECTIONS[selectedDirectionIndex]);
+        editor.putString(FILTER_TYPE, PRODUCT_TYPES[selectedFilterIndex]);
+        editor.commit();
+        productListFragment.loadList();
+        favouriteListFragment.loadList();
+        sortBottomSheet.dismiss();
     }
 
 }

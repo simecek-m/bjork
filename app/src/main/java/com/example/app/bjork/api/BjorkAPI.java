@@ -31,9 +31,22 @@ public class BjorkAPI {
                 .get();
     }
 
+    public static Task<QuerySnapshot> loadProducts(String filter){
+        return db.collection("products")
+                .whereEqualTo("type", filter)
+                .get();
+    }
+
     public static Task<QuerySnapshot> loadFavouritesProducts(String userId){
         return db.collection("products")
                 .whereArrayContains("likes", userId)
+                .get();
+    }
+
+    public static Task<QuerySnapshot> loadFavouritesProducts(String userId, String filterType){
+        return db.collection("products")
+                .whereArrayContains("likes", userId)
+                .whereEqualTo("type", filterType)
                 .get();
     }
 

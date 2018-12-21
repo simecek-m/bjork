@@ -1,6 +1,7 @@
 package com.example.app.bjork.fragment;
 
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
@@ -13,15 +14,25 @@ import android.view.ViewGroup;
 import com.example.app.bjork.R;
 import com.example.app.bjork.adapter.FavouriteProductsListAdapter;
 import com.example.app.bjork.api.BjorkAPI;
+import com.example.app.bjork.comparator.ProductComparator;
+import com.example.app.bjork.constant.Constant;
 import com.example.app.bjork.model.Product;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+
+import static android.content.Context.MODE_PRIVATE;
+import static com.example.app.bjork.constant.Constant.FILTER_TYPE;
+import static com.example.app.bjork.constant.Constant.SORT_ATTRIBUTE;
+import static com.example.app.bjork.constant.Constant.SORT_DIRECTION;
 
 public class FavouriteListFragment extends Fragment {
 
@@ -88,9 +99,19 @@ public class FavouriteListFragment extends Fragment {
     }
 
     public void loadList(){
+        favouriteProducts.clear();
         if(auth.getUid() != null) {
-            BjorkAPI.loadFavouritesProducts(auth.getUid())
-                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            SharedPreferences settings = getActivity().getPreferences(MODE_PRIVATE);
+            final String attr = settings.getString(SORT_ATTRIBUTE, Constant.SORT_ATTRIBUTES[0]);
+            final String direction = settings.getString(SORT_DIRECTION, Constant.SORT_DIRECTIONS[0]);
+            final String filterType = settings.getString(FILTER_TYPE, Constant.PRODUCT_TYPES[0]);
+            Task<QuerySnapshot> task;
+            if(filterType == Constant.PRODUCT_TYPES[0]){
+                task = BjorkAPI.loadFavouritesProducts(auth.getUid());
+            }else{
+                task = BjorkAPI.loadFavouritesProducts(auth.getUid(), filterType);
+            }
+            task.addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                         @Override
                         public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                             Product product;
@@ -99,6 +120,8 @@ public class FavouriteListFragment extends Fragment {
                                 product.setId(snapshot.getId());
                                 favouriteProducts.add(product);
                             }
+                            Comparator<Product> comparator = new ProductComparator(attr, direction).getComparator();
+                            Collections.sort(favouriteProducts, comparator);
                             adapter.notifyDataSetChanged();
                             if(favouriteProducts.size() != 0){
                                 emptyListLayout.setVisibility(View.GONE);
@@ -107,7 +130,6 @@ public class FavouriteListFragment extends Fragment {
                         }
                     });
         }else{
-            favouriteProducts.clear();
             emptyListLayout.setVisibility(View.VISIBLE);
         }
     }

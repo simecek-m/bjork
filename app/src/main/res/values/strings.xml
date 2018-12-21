@@ -62,7 +62,7 @@
         <item>Cena</item>
     </string-array>
 
-    <string-array name="sort_types">
+    <string-array name="sort_directions">
         <item>Vzestupně</item>
         <item>Sestupně</item>
     </string-array>
@@ -72,6 +72,8 @@
         <item>Postele</item>
         <item>Stoly</item>
         <item>Sedačky</item>
+        <item>Světla</item>
+        <item>Lampy</item>
         <item>Dekorace</item>
         <item>Hračky</item>
     </string-array>

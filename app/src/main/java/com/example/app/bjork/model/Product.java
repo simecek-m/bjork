@@ -137,6 +137,12 @@ public class Product implements Serializable {
         return allColors.toString();
     }
 
+    public int getDiscountedPrice(){
+        float defaultPrice = price;
+        float discount = (defaultPrice/100)*discountPercentage;
+        return Math.round(defaultPrice) - Math.round(discount);
+    }
+
     @Override
     public String toString() {
         return "Product{" +
