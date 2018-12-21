@@ -51,7 +51,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/constraintLayout"
+        android:id="@+id/orderInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -159,6 +159,39 @@
         android:text="@string/confirm"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/orderInfo" />
+
+    <LinearLayout
+        android:id="@+id/progressLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/confirmButton"
+        app:layout_constraintStart_toStartOf="@+id/confirmButton"
+        app:layout_constraintTop_toBottomOf="@+id/confirmButton">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="150dp"
+            android:layout_gravity="center"
+            android:theme="@style/AccentPrimary"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/progressText"
+            android:layout_width="wrap_content"
+            android:textColor="@color/colorPrimary"
+            android:textSize="16sp"
+            android:layout_marginTop="8dp"
+            android:textAllCaps="true"
+            android:fontFamily="@font/roboto_bold"
+            android:layout_height="wrap_content"
+            android:text="@string/order_in_progress"/>
+
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
