@@ -50,6 +50,7 @@
     <string name="order_in_progress">vyřizování objednávky</string>
     <string name="order_complete">děkujeme za Váš nákup</string>
     <string name="send">Odeslat</string>
+    <string name="message">Zpráva</string>
 
     <string-array name="gender">
         <item>Muž</item>

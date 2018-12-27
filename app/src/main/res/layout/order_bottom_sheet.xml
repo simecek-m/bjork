@@ -178,7 +178,6 @@
             android:id="@+id/progressBar"
             android:layout_width="150dp"
             android:layout_gravity="center"
-            android:theme="@style/AccentPrimary"
             android:layout_height="wrap_content"/>
 
         <TextView

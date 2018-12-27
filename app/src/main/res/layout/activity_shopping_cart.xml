@@ -9,7 +9,9 @@
     android:background="@color/white"
     tools:context=".activity.ShoppingCartActivity">
 
-    <include layout="@layout/toolbar"/>
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/cart_list"

@@ -26,10 +26,6 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
-    <style name="AccentPrimary" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorAccent">@color/colorPrimary</item>
-    </style>
-
     <style name="EditTextGreen" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorAccent">@color/green</item>
 
