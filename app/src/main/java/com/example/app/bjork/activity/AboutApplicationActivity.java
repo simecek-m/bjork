@@ -1,5 +1,6 @@
 package com.example.app.bjork.activity;
 
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -8,9 +9,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 
+import com.example.app.bjork.FeedbackActivity;
 import com.example.app.bjork.R;
 
 public class AboutApplicationActivity extends AppCompatActivity {
@@ -19,6 +23,7 @@ public class AboutApplicationActivity extends AppCompatActivity {
 
     private TextView osVersionText;
     private TextView appVersionText;
+    private Button feedbackButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +37,7 @@ public class AboutApplicationActivity extends AppCompatActivity {
 
         osVersionText = findViewById(R.id.os_version);
         appVersionText = findViewById(R.id.app_version);
+        feedbackButton = findViewById(R.id.feedbackButton);
 
         String osVersion = Build.VERSION.RELEASE;
 
@@ -43,5 +49,13 @@ public class AboutApplicationActivity extends AppCompatActivity {
         }catch (PackageManager.NameNotFoundException e){
             Log.e(TAG, "PackageName Not Found", e);
         }
+
+        feedbackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), FeedbackActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }

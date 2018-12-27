@@ -47,7 +47,11 @@
         <activity
             android:name=".activity.ShoppingCartActivity"
             android:parentActivityName=".activity.MainActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".FeedbackActivity"
+            android:parentActivityName=".activity.AboutApplicationActivity"
+            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="preloaded_fonts"
@@ -55,6 +59,8 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+
+
     </application>
 
 </manifest>

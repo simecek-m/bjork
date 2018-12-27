@@ -49,6 +49,7 @@
     <string name="sort_and_filter_description">zvolte způsob řazení a typ zobrazených produktů</string>
     <string name="order_in_progress">vyřizování objednávky</string>
     <string name="order_complete">děkujeme za Váš nákup</string>
+    <string name="send">Odeslat</string>
 
     <string-array name="gender">
         <item>Muž</item>
