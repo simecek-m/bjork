@@ -51,6 +51,7 @@
     <string name="order_complete">děkujeme za Váš nákup</string>
     <string name="send">Odeslat</string>
     <string name="message">Zpráva</string>
+    <string name="empty_shopping_cart">Vás nákupník košík je prázdný</string>
 
     <string-array name="gender">
         <item>Muž</item>

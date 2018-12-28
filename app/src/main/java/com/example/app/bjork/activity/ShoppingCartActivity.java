@@ -121,6 +121,8 @@ public class ShoppingCartActivity extends AppCompatActivity {
                         if(list.size() > 0){
                             getMenuInflater().inflate(R.menu.shopping_cart_menu, menu);
                             updateOrderBottomSheetPrice();
+                            View emptyCartView = findViewById(R.id.empty_cart);
+                            emptyCartView.setVisibility(View.GONE);
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
