@@ -33,6 +33,7 @@ public class AboutApplicationActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar ab = getSupportActionBar();
+        ab.setTitle(R.string.about);
         ab.setDisplayHomeAsUpEnabled(true);
 
         osVersionText = findViewById(R.id.os_version);

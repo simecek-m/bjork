@@ -6,16 +6,9 @@
     android:layout_height="match_parent"
     tools:context=".activity.NearestStoreActivity">
 
-    <android.support.v7.widget.Toolbar
+    <include
         android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="0dp"
-        android:elevation="10dp"
-        android:theme="@style/ToolbarPrimary"
-        app:layout_constraintTop_toTopOf="parent"
-        app:title="@string/nearest_store">
-    </android.support.v7.widget.Toolbar>
+        layout="@layout/toolbar"/>
 
     <ImageView
         android:id="@+id/timeIcon"

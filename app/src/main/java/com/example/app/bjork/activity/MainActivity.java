@@ -196,6 +196,8 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle(R.string.app_name);
+        actionBar.setElevation(0);
         Drawable hamburgerIcon = getDrawable(R.drawable.ic_menu);
         hamburgerIcon.setTint(getResources().getColor(R.color.white));
         actionBar.setHomeAsUpIndicator(hamburgerIcon);

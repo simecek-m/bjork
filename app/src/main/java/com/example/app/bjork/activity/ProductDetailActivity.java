@@ -52,6 +52,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar ab = getSupportActionBar();
+        ab.setTitle(R.string.detail_product);
         ab.setDisplayHomeAsUpEnabled(true);
 
         createLoginBottomSheet();

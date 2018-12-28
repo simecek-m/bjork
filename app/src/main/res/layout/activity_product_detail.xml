@@ -13,14 +13,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v7.widget.Toolbar
+        <include
             android:id="@+id/toolbar"
-            app:title="@string/detail_product"
-            android:elevation="10dp"
-            android:theme="@style/ToolbarPrimary"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        </android.support.v7.widget.Toolbar>
+            layout="@layout/toolbar"/>
 
         <ScrollView
             xmlns:android="http://schemas.android.com/apk/res/android"

@@ -14,13 +14,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v7.widget.Toolbar
-            android:theme="@style/ToolbarPrimary"
+        <include
             android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:title="@string/app_name">
-        </android.support.v7.widget.Toolbar>
+            layout="@layout/toolbar"/>
 
         <android.support.v4.view.ViewPager
             android:id="@+id/viewPager"

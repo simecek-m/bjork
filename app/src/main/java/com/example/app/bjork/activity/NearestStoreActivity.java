@@ -53,6 +53,7 @@ public class NearestStoreActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar ab = getSupportActionBar();
+        ab.setTitle(R.string.nearest_store);
         ab.setDisplayHomeAsUpEnabled(true);
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();

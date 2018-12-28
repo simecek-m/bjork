@@ -53,6 +53,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             Toolbar toolbar = findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             ActionBar ab = getSupportActionBar();
+            ab.setTitle(R.string.profile);
             ab.setDisplayHomeAsUpEnabled(true);
 
             firstnameText = findViewById(R.id.firstnameText);
