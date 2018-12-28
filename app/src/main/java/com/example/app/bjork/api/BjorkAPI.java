@@ -1,10 +1,10 @@
 package com.example.app.bjork.api;
 
 import com.example.app.bjork.model.CartItemReference;
+import com.example.app.bjork.model.Feedback;
 import com.example.app.bjork.model.Product;
 import com.example.app.bjork.model.UserInfo;
 import com.google.android.gms.tasks.Task;
-import com.google.api.Http;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -87,5 +87,10 @@ public class BjorkAPI {
         return functions
                 .getHttpsCallable("deleteCart")
                 .call();
+    }
+
+    public static void addFeedback(Feedback feedback){
+        db.collection("feedbacks")
+                .add(feedback);
     }
 }
