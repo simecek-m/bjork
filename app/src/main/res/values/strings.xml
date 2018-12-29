@@ -29,7 +29,6 @@
     <string name="nearest_store">Nejbližší prodejna</string>
     <string name="system_version">Android OS</string>
     <string name="version">Verze</string>
-    <string name="wrongCredentials">Chybný email nebo heslo</string>
     <string name="firstname">Jméno</string>
     <string name="lastname">Přijmení</string>
     <string name="address">Adresa</string>
@@ -56,6 +55,7 @@
     <string name="unknown">Neznámý</string>
     <string name="uncomplete_profile">Bohužel nemáte dokončený profil</string>
     <string name="gender">Pohlaví</string>
+    <string name="wrong_password">Chybné heslo</string>
 
     <string-array name="genders">
         <item>Muž</item>

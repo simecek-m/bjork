@@ -6,6 +6,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,6 +17,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
@@ -27,6 +29,8 @@ import java.util.List;
 
 public class LoginActivity extends AppCompatActivity implements Validator.ValidationListener {
 
+
+    private static final String TAG = "LoginActivity";
     private FirebaseAuth mAuth;
 
     @NotEmpty
@@ -85,7 +89,7 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
     }
 
     public void login(){
-        String email = mEmail.getText().toString();
+        final String email = mEmail.getText().toString();
         String password = mPassword.getText().toString();
         mAuth.signInWithEmailAndPassword(email, password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
             @Override
@@ -95,8 +99,14 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                if (e instanceof FirebaseAuthInvalidUserException){
+                try{
+                    throw e;
+                }catch (FirebaseAuthInvalidUserException invalidUserException) {
                     registrationBottomSheet.show();
+                }catch (FirebaseAuthInvalidCredentialsException ex){
+                    mPassword.setError(getString(R.string.wrong_password));
+                }catch (Exception ex){
+                    Log.e(TAG, "onFailure: ", ex);
                 }
             }
         });
