@@ -166,8 +166,25 @@ public class ShoppingCartActivity extends AppCompatActivity {
         });
         TextView  user = orderBottomSheet.findViewById(R.id.userText);
         TextView  address = orderBottomSheet.findViewById(R.id.addressText);
-        user.setText(currentUser.getFirstname() + " " + currentUser.getLastname());
-        address.setText(currentUser.getAddress());
+        TextView uncompleteProfile = orderBottomSheet.findViewById(R.id.uncomplete_profile);
+        if(currentUser != null){
+            user.setText(currentUser.getFirstname() + " " + currentUser.getLastname());
+            address.setText(currentUser.getAddress());
+            if(currentUser.getFirstname().isEmpty() || currentUser.getLastname().isEmpty()){
+                user.setText(R.string.unknown);
+                confirmButton.setEnabled(false);
+                uncompleteProfile.setVisibility(View.VISIBLE);
+            }if(currentUser.getAddress().isEmpty()){
+                address.setText(R.string.unknown);
+                confirmButton.setEnabled(false);
+                uncompleteProfile.setVisibility(View.VISIBLE);
+            }
+        }else{
+            user.setText(R.string.unknown);
+            address.setText(R.string.unknown);
+            confirmButton.setEnabled(false);
+            uncompleteProfile.setVisibility(View.VISIBLE);
+        }
     }
 
     public void updateOrderBottomSheetPrice(){

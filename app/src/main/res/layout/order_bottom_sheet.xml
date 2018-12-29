@@ -2,6 +2,7 @@
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/login_bottom_sheet"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
@@ -160,6 +161,22 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/orderInfo" />
+
+    <TextView
+        android:id="@+id/uncomplete_profile"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:fontFamily="@font/roboto_bold"
+        android:gravity="center"
+        android:text="@string/uncomplete_profile"
+        android:textAllCaps="true"
+        android:textColor="@color/red"
+        android:textSize="16sp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/confirmButton"
+        app:layout_constraintStart_toStartOf="@+id/confirmButton"
+        app:layout_constraintTop_toBottomOf="@+id/confirmButton" />
 
     <LinearLayout
         android:id="@+id/progressLayout"

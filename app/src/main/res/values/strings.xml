@@ -53,6 +53,8 @@
     <string name="send">Odeslat</string>
     <string name="message">Zpráva</string>
     <string name="empty_shopping_cart">Vás nákupník košík je prázdný</string>
+    <string name="unknown">Neznámý</string>
+    <string name="uncomplete_profile">Bohužel nemáte dokončený profil</string>
 
     <string-array name="genders">
         <item>Muž</item>
