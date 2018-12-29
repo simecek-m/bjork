@@ -171,10 +171,15 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     public void onBackPressed() {
         if(defaultState){
             super.onBackPressed();
-        }else{
+        }else if(defaultUserInfo != null){
             firstnameText.setText(defaultUserInfo.getFirstname());
             lastnameText.setText(defaultUserInfo.getLastname());
             addressText.setText(defaultUserInfo.getAddress());
+            List<String> genders = Arrays.asList(Constant.GENDERS);
+            int selectedGenderIndex = genders.indexOf(defaultUserInfo.getGender());
+            genderSpinner.setSelection(selectedGenderIndex);
+        }else{
+            genderSpinner.setSelection(0);
             defaultRender();
         }
     }
