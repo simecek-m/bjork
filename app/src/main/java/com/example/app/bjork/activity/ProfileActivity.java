@@ -180,7 +180,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             genderSpinner.setSelection(selectedGenderIndex);
         }else{
             genderSpinner.setSelection(0);
-            defaultRender();
         }
+        defaultRender();
     }
 }

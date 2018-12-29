@@ -31,16 +31,16 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="8dp"
         android:hint="@string/firstname"
-        android:theme="@style/EditTextGreen"
+        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profilePicture">
 
-        <EditText
+        <android.support.design.widget.TextInputEditText
             android:id="@+id/firstnameText"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:textSize="16sp"
             android:focusable="false"
             android:maxLines="1" />
     </android.support.design.widget.TextInputLayout>
@@ -51,14 +51,14 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:hint="@string/lastname"
-        android:theme="@style/EditTextGreen"
+        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
         app:layout_constraintStart_toStartOf="@+id/firstname"
         app:layout_constraintTop_toBottomOf="@+id/firstname">
-        <EditText
+        <android.support.design.widget.TextInputEditText
             android:id="@+id/lastnameText"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:textSize="16sp"
             android:focusable="false"
             android:maxLines="1"/>
     </android.support.design.widget.TextInputLayout>
@@ -69,14 +69,14 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:hint="@string/address"
-        android:theme="@style/EditTextGreen"
+        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
         app:layout_constraintStart_toStartOf="@+id/lastname"
         app:layout_constraintTop_toBottomOf="@+id/lastname">
-        <EditText
+        <android.support.design.widget.TextInputEditText
             android:id="@+id/addressText"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:textSize="16sp"
             android:focusable="false"
             android:maxLines="1" />
     </android.support.design.widget.TextInputLayout>
@@ -87,8 +87,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:entries="@array/genders"
-        android:theme="@style/EditTextGreen"
-
+        android:theme="@style/Spinner"
         app:layout_constraintStart_toStartOf="@+id/address"
         app:layout_constraintTop_toBottomOf="@+id/address">
     </Spinner>
@@ -134,7 +133,7 @@
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/gender">
+        app:layout_constraintTop_toBottomOf="@+id/saveUserInfoButton">
 
         <ImageView
             android:id="@+id/errorIcon"
