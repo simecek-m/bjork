@@ -40,13 +40,14 @@
     </style>
     
     <style name="ActivityTransition"  parent="@android:style/Animation.Activity">
-        <item name="android:windowEnterAnimation">@android:anim/slide_in_left</item>
+        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
     </style>
 
-    <style name="BottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
+    <style name="BottomSheetDialog" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
         <item name="android:colorBackground">@android:color/transparent</item>
         <item name="android:backgroundDimEnabled">true</item>
         <item name="android:backgroundDimAmount">0.5</item>
+        <item name="colorAccent">@color/colorPrimary</item>
     </style>
 
     <style name="Spinner">
