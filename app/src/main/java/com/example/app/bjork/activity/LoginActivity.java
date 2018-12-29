@@ -1,6 +1,7 @@
 package com.example.app.bjork.activity;
 
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.Email;
@@ -38,6 +40,8 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
 
     private Validator validator;
 
+    private BottomSheetDialog registrationBottomSheet;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +59,8 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
         validator = new Validator(this);
         validator.setValidationListener(this);
 
+        createRegistrationBottomSheet();
+
         mEmail = findViewById(R.id.email);
         mPassword = findViewById(R.id.password);
         mLoginBtn = findViewById(R.id.loginButton);
@@ -62,6 +68,18 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
             @Override
             public void onClick(View v) {
                 validator.validate();
+            }
+        });
+    }
+
+    private void createRegistrationBottomSheet() {
+        registrationBottomSheet = new BottomSheetDialog(this, R.style.BottomSheetDialog);
+        registrationBottomSheet.setContentView(R.layout.registration_bottom_sheet);
+        View registrationButton = registrationBottomSheet.findViewById(R.id.registration);
+        registrationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                registration();
             }
         });
     }
@@ -77,7 +95,21 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
+                if (e instanceof FirebaseAuthInvalidUserException){
+                    registrationBottomSheet.show();
+                }
+            }
+        });
+    }
 
+    public void registration(){
+        final String email = mEmail.getText().toString();
+        final String password = mPassword.getText().toString();
+        mAuth.createUserWithEmailAndPassword(email, password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+            @Override
+            public void onSuccess(AuthResult authResult) {
+                registrationBottomSheet.dismiss();
+                login();
             }
         });
     }

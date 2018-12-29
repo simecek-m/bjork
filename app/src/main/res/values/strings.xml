@@ -38,6 +38,7 @@
     <string name="login_description">Pro používání této funkce se musíte přihlásit</string>
     <string name="user_not_exist">Uživatel neexistuje</string>
     <string name="add_to_cart">Přidat do košíku</string>
+    <string name="registration">Registrovat</string>
     <string name="registration_description">Uživatel s Vámi zadaným emailem neexistuje, chcete se registrovat?</string>
     <string name="add_to_cart_description">Zvolte množství a barvu Vámi vybraného produktu</string>
     <string name="confirm">Potvrdit</string>

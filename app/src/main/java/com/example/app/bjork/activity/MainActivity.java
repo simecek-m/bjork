@@ -226,12 +226,16 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(DocumentSnapshot documentSnapshot) {
                             currentUser = documentSnapshot.toObject(UserInfo.class);
-                            name.setText(currentUser.getFirstname() + " " + currentUser.getLastname());
-                            email.setText(currentUser.getEmail());
-                            if(currentUser.getGender().equals(GENDER_MALE)){
-                                profileImage.setImageResource(R.drawable.avatar_man);
+                            if(currentUser != null){
+                                name.setText(currentUser.getFirstname() + " " + currentUser.getLastname());
+                                email.setText(currentUser.getEmail());
+                                if(currentUser.getGender().equals(GENDER_MALE)){
+                                    profileImage.setImageResource(R.drawable.avatar_man);
+                                }else{
+                                    profileImage.setImageResource(R.drawable.avatar_woman);
+                                }
                             }else{
-                                profileImage.setImageResource(R.drawable.avatar_woman);
+                                email.setText(mAuth.getCurrentUser().getEmail());
                             }
                         }
                     });

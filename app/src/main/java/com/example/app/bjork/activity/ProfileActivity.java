@@ -150,10 +150,12 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         defaultUserInfo = documentSnapshot.toObject(UserInfo.class);
-                        defaultUserInfo.setId(documentSnapshot.getId());
-                        firstnameText.setText(defaultUserInfo.getFirstname());
-                        lastnameText.setText(defaultUserInfo.getLastname());
-                        addressText.setText(defaultUserInfo.getAddress());
+                        if(defaultUserInfo != null){
+                            defaultUserInfo.setId(documentSnapshot.getId());
+                            firstnameText.setText(defaultUserInfo.getFirstname());
+                            lastnameText.setText(defaultUserInfo.getLastname());
+                            addressText.setText(defaultUserInfo.getAddress());
+                        }
                         defaultRender();
                     }
                 });
