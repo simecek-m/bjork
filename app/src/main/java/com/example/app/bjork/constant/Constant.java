@@ -14,5 +14,5 @@ public class Constant {
     public static final String[] SORT_ATTRIBUTES = {"name", "price"};
     public static final String[] SORT_DIRECTIONS = {"ASC", "DESC"};
     public static final String[] PRODUCT_TYPES = {"all", "bed", "table", "couch", "light", "lamp", "decoration", "toy"};
-
+    public static final String[] GENDERS = {"man", "woman"};
 }

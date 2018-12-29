@@ -26,6 +26,7 @@ import com.example.app.bjork.R;
 import com.example.app.bjork.adapter.FavouriteProductsListAdapter;
 import com.example.app.bjork.adapter.ProductsListAdapter;
 import com.example.app.bjork.adapter.ScreenSlidePagerAdapter;
+import com.example.app.bjork.constant.Constant;
 import com.example.app.bjork.fragment.FavouriteListFragment;
 import com.example.app.bjork.fragment.ProductListFragment;
 import com.example.app.bjork.model.Product;
@@ -41,7 +42,7 @@ import static com.example.app.bjork.constant.Constant.*;
 public class MainActivity extends AppCompatActivity {
 
     private static final int CHANGE_PROFILE_INFO_REQUEST = 1;
-    private String GENDER_MALE;
+    private String GENDER_MALE = Constant.GENDERS[0];
 
     private ViewPager viewPager;
     private ScreenSlidePagerAdapter pagerAdapter;
@@ -68,8 +69,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        GENDER_MALE = getResources().getStringArray(R.array.gender)[0];
 
         createToolbar();
         createLoginBottomSheet();

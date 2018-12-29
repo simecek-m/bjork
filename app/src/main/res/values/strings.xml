@@ -54,7 +54,7 @@
     <string name="message">Zpráva</string>
     <string name="empty_shopping_cart">Vás nákupník košík je prázdný</string>
 
-    <string-array name="gender">
+    <string-array name="genders">
         <item>Muž</item>
         <item>Žena</item>
     </string-array>

@@ -17,10 +17,14 @@ import android.widget.Spinner;
 
 import com.example.app.bjork.R;
 import com.example.app.bjork.api.BjorkAPI;
+import com.example.app.bjork.constant.Constant;
 import com.example.app.bjork.model.UserInfo;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -77,8 +81,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     String firstname = firstnameText.getText().toString();
                     String lastname = lastnameText.getText().toString();
                     String address = addressText.getText().toString();
-                    String gender = genderSpinner.getSelectedItem().toString();
-
+                    String gender = Constant.GENDERS[genderSpinner.getSelectedItemPosition()];
                     defaultUserInfo = new UserInfo(auth.getUid(), auth.getCurrentUser().getEmail() ,firstname, lastname, address, gender);
                     BjorkAPI.addUserInfo(defaultUserInfo);
                     resultIntent.putExtra("userInfo", defaultUserInfo);
@@ -155,6 +158,9 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                             firstnameText.setText(defaultUserInfo.getFirstname());
                             lastnameText.setText(defaultUserInfo.getLastname());
                             addressText.setText(defaultUserInfo.getAddress());
+                            List<String> genders = Arrays.asList(Constant.GENDERS);
+                            int selectedGenderIndex = genders.indexOf(defaultUserInfo.getGender());
+                            genderSpinner.setSelection(selectedGenderIndex);
                         }
                         defaultRender();
                     }

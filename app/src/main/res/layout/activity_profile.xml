@@ -86,7 +86,7 @@
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:entries="@array/gender"
+        android:entries="@array/genders"
         android:theme="@style/EditTextGreen"
 
         app:layout_constraintStart_toStartOf="@+id/address"
