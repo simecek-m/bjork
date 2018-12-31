@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.app.bjork.Animation;
 import com.example.app.bjork.R;
 import com.example.app.bjork.adapter.ShoppingCartAdapter;
 import com.example.app.bjork.api.BjorkAPI;
@@ -38,7 +39,8 @@ import java.util.List;
 public class ShoppingCartActivity extends AppCompatActivity {
 
     private static final String TAG = "ShoppingCartActivity";
-    private static final int DELAY = 3000;
+    private static final int ORDER_DELAY = 3000;
+    private static final int MINIMAL_ANIMATION_TIMER = 1000;
 
     private FirebaseAuth auth;
     private List<CartItem> list;
@@ -118,11 +120,16 @@ public class ShoppingCartActivity extends AppCompatActivity {
                             list.add(item);
                         }
                         adapter.notifyDataSetChanged();
-                        if(list.size() > 0){
-                            showShoppingCart();
-                        }else{
-                            showEmptyCart();
-                        }
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if(list.size() > 0){
+                                    showShoppingCart();
+                                }else{
+                                    showEmptyCart();
+                                }
+                            }
+                        }, MINIMAL_ANIMATION_TIMER);
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -158,7 +165,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
                                 orderBottomSheet.dismiss();
                                 finish();
                             }
-                        }, DELAY);
+                        }, ORDER_DELAY);
                     }
                 });
             }
@@ -194,16 +201,14 @@ public class ShoppingCartActivity extends AppCompatActivity {
     public void showShoppingCart(){
         getMenuInflater().inflate(R.menu.shopping_cart_menu, menu);
         updateOrderBottomSheetPrice();
-        View cartList = findViewById(R.id.cart_list);
-        cartList.setVisibility(View.VISIBLE);
         View loadingAnimation = findViewById(R.id.loadingAnimation);
-        loadingAnimation.setVisibility(View.GONE);
+        View cartList = findViewById(R.id.cart_list);
+        Animation.transitionViews(loadingAnimation, cartList);
     }
 
     public void showEmptyCart(){
-        View emptyCartView = findViewById(R.id.empty_cart);
-        emptyCartView.setVisibility(View.VISIBLE);
         View loadingAnimation = findViewById(R.id.loadingAnimation);
-        loadingAnimation.setVisibility(View.GONE);
+        View emptyCartView = findViewById(R.id.empty_cart);
+        Animation.transitionViews(loadingAnimation, emptyCartView);
     }
 }
