@@ -119,10 +119,9 @@ public class ShoppingCartActivity extends AppCompatActivity {
                         }
                         adapter.notifyDataSetChanged();
                         if(list.size() > 0){
-                            getMenuInflater().inflate(R.menu.shopping_cart_menu, menu);
-                            updateOrderBottomSheetPrice();
-                            View emptyCartView = findViewById(R.id.empty_cart);
-                            emptyCartView.setVisibility(View.GONE);
+                            showShoppingCart();
+                        }else{
+                            showEmptyCart();
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -190,5 +189,21 @@ public class ShoppingCartActivity extends AppCompatActivity {
     public void updateOrderBottomSheetPrice(){
         TextView  money = orderBottomSheet.findViewById(R.id.moneyText);
         money.setText(getPrice() + ",- Kč");
+    }
+
+    public void showShoppingCart(){
+        getMenuInflater().inflate(R.menu.shopping_cart_menu, menu);
+        updateOrderBottomSheetPrice();
+        View cartList = findViewById(R.id.cart_list);
+        cartList.setVisibility(View.VISIBLE);
+        View loadingAnimation = findViewById(R.id.loadingAnimation);
+        loadingAnimation.setVisibility(View.GONE);
+    }
+
+    public void showEmptyCart(){
+        View emptyCartView = findViewById(R.id.empty_cart);
+        emptyCartView.setVisibility(View.VISIBLE);
+        View loadingAnimation = findViewById(R.id.loadingAnimation);
+        loadingAnimation.setVisibility(View.GONE);
     }
 }
