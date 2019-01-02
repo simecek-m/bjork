@@ -1,5 +1,6 @@
 package com.example.app.bjork.api;
 
+import com.example.app.bjork.model.CartItem;
 import com.example.app.bjork.model.CartItemReference;
 import com.example.app.bjork.model.Feedback;
 import com.example.app.bjork.model.Product;
@@ -64,10 +65,10 @@ public class BjorkAPI {
 
     public static void addToCart(String userId, Product product, String color, int quantity){
 
-        DocumentReference ref = db.collection("products")
+        DocumentReference docRef = db.collection("products")
                 .document(product.getId());
 
-        CartItemReference item = new CartItemReference(color, quantity, ref);
+        CartItemReference item = new CartItemReference(color, quantity, docRef);
 
         db.collection("carts")
                 .document(userId)
@@ -92,5 +93,26 @@ public class BjorkAPI {
     public static void addFeedback(Feedback feedback){
         db.collection("feedbacks")
                 .add(feedback);
+    }
+
+    public static Task<Void> removeItemFromCart(String userId, String cartItemId){
+        return db.collection("carts")
+                .document(userId)
+                .collection("cart_items")
+                .document(cartItemId)
+                .delete();
+    }
+
+    public static void restoreCartItem(String userId, CartItem restoreItem){
+
+        DocumentReference docRef = db.document(restoreItem.getDocRef());
+
+        CartItemReference item = new CartItemReference(restoreItem.getColor(), restoreItem.getQuantity(), docRef);
+
+        db.collection("carts")
+                .document(userId)
+                .collection("cart_items")
+                .document(restoreItem.getId())
+                .set(item);
     }
 }

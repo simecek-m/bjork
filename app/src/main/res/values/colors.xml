@@ -9,5 +9,6 @@
     <color name="greyDark">#5f5f5f</color>
     <color name="black">#000000</color>
     <color name="red">#ec2929</color>
-    <color name="green">#b4b70b</color>
+    <color name="green">#42ffb0</color>
+    <color name="blue">#3f96ff</color>
 </resources>

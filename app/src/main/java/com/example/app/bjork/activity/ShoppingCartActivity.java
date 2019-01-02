@@ -5,12 +5,14 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,10 +26,13 @@ import com.example.app.bjork.Animation;
 import com.example.app.bjork.R;
 import com.example.app.bjork.adapter.ShoppingCartAdapter;
 import com.example.app.bjork.api.BjorkAPI;
+import com.example.app.bjork.listener.UndoDeleteCartItemListener;
 import com.example.app.bjork.model.CartItem;
 import com.example.app.bjork.model.UserInfo;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.functions.HttpsCallableResult;
 import com.google.gson.Gson;
@@ -39,7 +44,7 @@ import java.util.List;
 public class ShoppingCartActivity extends AppCompatActivity {
 
     private static final String TAG = "ShoppingCartActivity";
-    private static final int ORDER_DELAY = 3000;
+    private static final int ORDER_DELAY = 2000;
     private static final int MINIMAL_ANIMATION_TIMER = 1000;
 
     private FirebaseAuth auth;
@@ -83,6 +88,42 @@ public class ShoppingCartActivity extends AppCompatActivity {
             createOrderBottomSheet();
             loadData();
         }
+
+        // swipe gesture - remove product from shopping cart
+        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT){
+
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int i) {
+                final int position = viewHolder.getAdapterPosition();
+                final CartItem deletedCartItem = adapter.getCartItem(position);
+                final View layout = findViewById(R.id.layout);
+                adapter.removeItem(position);
+                BjorkAPI.removeItemFromCart(currentUser.getId(), deletedCartItem.getId()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isComplete() && task.isSuccessful()){
+                            String text = deletedCartItem.getName() + " " + getString(R.string.cart_item_removed);
+                            Snackbar.make(recyclerView, text, Snackbar.LENGTH_INDEFINITE)
+                                    .setActionTextColor(getColor(R.color.blue))
+                                    .setAction(R.string.undo, new UndoDeleteCartItemListener(currentUser.getId(), adapter, deletedCartItem, position, layout))
+                                    .show();
+                        }
+                    }
+                });
+                if(adapter.getItemCount() == 0){
+                    View cartListView = findViewById(R.id.cart_list);
+                    View emptyListView = findViewById(R.id.empty_cart);
+                    Animation.transitionViews(cartListView, emptyListView);
+                }
+
+            }
+        };
+        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
     }
 
     public int getPrice(){

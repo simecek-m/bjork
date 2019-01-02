@@ -55,7 +55,6 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-
         private ImageView image;
         private TextView name;
         private TextView description;
@@ -68,5 +67,19 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
             description = itemView.findViewById(R.id.description);
             prize = itemView.findViewById(R.id.prize);
         }
+    }
+
+    public CartItem getCartItem(int position){
+        return cartItemList.get(position);
+    }
+
+    public void removeItem(int position){
+        cartItemList.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    public void addItemOnPosition(CartItem item, int position){
+        cartItemList.add(position, item);
+        notifyItemInserted(position);
     }
 }

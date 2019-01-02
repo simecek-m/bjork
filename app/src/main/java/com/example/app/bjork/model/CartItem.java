@@ -3,13 +3,16 @@ package com.example.app.bjork.model;
 
 public class CartItem {
 
+    private String id;
     private String name;
     private String imageUrl;
     private int pricePerUnit;
     private String color;
     private int quantity;
+    private String docRef;
 
-    public CartItem(Product product, String color, int quantity) {
+    public CartItem(String id, Product product, String color, int quantity, String docRef) {
+        this.id = id;
         this.name = product.getName();
         this.imageUrl = product.getImageUrl();
         this.color = color;
@@ -17,6 +20,15 @@ public class CartItem {
         float defaultPrice = product.getPrice();
         float discount = (defaultPrice/100)*product.getDiscountPercentage();
         this.pricePerUnit = Math.round(defaultPrice) - Math.round(discount);
+        this.docRef = docRef;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -59,14 +71,24 @@ public class CartItem {
         this.quantity = quantity;
     }
 
+    public String getDocRef() {
+        return docRef;
+    }
+
+    public void setDocRef(String docRef) {
+        this.docRef = docRef;
+    }
+
     @Override
     public String toString() {
         return "CartItem{" +
-                "name='" + name + '\'' +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
                 ", pricePerUnit=" + pricePerUnit +
                 ", color='" + color + '\'' +
                 ", quantity=" + quantity +
+                ", docRef='" + docRef + '\'' +
                 '}';
     }
 

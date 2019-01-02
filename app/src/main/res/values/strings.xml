@@ -58,6 +58,8 @@
     <string name="gender">Pohlaví</string>
     <string name="wrong_password">Chybné heslo</string>
     <string name="loading">Připravujeme Váš košík</string>
+    <string name="cart_item_removed">odebrán(a) z košíku</string>
+    <string name="undo">Vrátit</string>
 
     <string-array name="genders">
         <item>Muž</item>

@@ -8,17 +8,16 @@ public class CartItemReference implements Serializable {
 
     private String color;
     private int quantity;
-    private DocumentReference ref;
+    private DocumentReference docRef;
 
     public CartItemReference() {
     }
 
-    public CartItemReference(String color, int quantity, DocumentReference productRef) {
+    public CartItemReference(String color, int quantity, DocumentReference docRef) {
         this.color = color;
         this.quantity = quantity;
-        this.ref = productRef;
+        this.docRef = docRef;
     }
-
 
     public String getColor() {
         return color;
@@ -36,11 +35,11 @@ public class CartItemReference implements Serializable {
         this.quantity = quantity;
     }
 
-    public DocumentReference getRef() {
-        return ref;
+    public DocumentReference getDocRef() {
+        return docRef;
     }
 
-    public void setRef(DocumentReference ref) {
-        this.ref = ref;
+    public void setDocRef(DocumentReference docRef) {
+        this.docRef = docRef;
     }
 }
