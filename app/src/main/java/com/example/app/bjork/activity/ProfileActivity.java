@@ -102,7 +102,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         addressText.setFocusableInTouchMode(true);
         genderSpinner.setVisibility(View.VISIBLE);
         saveUserInfoButton.setVisibility(View.VISIBLE);
-        logoutButton.setVisibility(View.VISIBLE);
+        logoutButton.setVisibility(View.GONE);
     }
 
     public void defaultRender(){
@@ -114,8 +114,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         addressText.setInputType(InputType.TYPE_NULL);
         addressText.setFocusable(false);
         genderSpinner.setVisibility(View.INVISIBLE);
-        logoutButton.setVisibility(View.VISIBLE);
         saveUserInfoButton.setVisibility(View.GONE);
+        logoutButton.setVisibility(View.VISIBLE);
     }
 
     @Override
