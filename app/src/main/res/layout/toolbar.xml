@@ -6,6 +6,5 @@
     android:layout_marginTop="0dp"
     android:elevation="10dp"
     android:theme="@style/ToolbarPrimary"
-    app:layout_constraintTop_toTopOf="parent"
-    app:title="@{name}">
+    app:layout_constraintTop_toTopOf="parent">
 </android.support.v7.widget.Toolbar>

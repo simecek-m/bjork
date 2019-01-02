@@ -2,8 +2,6 @@ package com.example.app.bjork.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -32,7 +30,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private EditText lastnameText;
     private EditText addressText;
     private Spinner genderSpinner;
-    private ConstraintLayout error;
 
     private Button logoutButton;
     private Button saveUserInfoButton;
@@ -73,8 +70,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     finish();
                 }
             });
-            error = findViewById(R.id.error);
-            error.setVisibility(View.GONE);
             saveUserInfoButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -99,7 +94,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
     public void editUser(){
         defaultState = false;
-        error.setVisibility(View.GONE);
         firstnameText.setInputType(InputType.TYPE_CLASS_TEXT);
         firstnameText.setFocusableInTouchMode(true);
         lastnameText.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -122,11 +116,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         genderSpinner.setVisibility(View.INVISIBLE);
         logoutButton.setVisibility(View.VISIBLE);
         saveUserInfoButton.setVisibility(View.GONE);
-        if(isProfileIncomplete()){
-            error.setVisibility(View.VISIBLE);
-        }else{
-            error.setVisibility(View.GONE);
-        }
     }
 
     @Override

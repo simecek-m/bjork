@@ -74,6 +74,7 @@
             android:layout_marginStart="16dp"
             android:fontFamily="@font/roboto_bold"
             android:text="@string/login"
+            android:textColor="@color/black"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="@+id/loginIcon"
             app:layout_constraintStart_toEndOf="@+id/loginIcon"
