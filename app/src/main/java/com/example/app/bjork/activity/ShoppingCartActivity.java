@@ -34,6 +34,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.functions.HttpsCallableResult;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -251,5 +252,17 @@ public class ShoppingCartActivity extends AppCompatActivity {
         View loadingAnimation = findViewById(R.id.loadingAnimation);
         View emptyCartView = findViewById(R.id.empty_cart);
         Animation.transitionViews(loadingAnimation, emptyCartView);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        BjorkAPI.loadUserInfo(auth.getUid()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                currentUser = documentSnapshot.toObject(UserInfo.class);
+                createOrderBottomSheet();
+            }
+        });
     }
 }
