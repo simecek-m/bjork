@@ -1,4 +1,4 @@
-package com.example.app.bjork;
+package com.example.app.bjork.activity;
 
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.ActionBar;
@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.app.bjork.R;
 import com.example.app.bjork.api.BjorkAPI;
 import com.example.app.bjork.model.Feedback;
 import com.google.firebase.auth.FirebaseAuth;

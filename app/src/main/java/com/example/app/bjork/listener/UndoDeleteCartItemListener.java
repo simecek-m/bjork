@@ -2,7 +2,7 @@ package com.example.app.bjork.listener;
 
 import android.view.View;
 
-import com.example.app.bjork.Animation;
+import com.example.app.bjork.animation.Animation;
 import com.example.app.bjork.R;
 import com.example.app.bjork.adapter.ShoppingCartAdapter;
 import com.example.app.bjork.api.BjorkAPI;

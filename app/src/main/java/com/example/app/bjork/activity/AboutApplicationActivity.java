@@ -14,7 +14,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 
-import com.example.app.bjork.FeedbackActivity;
 import com.example.app.bjork.R;
 
 public class AboutApplicationActivity extends AppCompatActivity {

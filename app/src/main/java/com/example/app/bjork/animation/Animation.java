@@ -1,4 +1,4 @@
-package com.example.app.bjork;
+package com.example.app.bjork.animation;
 
 import android.view.View;
 
