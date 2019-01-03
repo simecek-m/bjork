@@ -60,6 +60,8 @@
     <string name="loading">Připravujeme Váš košík</string>
     <string name="cart_item_removed">odebrán(a) z košíku</string>
     <string name="undo">Vrátit</string>
+    <string name="connection_error">Nedostupná data</string>
+    <string name="connection_error_description">Zkuste to prosím později...</string>
 
     <string-array name="genders">
         <item>Muž</item>

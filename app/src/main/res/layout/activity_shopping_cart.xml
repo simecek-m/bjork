@@ -14,21 +14,21 @@
         layout="@layout/toolbar"/>
 
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/loadingAnimation"
+        android:id="@+id/loading_animation"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/lottieAnimationView"
+            android:id="@+id/lottie_animation_view"
             android:layout_width="300dp"
             android:layout_height="0dp"
-            app:layout_constraintHeight_percent=".5"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent=".5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.35"
@@ -37,17 +37,33 @@
             app:lottie_rawRes="@raw/loading" />
 
         <TextView
-            android:layout_width="200dp"
-            android:gravity="center"
+            android:id="@+id/error_text"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:fontFamily="@font/roboto_bold"
+            android:gravity="center"
             android:text="@string/loading"
             android:textColor="@color/colorPrimary"
-            android:textSize="28sp"
-            app:layout_constraintEnd_toEndOf="@+id/lottieAnimationView"
-            app:layout_constraintStart_toStartOf="@+id/lottieAnimationView"
-            app:layout_constraintTop_toBottomOf="@+id/lottieAnimationView" />
+            android:textSize="22sp"
+            app:layout_constraintEnd_toEndOf="@+id/lottie_animation_view"
+            app:layout_constraintStart_toStartOf="@+id/lottie_animation_view"
+            app:layout_constraintTop_toBottomOf="@+id/lottie_animation_view" />
+
+        <TextView
+            android:id="@+id/error_text_description"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/roboto"
+            android:gravity="center"
+            android:text="@string/loading"
+            android:textColor="@color/greyDarker"
+            android:textSize="14sp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@+id/error_text"
+            app:layout_constraintStart_toStartOf="@+id/error_text"
+            app:layout_constraintTop_toBottomOf="@+id/error_text" />
     </android.support.constraint.ConstraintLayout>
 
     <android.support.constraint.ConstraintLayout

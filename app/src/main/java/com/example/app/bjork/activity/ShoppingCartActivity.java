@@ -13,7 +13,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.view.menu.MenuView;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,6 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.app.bjork.animation.Animation;
 import com.example.app.bjork.R;
 import com.example.app.bjork.adapter.ShoppingCartAdapter;
@@ -108,7 +108,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
                 View itemView = viewHolder.itemView;
 
-                final ColorDrawable background = new ColorDrawable(getResources().getColor(R.color.blue));
+                final ColorDrawable background = new ColorDrawable(getResources().getColor(R.color.colorPrimaryDark));
                 final Drawable icon = getDrawable(R.drawable.ic_delete);
                 icon.setTint(Color.WHITE);
 
@@ -129,17 +129,10 @@ public class ShoppingCartActivity extends AppCompatActivity {
                     background.setBounds(itemView.getRight() + (int)dX, itemView.getTop(), itemView.getRight(), itemView.getBottom());
                     background.draw(c);
                     if(-dX > horizontalMargin*2+iconWidth){
-                        System.out.println("left - icon draw");
                         icon.setBounds(itemView.getRight()-horizontalMargin-iconWidth, itemView.getTop()+verticalMargin, itemView.getRight()-horizontalMargin, itemView.getBottom()-verticalMargin);
                         icon.draw(c);
                     }
                 }
-
-
-
-//                Drawable icon = getDrawable(R.drawable.ic_delete);
-//                icon.setBounds(5, 5, 20, 20);
-//                icon.draw(c);
             }
 
             @Override
@@ -245,6 +238,12 @@ public class ShoppingCartActivity extends AppCompatActivity {
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                showError();
+                            }
+                        }, MINIMAL_ANIMATION_TIMER);
                         Log.i(TAG, "load getShoppingCart failed: ", e);
                     }
                 });
@@ -312,15 +311,27 @@ public class ShoppingCartActivity extends AppCompatActivity {
     public void showShoppingCart(){
         getMenuInflater().inflate(R.menu.shopping_cart_menu, menu);
         updateOrderBottomSheetPrice();
-        View loadingAnimation = findViewById(R.id.loadingAnimation);
+        View loadingAnimation = findViewById(R.id.loading_animation);
         View cartList = findViewById(R.id.cart_list);
         Animation.transitionViews(loadingAnimation, cartList);
     }
 
     public void showEmptyCart(){
-        View loadingAnimation = findViewById(R.id.loadingAnimation);
+        View loadingAnimation = findViewById(R.id.loading_animation);
         View emptyCartView = findViewById(R.id.empty_cart);
         Animation.transitionViews(loadingAnimation, emptyCartView);
+    }
+
+    public void showError(){
+        LottieAnimationView animationView = findViewById(R.id.lottie_animation_view);
+        TextView error = findViewById(R.id.error_text);
+        TextView errorDescription = findViewById(R.id.error_text_description);
+        animationView.setAnimation(R.raw.error);
+        animationView.playAnimation();
+        error.setText(R.string.connection_error);
+        errorDescription.setVisibility(View.VISIBLE);
+        errorDescription.setText(R.string.connection_error_description);
+
     }
 
     @Override
