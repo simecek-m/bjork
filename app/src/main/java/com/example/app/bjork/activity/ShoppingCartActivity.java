@@ -1,6 +1,10 @@
 package com.example.app.bjork.activity;
 
 import android.content.Intent;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
@@ -9,6 +13,8 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.view.menu.MenuView;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -52,7 +58,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private ShoppingCartAdapter adapter;
-    private RecyclerView.LayoutManager layoutManager;
+    private LinearLayoutManager layoutManager;
 
     private Menu menu;
     private BottomSheetDialog orderBottomSheet;
@@ -76,8 +82,12 @@ public class ShoppingCartActivity extends AppCompatActivity {
         recyclerView.hasFixedSize();
         adapter = new ShoppingCartAdapter(this, list);
         layoutManager = new LinearLayoutManager(this);
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), layoutManager.getOrientation());
+
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+        recyclerView.addItemDecoration(dividerItemDecoration);
         currentUser = (UserInfo) getIntent().getSerializableExtra("currentUser");
 
         if(auth.getUid() == null){
@@ -90,7 +100,52 @@ public class ShoppingCartActivity extends AppCompatActivity {
         }
 
         // swipe gesture - remove product from shopping cart
-        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT){
+        final ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT){
+
+
+            @Override
+            public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+                View itemView = viewHolder.itemView;
+
+                final ColorDrawable background = new ColorDrawable(getResources().getColor(R.color.blue));
+                final Drawable icon = getDrawable(R.drawable.ic_delete);
+                icon.setTint(Color.WHITE);
+
+                int iconWidth = 150;
+                int iconHeight = 150;
+                int horizontalMargin = 50;
+                int verticalMargin = (itemView.getHeight()-iconHeight) / 2;
+
+
+                System.out.println("dX: " + dX);
+                System.out.println("getRight: " + itemView.getRight());
+                System.out.println("getLeft: " + itemView.getLeft());
+
+                //swipe right
+                if(dX > 0){
+                    background.setBounds(0, itemView.getTop(),   itemView.getLeft() + (int)dX, itemView.getBottom());
+                    background.draw(c);
+                    if(dX > horizontalMargin*2+iconWidth){
+                        icon.setBounds(horizontalMargin, itemView.getTop()+verticalMargin, horizontalMargin+iconWidth, itemView.getBottom()-verticalMargin);
+                        icon.draw(c);
+                    }
+                }else{
+                    background.setBounds(itemView.getRight() + (int)dX, itemView.getTop(), itemView.getRight(), itemView.getBottom());
+                    background.draw(c);
+                    if(-dX > horizontalMargin*2+iconWidth){
+                        System.out.println("left - icon draw");
+                        icon.setBounds(itemView.getRight()-horizontalMargin-iconWidth, itemView.getTop()+verticalMargin, itemView.getRight()-horizontalMargin, itemView.getBottom()-verticalMargin);
+                        icon.draw(c);
+                    }
+                }
+
+
+
+//                Drawable icon = getDrawable(R.drawable.ic_delete);
+//                icon.setBounds(5, 5, 20, 20);
+//                icon.draw(c);
+            }
 
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
