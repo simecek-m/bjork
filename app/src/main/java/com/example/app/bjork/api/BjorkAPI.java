@@ -19,86 +19,98 @@ public class BjorkAPI {
 
     private static final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+    private static final String PRODUCTS_COLLECTION = "products";
+    private static final String USER_INFO_COLLECTION = "user_info";
+    private static final String CARTS_COLLECTION = "carts";
+    private static final String CART_ITEMS_COLLECTION = "cart_items";
+    private static final String FEEDBACKS_COLLECTION = "feedbacks";
+
+    private static final String LIKES_FIELD = "likes";
+    private static final String TYPE_FIELD = "type";
+
+    private static final String GET_SHOPPING_CART_FUNCTION = "getShoppingCart";
+    private static final String DELETE_CART_FUNCTION = "deleteCart";
+
     public static void likeProduct(Product product){
         List<String> likes = product.getLikes();
-        db.collection("products")
+        db.collection(PRODUCTS_COLLECTION)
                 .document(product.getId())
-                .update("likes", likes);
+                .update(LIKES_FIELD, likes);
 
     }
 
     public static Task<QuerySnapshot> loadProducts(){
-        return db.collection("products")
+        return db.collection(PRODUCTS_COLLECTION)
                 .get();
     }
 
     public static Task<QuerySnapshot> loadProducts(String filter){
-        return db.collection("products")
-                .whereEqualTo("type", filter)
+        return db.collection(PRODUCTS_COLLECTION)
+                .whereEqualTo(TYPE_FIELD, filter)
                 .get();
     }
 
     public static Task<QuerySnapshot> loadFavouritesProducts(String userId){
-        return db.collection("products")
-                .whereArrayContains("likes", userId)
+        return db.collection(PRODUCTS_COLLECTION)
+                .whereArrayContains(LIKES_FIELD, userId)
                 .get();
     }
 
     public static Task<QuerySnapshot> loadFavouritesProducts(String userId, String filterType){
-        return db.collection("products")
-                .whereArrayContains("likes", userId)
-                .whereEqualTo("type", filterType)
+        return db.collection(PRODUCTS_COLLECTION)
+                .whereArrayContains(LIKES_FIELD, userId)
+                .whereEqualTo(TYPE_FIELD, filterType)
                 .get();
     }
 
     public static Task<DocumentSnapshot> loadUserInfo(String userId){
-        return db.collection("user_info")
+        return db.collection(USER_INFO_COLLECTION)
                 .document(userId)
                 .get();
     }
 
     public static void addUserInfo(UserInfo userInfo){
-        db.collection("user_info")
+        db.collection(USER_INFO_COLLECTION)
                 .document(userInfo.getId())
                 .set(userInfo);
     }
 
     public static void addToCart(String userId, Product product, String color, int quantity){
 
-        DocumentReference docRef = db.collection("products")
+        DocumentReference docRef = db.collection(PRODUCTS_COLLECTION)
                 .document(product.getId());
 
         CartItemReference item = new CartItemReference(color, quantity, docRef);
 
-        db.collection("carts")
+        db.collection(CARTS_COLLECTION)
                 .document(userId)
-                .collection("cart_items")
+                .collection(CART_ITEMS_COLLECTION)
                 .add(item);
     }
 
     public static Task<HttpsCallableResult> getShoppingCart(){
         FirebaseFunctions functions = FirebaseFunctions.getInstance();
         return functions
-                .getHttpsCallable("getShoppingCart")
+                .getHttpsCallable(GET_SHOPPING_CART_FUNCTION)
                 .call();
     }
 
     public static Task<HttpsCallableResult> newOrder(){
         FirebaseFunctions functions = FirebaseFunctions.getInstance();
         return functions
-                .getHttpsCallable("deleteCart")
+                .getHttpsCallable(DELETE_CART_FUNCTION)
                 .call();
     }
 
     public static void addFeedback(Feedback feedback){
-        db.collection("feedbacks")
+        db.collection(FEEDBACKS_COLLECTION)
                 .add(feedback);
     }
 
     public static Task<Void> removeItemFromCart(String userId, String cartItemId){
-        return db.collection("carts")
+        return db.collection(CARTS_COLLECTION)
                 .document(userId)
-                .collection("cart_items")
+                .collection(CART_ITEMS_COLLECTION)
                 .document(cartItemId)
                 .delete();
     }
@@ -109,9 +121,9 @@ public class BjorkAPI {
 
         CartItemReference item = new CartItemReference(restoreItem.getColor(), restoreItem.getQuantity(), docRef);
 
-        db.collection("carts")
+        db.collection(CARTS_COLLECTION)
                 .document(userId)
-                .collection("cart_items")
+                .collection(CART_ITEMS_COLLECTION)
                 .document(restoreItem.getId())
                 .set(item);
     }
