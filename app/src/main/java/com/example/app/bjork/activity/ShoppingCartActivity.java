@@ -112,15 +112,10 @@ public class ShoppingCartActivity extends AppCompatActivity {
                 final Drawable icon = getDrawable(R.drawable.ic_delete);
                 icon.setTint(Color.WHITE);
 
-                int iconWidth = 150;
-                int iconHeight = 150;
+                int iconWidth = 100;
+                int iconHeight = 100;
                 int horizontalMargin = 50;
                 int verticalMargin = (itemView.getHeight()-iconHeight) / 2;
-
-
-                System.out.println("dX: " + dX);
-                System.out.println("getRight: " + itemView.getRight());
-                System.out.println("getLeft: " + itemView.getLeft());
 
                 //swipe right
                 if(dX > 0){
