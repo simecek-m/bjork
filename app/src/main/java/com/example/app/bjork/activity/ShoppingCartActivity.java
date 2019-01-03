@@ -26,7 +26,6 @@ import com.example.app.bjork.animation.Animation;
 import com.example.app.bjork.R;
 import com.example.app.bjork.adapter.ShoppingCartAdapter;
 import com.example.app.bjork.api.BjorkAPI;
-import com.example.app.bjork.listener.UndoDeleteCartItemListener;
 import com.example.app.bjork.model.CartItem;
 import com.example.app.bjork.model.UserInfo;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -108,10 +107,29 @@ public class ShoppingCartActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if(task.isComplete() && task.isSuccessful()){
+                            updateOrderBottomSheetPrice();
                             String text = deletedCartItem.getName() + " " + getString(R.string.cart_item_removed);
                             Snackbar.make(recyclerView, text, Snackbar.LENGTH_INDEFINITE)
-                                    .setActionTextColor(getColor(R.color.blue))
-                                    .setAction(R.string.undo, new UndoDeleteCartItemListener(currentUser.getId(), adapter, deletedCartItem, position, layout))
+                                    .setActionTextColor(getResources().getColor(R.color.blue))
+                                    .setAction(R.string.undo, new View.OnClickListener() {
+
+                                        private boolean firstClick = true;
+                                        private View emptyCart = layout.findViewById(R.id.empty_cart);
+                                        private View cartList = layout.findViewById(R.id.cart_list);
+
+                                        @Override
+                                        public void onClick(View view) {
+                                            if(firstClick){
+                                                firstClick = false;
+                                                BjorkAPI.restoreCartItem(currentUser.getId(), deletedCartItem);
+                                                adapter.addItemOnPosition(deletedCartItem, position);
+                                                updateOrderBottomSheetPrice();
+                                                if(adapter.getItemCount() == 1){
+                                                    Animation.transitionViews(emptyCart, cartList);
+                                                }
+                                            }
+                                        }
+                                    })
                                     .show();
                         }
                     }
@@ -120,6 +138,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
                     View cartListView = findViewById(R.id.cart_list);
                     View emptyListView = findViewById(R.id.empty_cart);
                     Animation.transitionViews(cartListView, emptyListView);
+                    menu = null;
                 }
 
             }
