@@ -144,7 +144,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         final TextView quantityText = addToCartBottomSheet.findViewById(R.id.quantityText);
         final Spinner colorText = addToCartBottomSheet.findViewById(R.id.colorText);
         List<String> colorsList = product.getColors();
-        ArrayAdapter<String> colorAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, colorsList);
+        ArrayAdapter<String> colorAdapter = new ArrayAdapter<String>(this, R.layout.spinner_item, colorsList);
         colorAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         colorText.setAdapter(colorAdapter);
 

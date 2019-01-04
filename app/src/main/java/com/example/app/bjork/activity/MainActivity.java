@@ -297,10 +297,8 @@ public class MainActivity extends AppCompatActivity {
         editor.putInt(SORT_DIRECTION, selectedDirectionIndex);
         editor.putInt(FILTER_TYPE, selectedFilterIndex);
         editor.commit();
-
         productListFragment.loadList();
         favouriteListFragment.loadList();
         sortBottomSheet.dismiss();
     }
-
 }

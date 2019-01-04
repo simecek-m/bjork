@@ -22,9 +22,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
@@ -45,6 +47,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ShoppingCartActivity extends AppCompatActivity {
@@ -255,6 +258,13 @@ public class ShoppingCartActivity extends AppCompatActivity {
         final ProgressBar progressBar = orderBottomSheet.findViewById(R.id.progressBar);
         final TextView progressText = orderBottomSheet.findViewById(R.id.progressText);
         final ConstraintLayout orderInfo = orderBottomSheet.findViewById(R.id.orderInfo);
+
+        final Spinner paymentList = orderBottomSheet.findViewById(R.id.paymentText);
+        List<String> methods = Arrays.asList(getResources().getStringArray(R.array.payment_methods));
+        ArrayAdapter<String> paymentAdapter = new ArrayAdapter<String>(this, R.layout.spinner_item, methods);
+        paymentAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        paymentList.setAdapter(paymentAdapter);
+
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
