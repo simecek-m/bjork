@@ -101,8 +101,6 @@ public class ShoppingCartActivity extends AppCompatActivity {
 
         // swipe gesture - remove product from shopping cart
         final ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT){
-
-
             @Override
             public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
@@ -146,7 +144,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
                 final CartItem deletedCartItem = adapter.getCartItem(position);
                 final View layout = findViewById(R.id.layout);
                 adapter.removeItem(position);
-                BjorkAPI.removeItemFromCart(currentUser.getId(), deletedCartItem.getId()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                BjorkAPI.removeItemFromCart(auth.getUid(), deletedCartItem.getId()).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if(task.isComplete() && task.isSuccessful()){
