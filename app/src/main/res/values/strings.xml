@@ -62,6 +62,7 @@
     <string name="undo">Vrátit</string>
     <string name="connection_error">Nedostupná data</string>
     <string name="connection_error_description">Zkuste to prosím později...</string>
+    <string name="search">Vyhledávání</string>
 
     <string-array name="genders">
         <item>Muž</item>
