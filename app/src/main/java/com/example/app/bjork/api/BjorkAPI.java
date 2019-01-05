@@ -27,6 +27,7 @@ public class BjorkAPI {
 
     private static final String LIKES_FIELD = "likes";
     private static final String TYPE_FIELD = "type";
+    private static final String NAME_FIELD = "name";
 
     private static final String GET_SHOPPING_CART_FUNCTION = "getShoppingCart";
     private static final String DELETE_CART_FUNCTION = "deleteCart";
@@ -126,5 +127,18 @@ public class BjorkAPI {
                 .collection(CART_ITEMS_COLLECTION)
                 .document(restoreItem.getId())
                 .set(item);
+    }
+
+    public static Task<QuerySnapshot> searchProducts(String query){
+        return db.collection(PRODUCTS_COLLECTION)
+                .whereEqualTo(NAME_FIELD, query)
+                .get();
+    }
+
+    public static Task<QuerySnapshot> searchFavouriteProducts(String query, String userId){
+        return db.collection(PRODUCTS_COLLECTION)
+                .whereArrayContains(LIKES_FIELD, userId)
+                .whereEqualTo(NAME_FIELD, query)
+                .get();
     }
 }

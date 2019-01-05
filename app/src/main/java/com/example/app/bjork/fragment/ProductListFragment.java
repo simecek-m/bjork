@@ -81,7 +81,7 @@ public class ProductListFragment extends Fragment {
         final String direction = Constant.SORT_DIRECTIONS[settings.getInt(SORT_DIRECTION, 0)];
         final String filterType = Constant.PRODUCT_TYPES[settings.getInt(FILTER_TYPE, 0)];
         Task<QuerySnapshot> task;
-        if(filterType == Constant.PRODUCT_TYPES[0]){
+        if(filterType.equals(Constant.PRODUCT_TYPES[0])){
             task = BjorkAPI.loadProducts();
         }else{
             task = BjorkAPI.loadProducts(filterType);
@@ -115,6 +115,16 @@ public class ProductListFragment extends Fragment {
         List<String> likes = productsList.get(position).getLikes();
         likes.remove(userId);
         adapter.notifyDataSetChanged();
+    }
+
+    public void loadSearchProducts(String query) {
+        BjorkAPI.searchProducts(query).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                List<Product> searchProducts = queryDocumentSnapshots.toObjects(Product.class);
+                adapter.setList(searchProducts);
+            }
+        });
     }
 }
 
