@@ -38,9 +38,11 @@ dependencies {
     // Saripaar - validation
     implementation 'com.mobsandgeeks:android-saripaar:2.0.3'
 
-    //
+    // Lottie - animation
     implementation 'com.airbnb.android:lottie:2.7.0'
 
+    // Algolia - fulltext search 
+    implementation 'com.algolia:algoliasearch-android:3.+'
 
 
     implementation 'com.google.android.gms:play-services-maps:16.0.0'

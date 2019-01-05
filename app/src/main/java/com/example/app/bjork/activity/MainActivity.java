@@ -1,6 +1,7 @@
 package com.example.app.bjork.activity;
 
 import android.app.SearchManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -40,7 +41,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import static com.example.app.bjork.constant.Constant.*;
-
 
 public class MainActivity extends AppCompatActivity {
 
@@ -267,23 +267,9 @@ public class MainActivity extends AppCompatActivity {
         MenuItem searchItem = menu.findItem(R.id.menu_search);
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) searchItem.getActionView();
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(new ComponentName(this, SearchResultActivity.class)));
         searchView.setIconified(false);
         return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        handleIntent(intent);
-    }
-
-    public void handleIntent(Intent intent){
-        if(Intent.ACTION_SEARCH.equals(intent.getAction())){
-            final String query = intent.getStringExtra(SearchManager.QUERY);
-            productListFragment.loadSearchProducts(query);
-            favouriteListFragment.loadSearchFavouritesProducts(query, mAuth.getUid());
-        }
     }
 
     public void createSortBottomSheet(){

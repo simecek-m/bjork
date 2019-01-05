@@ -77,8 +77,6 @@ public class ProductListFragment extends Fragment {
 
     public void loadList(){
         SharedPreferences settings = getActivity().getPreferences(MODE_PRIVATE);
-        final String attribute = Constant.SORT_ATTRIBUTES[settings.getInt(SORT_ATTRIBUTE, 0)];
-        final String direction = Constant.SORT_DIRECTIONS[settings.getInt(SORT_DIRECTION, 0)];
         final String filterType = Constant.PRODUCT_TYPES[settings.getInt(FILTER_TYPE, 0)];
         Task<QuerySnapshot> task;
         if(filterType.equals(Constant.PRODUCT_TYPES[0])){
@@ -96,8 +94,7 @@ public class ProductListFragment extends Fragment {
                             product.setId(snapshot.getId());
                             productsList.add(product);
                         }
-                        Comparator<Product> comparator = new ProductComparator(attribute, direction).getComparator();
-                        Collections.sort(productsList, comparator);
+                        sortList(productsList);
                         adapter.setList(productsList);
                         adapter.notifyDataSetChanged();
                         swipeRefreshLayout.setRefreshing(false);
@@ -117,14 +114,12 @@ public class ProductListFragment extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
-    public void loadSearchProducts(String query) {
-        BjorkAPI.searchProducts(query).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                List<Product> searchProducts = queryDocumentSnapshots.toObjects(Product.class);
-                adapter.setList(searchProducts);
-            }
-        });
+    public void sortList(List<Product> list){
+        SharedPreferences settings = getActivity().getPreferences(MODE_PRIVATE);
+        final String attribute = Constant.SORT_ATTRIBUTES[settings.getInt(SORT_ATTRIBUTE, 0)];
+        final String direction = Constant.SORT_DIRECTIONS[settings.getInt(SORT_DIRECTION, 0)];
+        Comparator<Product> comparator = new ProductComparator(attribute, direction).getComparator();
+        Collections.sort(list, comparator);
     }
 }
 

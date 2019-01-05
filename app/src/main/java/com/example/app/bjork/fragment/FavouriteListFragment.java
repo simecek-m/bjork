@@ -141,14 +141,4 @@ public class FavouriteListFragment extends Fragment {
     public void addOnLikeClickListener(FavouriteProductsListAdapter.OnLikeClickListener onLikeClickListener){
         this.onLikeClickListener = onLikeClickListener;
     }
-
-    public void loadSearchFavouritesProducts(String query, String uid) {
-        BjorkAPI.searchFavouriteProducts(query, uid).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                List<Product> searchProductsList = queryDocumentSnapshots.toObjects(Product.class);
-                adapter.setList(searchProductsList);
-            }
-        });
-    }
 }
