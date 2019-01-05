@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 
 import com.algolia.search.saas.AlgoliaException;
 import com.algolia.search.saas.CompletionHandler;
@@ -67,6 +68,7 @@ public class SearchResultActivity extends AppCompatActivity {
     }
 
     public void searchProducts(String query){
+        final View emptyView = findViewById(R.id.empty_search);
         BjorkAPI.searchProducts(query, new CompletionHandler() {
             @Override
             public void requestCompleted(JSONObject jsonObject, AlgoliaException e) {
@@ -80,7 +82,13 @@ public class SearchResultActivity extends AppCompatActivity {
                         Product product = gson.fromJson(jsonString, Product.class);
                         result.add(product);
                     }
-                        adapter.setList(result);
+                    adapter.setList(result);
+                    System.out.println("result: " + result.size());
+                    if(result.size() == 0){
+                        emptyView.setVisibility(View.VISIBLE);
+                    }else{
+                        emptyView.setVisibility(View.GONE);
+                    }
                 } catch (JSONException ex) {
                     Log.e(TAG, "requestCompleted: ", ex);
                 }
