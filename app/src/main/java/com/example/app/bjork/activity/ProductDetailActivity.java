@@ -77,7 +77,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         name.setText(product.getName());
 
-        int iconId = Product.getTypeIconId(product.getType());
+        int iconId = product.getTypeIconId();
         typeIcon.setImageResource(iconId);
         size.setText(product.getSize());
         color.setText(product.getAllColors());

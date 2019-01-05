@@ -108,10 +108,13 @@
                         </option>
                         <option name="values">
                           <map>
+                            <entry key="assetSourceType" value="FILE" />
                             <entry key="color" value="ffffff" />
-                            <entry key="outputName" value="ic_sort_white" />
+                            <entry key="height" value="391" />
+                            <entry key="outputName" value="ic_couch" />
                             <entry key="overrideSize" value="true" />
-                            <entry key="sourceFile" value="C:\Users\Martin\Desktop\animation\armchair.svg" />
+                            <entry key="sourceFile" value="C:\Users\Martin\Downloads\couch.svg" />
+                            <entry key="width" value="391" />
                           </map>
                         </option>
                       </PersistentState>

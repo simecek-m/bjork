@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -49,8 +50,11 @@ public class SearchResultActivity extends AppCompatActivity {
         ab.setDisplayHomeAsUpEnabled(true);
 
 
-        adapter = new SearchAdapter();
+        adapter = new SearchAdapter(this);
         layoutManager = new LinearLayoutManager(this);
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, layoutManager.getOrientation());
+        recyclerView.addItemDecoration(dividerItemDecoration);
 
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);

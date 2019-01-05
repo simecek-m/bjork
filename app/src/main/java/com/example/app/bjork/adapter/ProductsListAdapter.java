@@ -48,7 +48,7 @@ public class ProductsListAdapter extends RecyclerView.Adapter<ProductsListAdapte
     public void onBindViewHolder(@NonNull final ProductViewHolder holder, int position) {
         final Product product = productsList.get(position);
         holder.name.setText(product.getName());
-        int iconId = Product.getTypeIconId(product.getType());
+        int iconId = product.getTypeIconId();
         holder.icon.setImageResource(iconId);
         holder.defaultPrice.setText(product.getPrice() + ",- Kč");
         RequestOptions options = new RequestOptions();
