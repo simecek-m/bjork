@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     private UserInfo currentUser;
 
     private Toolbar toolbar;
+    private Menu menu;
     private BottomSheetDialog loginBottomSheet;
     private BottomSheetDialog sortBottomSheet;
 
@@ -149,6 +150,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        if(menu != null){
+            MenuItem item = menu.findItem(R.id.menu_search);
+            item.collapseActionView();
+        }
         navigationView.setCheckedItem(R.id.nav_products);
         if(currentUserChanged()){
             currentUserId = mAuth.getUid();
@@ -264,12 +269,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.sort_filter_menu, menu);
+        this.menu = menu;
         MenuItem searchItem = menu.findItem(R.id.menu_search);
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) searchItem.getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(new ComponentName(this, SearchResultActivity.class)));
-        searchView.setIconified(false);
-        return super.onCreateOptionsMenu(menu);
+        searchView.setSubmitButtonEnabled(true);
+        return true;
     }
 
     public void createSortBottomSheet(){
