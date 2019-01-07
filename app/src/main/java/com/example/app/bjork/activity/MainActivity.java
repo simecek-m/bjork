@@ -271,6 +271,19 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.sort_filter_menu, menu);
         this.menu = menu;
         MenuItem searchItem = menu.findItem(R.id.menu_search);
+        searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem menuItem) {
+                searchViewMenuIcons(false);
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem menuItem) {
+                searchViewMenuIcons(true);
+                return true;
+            }
+        });
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) searchItem.getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(new ComponentName(this, SearchResultActivity.class)));
@@ -312,5 +325,15 @@ public class MainActivity extends AppCompatActivity {
         productListFragment.loadList();
         favouriteListFragment.loadList();
         sortBottomSheet.dismiss();
+    }
+
+    public void searchViewMenuIcons(boolean visibility){
+        MenuItem searchMenu = menu.findItem(R.id.menu_search);
+        for(int i=0; i<menu.size(); i++){
+            MenuItem item = menu.getItem(i);
+            if(item != searchMenu){
+                item.setVisible(visibility);
+            }
+        }
     }
 }
