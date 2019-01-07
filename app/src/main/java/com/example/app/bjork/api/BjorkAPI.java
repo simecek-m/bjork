@@ -1,5 +1,10 @@
 package com.example.app.bjork.api;
 
+import com.algolia.search.saas.Client;
+import com.algolia.search.saas.CompletionHandler;
+import com.algolia.search.saas.Index;
+import com.algolia.search.saas.Query;
+import com.example.app.bjork.constant.Constant;
 import com.example.app.bjork.model.CartItem;
 import com.example.app.bjork.model.CartItemReference;
 import com.example.app.bjork.model.Feedback;
@@ -12,7 +17,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.functions.HttpsCallableResult;
-
 import java.util.List;
 
 public class BjorkAPI {
@@ -27,6 +31,7 @@ public class BjorkAPI {
 
     private static final String LIKES_FIELD = "likes";
     private static final String TYPE_FIELD = "type";
+    private static final String NAME_FIELD = "name";
 
     private static final String GET_SHOPPING_CART_FUNCTION = "getShoppingCart";
     private static final String DELETE_CART_FUNCTION = "deleteCart";
@@ -126,5 +131,11 @@ public class BjorkAPI {
                 .collection(CART_ITEMS_COLLECTION)
                 .document(restoreItem.getId())
                 .set(item);
+    }
+
+    public static void searchProducts(String query, CompletionHandler resultHandler){
+        Client client = new Client(Constant.ALGOLIA_APPLICATION_ID, Constant.ALGOLIA_API_KEY);
+        Index index = client.getIndex(Constant.ALGOLIA_PRODUCT_INDICES);
+        index.searchAsync(new Query(query), null, resultHandler);
     }
 }

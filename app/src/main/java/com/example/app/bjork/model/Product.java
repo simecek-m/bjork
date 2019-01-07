@@ -103,7 +103,7 @@ public class Product implements Serializable {
         this.likes = likes;
     }
 
-    public static int getTypeIconId(String type){
+    public int getTypeIconId(){
         switch (type){
             default:
                 return R.drawable.ic_question_mark;
@@ -111,12 +111,12 @@ public class Product implements Serializable {
                 return R.drawable.ic_bed;
             case "closet":
                 return R.drawable.ic_closet;
+            case "armchair":
+                return R.drawable.ic_armchair;
             case "couch":
                 return R.drawable.ic_couch;
             case "lamp":
                 return R.drawable.ic_lamp;
-            case "spotlight":
-                return R.drawable.ic_spotlight;
             case "table":
                 return R.drawable.ic_table;
             case "toy":

@@ -3,7 +3,6 @@
     <string name="motto">furniture &amp; design</string>
     <string name="beds">Postele</string>
     <string name="couches">Pohovky</string>
-    <string name="lights">Světla</string>
     <string name="lamps">Lampy</string>
     <string name="tables">Stoly</string>
     <string name="toys">Hračky</string>
@@ -62,6 +61,9 @@
     <string name="undo">Vrátit</string>
     <string name="connection_error">Nedostupná data</string>
     <string name="connection_error_description">Zkuste to prosím později...</string>
+    <string name="search">Vyhledávání</string>
+    <string name="search_hint">Vyhledávání produktů</string>
+    <string name="no_product_found">Nebyl nalezen žádný produkt</string>
 
     <string-array name="genders">
         <item>Muž</item>

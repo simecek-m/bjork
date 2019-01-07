@@ -77,11 +77,9 @@ public class ProductListFragment extends Fragment {
 
     public void loadList(){
         SharedPreferences settings = getActivity().getPreferences(MODE_PRIVATE);
-        final String attribute = Constant.SORT_ATTRIBUTES[settings.getInt(SORT_ATTRIBUTE, 0)];
-        final String direction = Constant.SORT_DIRECTIONS[settings.getInt(SORT_DIRECTION, 0)];
         final String filterType = Constant.PRODUCT_TYPES[settings.getInt(FILTER_TYPE, 0)];
         Task<QuerySnapshot> task;
-        if(filterType == Constant.PRODUCT_TYPES[0]){
+        if(filterType.equals(Constant.PRODUCT_TYPES[0])){
             task = BjorkAPI.loadProducts();
         }else{
             task = BjorkAPI.loadProducts(filterType);
@@ -96,8 +94,7 @@ public class ProductListFragment extends Fragment {
                             product.setId(snapshot.getId());
                             productsList.add(product);
                         }
-                        Comparator<Product> comparator = new ProductComparator(attribute, direction).getComparator();
-                        Collections.sort(productsList, comparator);
+                        sortList(productsList);
                         adapter.setList(productsList);
                         adapter.notifyDataSetChanged();
                         swipeRefreshLayout.setRefreshing(false);
@@ -115,6 +112,14 @@ public class ProductListFragment extends Fragment {
         List<String> likes = productsList.get(position).getLikes();
         likes.remove(userId);
         adapter.notifyDataSetChanged();
+    }
+
+    public void sortList(List<Product> list){
+        SharedPreferences settings = getActivity().getPreferences(MODE_PRIVATE);
+        final String attribute = Constant.SORT_ATTRIBUTES[settings.getInt(SORT_ATTRIBUTE, 0)];
+        final String direction = Constant.SORT_DIRECTIONS[settings.getInt(SORT_DIRECTION, 0)];
+        Comparator<Product> comparator = new ProductComparator(attribute, direction).getComparator();
+        Collections.sort(list, comparator);
     }
 }
 

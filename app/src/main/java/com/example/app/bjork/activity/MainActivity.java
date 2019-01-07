@@ -1,5 +1,8 @@
 package com.example.app.bjork.activity;
 
+import android.app.SearchManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
@@ -12,6 +15,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.Menu;
@@ -38,7 +42,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import static com.example.app.bjork.constant.Constant.*;
 
-
 public class MainActivity extends AppCompatActivity {
 
     private static final int CHANGE_PROFILE_INFO_REQUEST = 1;
@@ -53,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     private UserInfo currentUser;
 
     private Toolbar toolbar;
+    private Menu menu;
     private BottomSheetDialog loginBottomSheet;
     private BottomSheetDialog sortBottomSheet;
 
@@ -85,11 +89,10 @@ public class MainActivity extends AppCompatActivity {
                 if(mAuth.getUid() == null){
                     loginBottomSheet.show();
                 }else{
-                    FavouriteListFragment favouriteFragment = (FavouriteListFragment) pagerAdapter.getItem(1);
                     if(product.likedByUser(mAuth.getUid())){
-                        favouriteFragment.addFavouriteProduct(product);
+                        favouriteListFragment.addFavouriteProduct(product);
                     }else{
-                        favouriteFragment.removeFavouriteProduct(product);
+                        favouriteListFragment.removeFavouriteProduct(product);
                     }
 
                 }
@@ -128,7 +131,6 @@ public class MainActivity extends AppCompatActivity {
         name = header.findViewById(R.id.name);
         email = header.findViewById(R.id.email);
         profileImage = header.findViewById(R.id.profileImage);
-
         updateUserInfo();
     }
 
@@ -148,6 +150,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        if(menu != null){
+            MenuItem item = menu.findItem(R.id.menu_search);
+            item.collapseActionView();
+        }
         navigationView.setCheckedItem(R.id.nav_products);
         if(currentUserChanged()){
             currentUserId = mAuth.getUid();
@@ -263,7 +269,26 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.sort_filter_menu, menu);
-        return super.onCreateOptionsMenu(menu);
+        this.menu = menu;
+        MenuItem searchItem = menu.findItem(R.id.menu_search);
+        searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem menuItem) {
+                searchViewMenuIcons(false);
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem menuItem) {
+                searchViewMenuIcons(true);
+                return true;
+            }
+        });
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(new ComponentName(this, SearchResultActivity.class)));
+        searchView.setSubmitButtonEnabled(true);
+        return true;
     }
 
     public void createSortBottomSheet(){
@@ -300,5 +325,15 @@ public class MainActivity extends AppCompatActivity {
         productListFragment.loadList();
         favouriteListFragment.loadList();
         sortBottomSheet.dismiss();
+    }
+
+    public void searchViewMenuIcons(boolean visibility){
+        MenuItem searchMenu = menu.findItem(R.id.menu_search);
+        for(int i=0; i<menu.size(); i++){
+            MenuItem item = menu.getItem(i);
+            if(item != searchMenu){
+                item.setVisible(visibility);
+            }
+        }
     }
 }
