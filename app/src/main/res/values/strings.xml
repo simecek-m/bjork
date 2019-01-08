@@ -68,6 +68,7 @@
     <string name="delivery">Doručení</string>
     <string name="description">Popis</string>
     <string name="info">Info</string>
+    <string name="download">Stáhnout</string>
 
     <string-array name="genders">
         <item>Muž</item>

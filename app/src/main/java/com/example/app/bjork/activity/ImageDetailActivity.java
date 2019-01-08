@@ -26,6 +26,7 @@ public class ImageDetailActivity extends AppCompatActivity {
     private PhotoView photoView;
     private ImageView shareView;
     private ImageView likeView;
+    private ImageView downloadView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +40,7 @@ public class ImageDetailActivity extends AppCompatActivity {
         photoView = findViewById(R.id.photoView);
         shareView = findViewById(R.id.share);
         likeView = findViewById(R.id.like);
+        downloadView = findViewById(R.id.download);
 
         Glide.with(this)
                 .load(product.getImageUrl())
@@ -51,6 +53,13 @@ public class ImageDetailActivity extends AppCompatActivity {
         }
 
         shareView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getBaseContext(), getString(R.string.feature_not_available), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        downloadView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(getBaseContext(), getString(R.string.feature_not_available), Toast.LENGTH_SHORT).show();
