@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.NavigationView;
@@ -45,6 +46,7 @@ import static com.example.app.bjork.constant.Constant.*;
 public class MainActivity extends AppCompatActivity {
 
     private static final int CHANGE_PROFILE_INFO_REQUEST = 1;
+    public static final int LIKE_CHANGE_REQUEST = 2;
     private String GENDER_MALE = Constant.GENDERS[0];
 
     private ViewPager viewPager;
@@ -263,6 +265,11 @@ public class MainActivity extends AppCompatActivity {
             }else{
                 profileImage.setImageResource(R.drawable.avatar_woman);
             }
+        }
+        if(requestCode == LIKE_CHANGE_REQUEST && resultCode == RESULT_OK){
+            Product product = (Product) data.getSerializableExtra("product");
+            productListFragment.updateList(product);
+            favouriteListFragment.updateList(product);
         }
     }
 

@@ -1,5 +1,6 @@
 package com.example.app.bjork.activity;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -77,6 +78,14 @@ public class ImageDetailActivity extends AppCompatActivity {
             likeView.setImageResource(R.drawable.ic_favorite_heart);
         }
         BjorkAPI.likeProduct(product);
+    }
 
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        intent.putExtra("product", product);
+        setResult(RESULT_OK, intent);
+        finish();
+        super.onBackPressed();
     }
 }

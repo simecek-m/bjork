@@ -1,6 +1,7 @@
 package com.example.app.bjork.activity;
 
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +26,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.List;
 
 public class ProductDetailActivity extends AppCompatActivity {
+
+    public static int LIKE_CHANGE_REQUEST = 1;
 
     private Toolbar toolbar;
     private Product product;
@@ -77,7 +80,7 @@ public class ProductDetailActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(ProductDetailActivity.this, ImageDetailActivity.class);
                 intent.putExtra("product", product);
-                startActivity(intent);
+                startActivityForResult(intent, LIKE_CHANGE_REQUEST);
             }
         });
 
@@ -188,5 +191,21 @@ public class ProductDetailActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(requestCode == LIKE_CHANGE_REQUEST && resultCode == RESULT_OK){
+            product = (Product) data.getSerializableExtra("product");
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        intent.putExtra("product", product);
+        setResult(RESULT_OK, intent);
+        finish();
+        super.onBackPressed();
     }
 }

@@ -83,7 +83,6 @@ public class SearchResultActivity extends AppCompatActivity {
                         result.add(product);
                     }
                     adapter.setList(result);
-                    System.out.println("result: " + result.size());
                     if(result.size() == 0){
                         emptyView.setVisibility(View.VISIBLE);
                     }else{

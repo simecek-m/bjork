@@ -121,6 +121,14 @@ public class ProductListFragment extends Fragment {
         Comparator<Product> comparator = new ProductComparator(attribute, direction).getComparator();
         Collections.sort(list, comparator);
     }
+
+    public void updateList(Product product){
+        int index = productsList.indexOf(product);
+        if(index >= 0){
+            productsList.set(index, product);
+            adapter.notifyDataSetChanged();
+        }
+    }
 }
 
 
