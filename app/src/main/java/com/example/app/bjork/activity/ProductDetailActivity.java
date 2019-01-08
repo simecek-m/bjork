@@ -37,12 +37,9 @@ public class ProductDetailActivity extends AppCompatActivity {
     private TextView money;
     private TextView description;
 
-
     private FirebaseAuth mAuth;
     private BottomSheetDialog loginBottomSheet;
     private BottomSheetDialog addToCartBottomSheet;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
