@@ -20,6 +20,7 @@ public class ImageDetailActivity extends AppCompatActivity {
 
     private FirebaseAuth auth;
     private Product product;
+    private boolean startFromSearchActivity;
     private String currentUserId;
 
     private PhotoView photoView;
@@ -34,6 +35,7 @@ public class ImageDetailActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         currentUserId = auth.getUid();
         product = (Product)getIntent().getSerializableExtra("product");
+        startFromSearchActivity = getIntent().getBooleanExtra("startFromSearchActivity", false);
         photoView = findViewById(R.id.photoView);
         shareView = findViewById(R.id.share);
         likeView = findViewById(R.id.like);
@@ -55,7 +57,7 @@ public class ImageDetailActivity extends AppCompatActivity {
             }
         });
 
-        if (auth.getUid() == null){
+        if (auth.getUid() == null || startFromSearchActivity){
             likeView.setVisibility(View.GONE);
         }else{
             likeView.setOnClickListener(new View.OnClickListener() {

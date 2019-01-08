@@ -75,6 +75,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
                     Product product = productsList.get(getAdapterPosition());
                     Intent intent = new Intent(context, ProductDetailActivity.class);
                     intent.putExtra("product", product);
+                    intent.putExtra("startFromSearchActivity", true);
                     context.startActivity(intent);
                 }
             });

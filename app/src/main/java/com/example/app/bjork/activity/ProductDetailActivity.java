@@ -31,6 +31,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private Product product;
+    private boolean startFromSearchActivity;
 
     private ImageView image;
     private TextView name;
@@ -66,6 +67,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         description = findViewById(R.id.description);
 
         product = (Product) getIntent().getSerializableExtra("product");
+        startFromSearchActivity = getIntent().getBooleanExtra("startFromSearchActivity", false);
         createAddToCartBottomSheet();
 
         RequestOptions options = new RequestOptions();
@@ -80,6 +82,9 @@ public class ProductDetailActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(ProductDetailActivity.this, ImageDetailActivity.class);
                 intent.putExtra("product", product);
+                if(startFromSearchActivity){
+                    intent.putExtra("startFromSearchActivity", true);
+                }
                 startActivityForResult(intent, LIKE_CHANGE_REQUEST);
             }
         });
