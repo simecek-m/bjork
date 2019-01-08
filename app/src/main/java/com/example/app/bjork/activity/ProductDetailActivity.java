@@ -75,6 +75,15 @@ public class ProductDetailActivity extends AppCompatActivity {
                 .load(product.getImageUrl())
                 .into(image);
 
+        image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ProductDetailActivity.this, ImageDetailActivity.class);
+                intent.putExtra("product", product);
+                startActivity(intent);
+            }
+        });
+
         name.setText(product.getName());
 
         int iconId = product.getTypeIconId();

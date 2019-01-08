@@ -6,7 +6,7 @@ android {
     defaultConfig {
         applicationId "com.example.app.bjork"
         minSdkVersion 21
-        targetSdkVersion 27
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -44,6 +44,8 @@ dependencies {
     // Algolia - fulltext search 
     implementation 'com.algolia:algoliasearch-android:3.+'
 
+    // PhotoView - zoom image
+    implementation 'com.github.chrisbanes:PhotoView:2.1.0'
 
     implementation 'com.google.android.gms:play-services-maps:16.0.0'
     testImplementation 'junit:junit:4.12'
