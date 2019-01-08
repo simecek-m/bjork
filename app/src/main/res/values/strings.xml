@@ -43,6 +43,7 @@
     <string name="confirm">Potvrdit</string>
     <string name="color">Barva</string>
     <string name="payment">Platba</string>
+    <string name="order">Objednávka</string>
     <string name="order_confirmation">Potvrzení objednávky</string>
     <string name="order_description">Zkontrolujte informace o objednávce a zvolte způsob platby</string>
     <string name="sort_and_filter">Seřazení &amp; Filtrování</string>
@@ -64,14 +65,15 @@
     <string name="search">Vyhledávání</string>
     <string name="search_hint">Vyhledávání produktů</string>
     <string name="no_product_found">Nebyl nalezen žádný produkt</string>
+    <string name="delivery">Doručení</string>
 
     <string-array name="genders">
         <item>Muž</item>
         <item>Žena</item>
     </string-array>
 
-    <string-array name="payment_methods">
-        <item>Dobírka</item>
+    <string-array name="delivery_methods">
+        <item>Bjork Home Delivery</item>
     </string-array>
 
     <string-array name="sort_attributes">

@@ -129,27 +129,26 @@
             app:layout_constraintTop_toTopOf="@+id/moneyIcon" />
 
         <ImageView
-            android:id="@+id/paymentIcon"
+            android:id="@+id/deliveryIcon"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_gravity="center"
             android:layout_marginStart="0dp"
             android:layout_marginTop="16dp"
-            android:background="@drawable/ic_payment_method"
+            android:background="@drawable/ic_delivery_van"
             app:layout_constraintStart_toStartOf="@+id/moneyIcon"
             app:layout_constraintTop_toBottomOf="@+id/moneyIcon" />
 
         <Spinner
-            android:id="@+id/paymentText"
+            android:id="@+id/deliveryText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginStart="16dp"
             android:fontFamily="@font/roboto"
-            android:text="@string/login"
             android:theme="@style/Spinner"
-            app:layout_constraintStart_toEndOf="@+id/paymentIcon"
-            app:layout_constraintTop_toTopOf="@+id/paymentIcon" />
+            app:layout_constraintStart_toEndOf="@+id/deliveryIcon"
+            app:layout_constraintTop_toTopOf="@+id/deliveryIcon" />
 
     </android.support.constraint.ConstraintLayout>
 

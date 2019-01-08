@@ -2,8 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/menu_money"
+        android:id="@+id/menu_order"
         app:showAsAction="always"
-        android:icon="@drawable/ic_money_white"
-        android:title="@string/payment"/>
+        android:icon="@drawable/ic_delivery_van_white"
+        android:title="@string/order"/>
 </menu>

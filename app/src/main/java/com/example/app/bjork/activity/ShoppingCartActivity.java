@@ -207,7 +207,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
-            case R.id.menu_money:
+            case R.id.menu_order:
                 orderBottomSheet.show();
         }
         return super.onOptionsItemSelected(item);
@@ -259,11 +259,11 @@ public class ShoppingCartActivity extends AppCompatActivity {
         final TextView progressText = orderBottomSheet.findViewById(R.id.progressText);
         final ConstraintLayout orderInfo = orderBottomSheet.findViewById(R.id.orderInfo);
 
-        final Spinner paymentList = orderBottomSheet.findViewById(R.id.paymentText);
-        List<String> methods = Arrays.asList(getResources().getStringArray(R.array.payment_methods));
-        ArrayAdapter<String> paymentAdapter = new ArrayAdapter<String>(this, R.layout.spinner_item, methods);
-        paymentAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        paymentList.setAdapter(paymentAdapter);
+        final Spinner deliveryList = orderBottomSheet.findViewById(R.id.deliveryText);
+        List<String> methods = Arrays.asList(getResources().getStringArray(R.array.delivery_methods));
+        ArrayAdapter<String> deliveryAdapter = new ArrayAdapter<String>(this, R.layout.spinner_item, methods);
+        deliveryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        deliveryList.setAdapter(deliveryAdapter);
 
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
