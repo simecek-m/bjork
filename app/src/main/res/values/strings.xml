@@ -66,6 +66,8 @@
     <string name="search_hint">Vyhledávání produktů</string>
     <string name="no_product_found">Nebyl nalezen žádný produkt</string>
     <string name="delivery">Doručení</string>
+    <string name="description">Popis</string>
+    <string name="info">Info</string>
 
     <string-array name="genders">
         <item>Muž</item>

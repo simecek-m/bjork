@@ -80,11 +80,12 @@
 
                 <ImageView
                     android:id="@+id/sizeIcon"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginTop="12dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="0dp"
+                    android:layout_marginTop="12sp"
                     android:src="@drawable/ic_size"
+                    android:tint="@color/black"
                     app:layout_constraintStart_toStartOf="@+id/guideline_vertical_left"
                     app:layout_constraintTop_toBottomOf="@+id/name" />
 
@@ -95,7 +96,7 @@
                     android:layout_marginStart="20dp"
                     android:fontFamily="@font/roboto_bold"
                     android:textColor="@color/black"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     app:layout_constraintBottom_toBottomOf="@+id/sizeIcon"
                     app:layout_constraintStart_toEndOf="@+id/sizeIcon"
                     app:layout_constraintTop_toTopOf="@+id/sizeIcon"
@@ -103,12 +104,13 @@
 
                 <ImageView
                     android:id="@+id/colorIcon"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginStart="12dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="0dp"
                     android:layout_marginTop="12dp"
                     android:src="@drawable/ic_palette"
-                    app:layout_constraintStart_toStartOf="@+id/guideline_vertical_left"
+                    android:tint="@color/black"
+                    app:layout_constraintStart_toStartOf="@+id/sizeIcon"
                     app:layout_constraintTop_toBottomOf="@+id/sizeIcon" />
 
                 <TextView
@@ -118,7 +120,7 @@
                     android:layout_marginStart="20dp"
                     android:fontFamily="@font/roboto_bold"
                     android:textColor="@color/black"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     app:layout_constraintBottom_toBottomOf="@+id/colorIcon"
                     app:layout_constraintStart_toEndOf="@+id/colorIcon"
                     app:layout_constraintTop_toTopOf="@+id/colorIcon"
@@ -126,11 +128,12 @@
 
                 <ImageView
                     android:id="@+id/moneyIcon"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:layout_marginStart="0dp"
-                    android:layout_marginTop="8dp"
-                    android:src="@drawable/ic_money"
+                    android:layout_marginTop="12dp"
+                    android:src="@drawable/ic_wallet"
+                    android:tint="@color/black"
                     app:layout_constraintStart_toStartOf="@+id/colorIcon"
                     app:layout_constraintTop_toBottomOf="@+id/colorIcon" />
 
@@ -141,26 +144,50 @@
                     android:layout_marginStart="20dp"
                     android:fontFamily="@font/roboto_bold"
                     android:textColor="@color/black"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     app:layout_constraintBottom_toBottomOf="@+id/moneyIcon"
                     app:layout_constraintStart_toEndOf="@+id/moneyIcon"
                     app:layout_constraintTop_toTopOf="@+id/moneyIcon"
                     app:layout_constraintVertical_bias="0.5" />
 
+                <ImageView
+                    android:id="@+id/descriptionIcon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="0dp"
+                    android:layout_marginTop="16dp"
+                    android:src="@drawable/ic_quotes"
+                    app:layout_constraintStart_toStartOf="@+id/guideline_vertical_left"
+                    app:layout_constraintTop_toBottomOf="@+id/moneyIcon" />
+
+                <TextView
+                    android:id="@+id/descriptionText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:text="@string/description"
+                    android:fontFamily="@font/roboto_bold"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/descriptionIcon"
+                    app:layout_constraintStart_toEndOf="@+id/descriptionIcon"
+                    app:layout_constraintTop_toTopOf="@+id/descriptionIcon" />
+
                 <TextView
                     android:id="@+id/description"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginEnd="24dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_marginTop="8dp"
                     android:layout_marginBottom="24dp"
                     android:fontFamily="@font/roboto"
-                    android:textSize="18sp"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/guideline_vertical_right"
                     app:layout_constraintStart_toStartOf="@+id/guideline_vertical_left"
-                    app:layout_constraintTop_toBottomOf="@+id/moneyIcon" />
+                    app:layout_constraintTop_toBottomOf="@+id/descriptionIcon" />
             </android.support.constraint.ConstraintLayout>
         </ScrollView>
     </LinearLayout>
