@@ -69,6 +69,8 @@
     <string name="description">Popis</string>
     <string name="info">Info</string>
     <string name="download">Stáhnout</string>
+    <string name="storage_unavailable">Nedostupné úložiště</string>
+    <string name="image_downloaded">Obrázek uložen</string>
 
     <string-array name="genders">
         <item>Muž</item>
