@@ -9,38 +9,26 @@
     <com.github.chrisbanes.photoview.PhotoView
         android:id="@+id/photoView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"/>
 
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/white_transparent_gradient"
+        android:layout_height="100dp"
+        android:background="@drawable/black_transparent_gradient"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent">
 
         <ImageView
-            android:id="@+id/like"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="24dp"
-            android:src="@drawable/ic_heart"
-            android:tint="@color/black"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/download"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintHorizontal_chainStyle="spread"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
             android:id="@+id/share"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:cropToPadding="true"
+            android:padding="24dp"
             android:src="@drawable/ic_share"
-            android:tint="@color/black"
+            android:tint="@color/white"
             app:layout_constraintBottom_toBottomOf="@+id/download"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -49,16 +37,20 @@
 
         <ImageView
             android:id="@+id/download"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="4dp"
+            android:cropToPadding="true"
+            android:padding="24dp"
             android:src="@drawable/ic_download"
-            android:tint="@color/black"
-            app:layout_constraintBottom_toBottomOf="@+id/like"
+            android:tint="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/share"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/like"
-            app:layout_constraintTop_toTopOf="@+id/like" />
-
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0" />
 
     </android.support.constraint.ConstraintLayout>
 </android.support.constraint.ConstraintLayout>

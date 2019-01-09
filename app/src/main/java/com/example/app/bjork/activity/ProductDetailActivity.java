@@ -1,7 +1,6 @@
 package com.example.app.bjork.activity;
 
 import android.content.Intent;
-import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -27,11 +26,8 @@ import java.util.List;
 
 public class ProductDetailActivity extends AppCompatActivity {
 
-    public static int LIKE_CHANGE_REQUEST = 1;
-
     private Toolbar toolbar;
     private Product product;
-    private boolean startFromSearchActivity;
 
     private ImageView image;
     private TextView name;
@@ -67,7 +63,6 @@ public class ProductDetailActivity extends AppCompatActivity {
         description = findViewById(R.id.description);
 
         product = (Product) getIntent().getSerializableExtra("product");
-        startFromSearchActivity = getIntent().getBooleanExtra("startFromSearchActivity", false);
         createAddToCartBottomSheet();
 
         RequestOptions options = new RequestOptions();
@@ -82,10 +77,7 @@ public class ProductDetailActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(ProductDetailActivity.this, ImageDetailActivity.class);
                 intent.putExtra("product", product);
-                if(startFromSearchActivity){
-                    intent.putExtra("startFromSearchActivity", true);
-                }
-                startActivityForResult(intent, LIKE_CHANGE_REQUEST);
+                startActivity(intent);
             }
         });
 
@@ -196,21 +188,5 @@ public class ProductDetailActivity extends AppCompatActivity {
                 finish();
             }
         });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if(requestCode == LIKE_CHANGE_REQUEST && resultCode == RESULT_OK){
-            product = (Product) data.getSerializableExtra("product");
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-        Intent intent = new Intent();
-        intent.putExtra("product", product);
-        setResult(RESULT_OK, intent);
-        finish();
-        super.onBackPressed();
     }
 }

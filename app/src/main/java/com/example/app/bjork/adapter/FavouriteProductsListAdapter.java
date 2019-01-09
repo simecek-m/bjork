@@ -1,6 +1,5 @@
 package com.example.app.bjork.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
@@ -16,7 +15,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.app.bjork.R;
-import com.example.app.bjork.activity.MainActivity;
 import com.example.app.bjork.activity.ProductDetailActivity;
 import com.example.app.bjork.api.BjorkAPI;
 import com.example.app.bjork.model.Product;
@@ -89,7 +87,7 @@ public class FavouriteProductsListAdapter extends RecyclerView.Adapter<Favourite
             public void onClick(View v) {
                 Intent intent = new Intent(context, ProductDetailActivity.class);
                 intent.putExtra("product", product);
-                ((MainActivity)context).startActivityForResult(intent, MainActivity.LIKE_CHANGE_REQUEST);
+                context.startActivity(intent);
             }
         });
     }

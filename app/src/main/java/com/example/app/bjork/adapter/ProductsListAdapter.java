@@ -89,7 +89,7 @@ public class ProductsListAdapter extends RecyclerView.Adapter<ProductsListAdapte
             public void onClick(View v) {
                 Intent intent = new Intent(context, ProductDetailActivity.class);
                 intent.putExtra("product", product);
-                ((MainActivity)context).startActivityForResult(intent, MainActivity.LIKE_CHANGE_REQUEST);
+                context.startActivity(intent);
             }
         });
     }

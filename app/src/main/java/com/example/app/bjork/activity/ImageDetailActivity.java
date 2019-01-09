@@ -1,7 +1,6 @@
 package com.example.app.bjork.activity;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Environment;
@@ -10,6 +9,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -33,14 +34,10 @@ public class ImageDetailActivity extends AppCompatActivity {
     private static final String ALBUM_NAME = "Bjork";
     public static int EXTERNAL_STORAGE_REQUEST = 1;
 
-    private FirebaseAuth auth;
     private Product product;
-    private boolean startFromSearchActivity;
-    private String currentUserId;
 
     private PhotoView photoView;
     private ImageView shareView;
-    private ImageView likeView;
     private ImageView downloadView;
 
     private Bitmap bitmap;
@@ -50,24 +47,14 @@ public class ImageDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_detail);
 
-        auth = FirebaseAuth.getInstance();
-        currentUserId = auth.getUid();
         product = (Product)getIntent().getSerializableExtra("product");
-        startFromSearchActivity = getIntent().getBooleanExtra("startFromSearchActivity", false);
         photoView = findViewById(R.id.photoView);
         shareView = findViewById(R.id.share);
-        likeView = findViewById(R.id.like);
         downloadView = findViewById(R.id.download);
 
         Glide.with(this)
                 .load(product.getImageUrl())
                 .into(photoView);
-
-        if(product.getLikes().contains(currentUserId)){
-            likeView.setImageResource(R.drawable.ic_favorite_heart);
-        }else{
-            likeView.setImageResource(R.drawable.ic_heart);
-        }
 
         shareView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,39 +78,6 @@ public class ImageDetailActivity extends AppCompatActivity {
                         });
             }
         });
-
-        if (auth.getUid() == null || startFromSearchActivity){
-            likeView.setVisibility(View.GONE);
-        }else{
-            likeView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    like();
-                }
-            });
-        }
-    }
-
-    public void like(){
-        List<String> likes = product.getLikes();
-        if(likes.contains(auth.getUid())){
-            likes.remove(currentUserId);
-            likeView.setImageResource(R.drawable.ic_heart);
-
-        }else{
-            likes.add(currentUserId);
-            likeView.setImageResource(R.drawable.ic_favorite_heart);
-        }
-        BjorkAPI.likeProduct(product);
-    }
-
-    @Override
-    public void onBackPressed() {
-        Intent intent = new Intent();
-        intent.putExtra("product", product);
-        setResult(RESULT_OK, intent);
-        finish();
-        super.onBackPressed();
     }
 
     public void downloadImage(Bitmap resource){
@@ -136,10 +90,13 @@ public class ImageDetailActivity extends AppCompatActivity {
                 fos = new FileOutputStream(file);
                 resource.compress(Bitmap.CompressFormat.JPEG, 100, fos);
                 fos.close();
+                Toast toast = Toast.makeText(getBaseContext(), getString(R.string.image_downloaded), Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.BOTTOM | Gravity.CLIP_VERTICAL, 0, 180);
+                toast.show();
             } catch (Exception e) {
                 e.printStackTrace();
+                Log.e(TAG, "downloadImage: ", e);
             }
-            Toast.makeText(getBaseContext(), getString(R.string.image_downloaded), Toast.LENGTH_SHORT).show();
         }
     }
 
