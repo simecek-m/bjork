@@ -1,8 +1,6 @@
 package com.example.app.bjork.constant;
 
 
-import com.google.firebase.firestore.Query;
-
 public class Constant {
 
     // sharedPreferences

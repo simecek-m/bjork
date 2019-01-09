@@ -3,12 +3,12 @@ package com.example.app.bjork.activity;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -19,14 +19,11 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.app.bjork.R;
-import com.example.app.bjork.api.BjorkAPI;
 import com.example.app.bjork.model.Product;
 import com.github.chrisbanes.photoview.PhotoView;
-import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.List;
 
 public class ImageDetailActivity extends AppCompatActivity {
 

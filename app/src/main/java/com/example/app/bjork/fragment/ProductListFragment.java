@@ -28,7 +28,9 @@ import java.util.Comparator;
 import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.example.app.bjork.constant.Constant.*;
+import static com.example.app.bjork.constant.Constant.FILTER_TYPE;
+import static com.example.app.bjork.constant.Constant.SORT_ATTRIBUTE;
+import static com.example.app.bjork.constant.Constant.SORT_DIRECTION;
 
 
 public class ProductListFragment extends Fragment {

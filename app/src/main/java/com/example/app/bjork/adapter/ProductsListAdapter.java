@@ -15,7 +15,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.app.bjork.R;
-import com.example.app.bjork.activity.MainActivity;
 import com.example.app.bjork.activity.ProductDetailActivity;
 import com.example.app.bjork.api.BjorkAPI;
 import com.example.app.bjork.model.Product;
