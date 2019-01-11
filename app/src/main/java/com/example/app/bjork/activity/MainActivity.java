@@ -1,15 +1,18 @@
 package com.example.app.bjork.activity;
 
 import android.app.SearchManager;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.NavigationView;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -40,6 +43,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import static com.example.app.bjork.constant.Constant.BROADCAST_LIKE_PRODUCT;
 import static com.example.app.bjork.constant.Constant.FILTER_TYPE;
 import static com.example.app.bjork.constant.Constant.SORT_ATTRIBUTE;
 import static com.example.app.bjork.constant.Constant.SORT_DIRECTION;
@@ -67,8 +71,9 @@ public class MainActivity extends AppCompatActivity {
     private ImageView profileImage;
     private FirebaseFirestore db;
 
-    ProductListFragment productListFragment;
-    FavouriteListFragment favouriteListFragment;
+    private LocalBroadcastManager localBroadcastManager;
+    private ProductListFragment productListFragment;
+    private FavouriteListFragment favouriteListFragment;
 
 
     @Override
@@ -338,4 +343,26 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        localBroadcastManager = LocalBroadcastManager.getInstance(this);
+        localBroadcastManager.registerReceiver(likeBroadcastReceiver, new IntentFilter(BROADCAST_LIKE_PRODUCT));
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        localBroadcastManager.unregisterReceiver(likeBroadcastReceiver);
+    }
+
+    private BroadcastReceiver likeBroadcastReceiver = new BroadcastReceiver(){
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Product product = (Product) intent.getSerializableExtra("product");
+            productListFragment.updateList(product);
+            favouriteListFragment.updateList(product);
+        }
+    };
 }

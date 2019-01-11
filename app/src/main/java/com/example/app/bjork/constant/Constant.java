@@ -19,4 +19,7 @@ public class Constant {
     public static final String ALGOLIA_PRODUCT_INDICES = "bjork_products";
 
 
+    public static final String BROADCAST_LIKE_PRODUCT = "broadcast-like-product";
+
+
 }

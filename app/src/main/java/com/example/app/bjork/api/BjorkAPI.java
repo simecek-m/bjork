@@ -139,4 +139,10 @@ public class BjorkAPI {
         Index index = client.getIndex(Constant.ALGOLIA_PRODUCT_INDICES);
         index.searchAsync(new Query(query), null, resultHandler);
     }
+
+    public static Task<DocumentSnapshot> getDocument(String productId){
+        return db.collection(PRODUCTS_COLLECTION)
+                .document(productId)
+                .get();
+    }
 }
