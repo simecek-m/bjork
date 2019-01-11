@@ -139,6 +139,9 @@ public class MainActivity extends AppCompatActivity {
         email = header.findViewById(R.id.email);
         profileImage = header.findViewById(R.id.profileImage);
         updateUserInfo();
+
+        localBroadcastManager = LocalBroadcastManager.getInstance(this);
+        localBroadcastManager.registerReceiver(likeBroadcastReceiver, new IntentFilter(BROADCAST_LIKE_PRODUCT));
     }
 
     @Override
@@ -345,15 +348,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        localBroadcastManager = LocalBroadcastManager.getInstance(this);
-        localBroadcastManager.registerReceiver(likeBroadcastReceiver, new IntentFilter(BROADCAST_LIKE_PRODUCT));
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onDestroy() {
+        super.onDestroy();
         localBroadcastManager.unregisterReceiver(likeBroadcastReceiver);
     }
 
