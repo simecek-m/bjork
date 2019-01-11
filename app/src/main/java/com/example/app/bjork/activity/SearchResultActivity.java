@@ -2,9 +2,9 @@ package com.example.app.bjork.activity;
 
 import android.app.SearchManager;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -83,7 +83,6 @@ public class SearchResultActivity extends AppCompatActivity {
                         result.add(product);
                     }
                     adapter.setList(result);
-                    System.out.println("result: " + result.size());
                     if(result.size() == 0){
                         emptyView.setVisibility(View.VISIBLE);
                     }else{

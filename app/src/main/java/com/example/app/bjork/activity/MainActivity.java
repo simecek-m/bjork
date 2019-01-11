@@ -40,7 +40,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import static com.example.app.bjork.constant.Constant.*;
+import static com.example.app.bjork.constant.Constant.FILTER_TYPE;
+import static com.example.app.bjork.constant.Constant.SORT_ATTRIBUTE;
+import static com.example.app.bjork.constant.Constant.SORT_DIRECTION;
 
 public class MainActivity extends AppCompatActivity {
 

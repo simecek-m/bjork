@@ -1,10 +1,10 @@
 package com.example.app.bjork.activity;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,12 +37,9 @@ public class ProductDetailActivity extends AppCompatActivity {
     private TextView money;
     private TextView description;
 
-
     private FirebaseAuth mAuth;
     private BottomSheetDialog loginBottomSheet;
     private BottomSheetDialog addToCartBottomSheet;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +71,15 @@ public class ProductDetailActivity extends AppCompatActivity {
                 .setDefaultRequestOptions(options)
                 .load(product.getImageUrl())
                 .into(image);
+
+        image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ProductDetailActivity.this, ImageDetailActivity.class);
+                intent.putExtra("product", product);
+                startActivity(intent);
+            }
+        });
 
         name.setText(product.getName());
 

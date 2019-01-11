@@ -28,7 +28,9 @@ import java.util.Comparator;
 import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.example.app.bjork.constant.Constant.*;
+import static com.example.app.bjork.constant.Constant.FILTER_TYPE;
+import static com.example.app.bjork.constant.Constant.SORT_ATTRIBUTE;
+import static com.example.app.bjork.constant.Constant.SORT_DIRECTION;
 
 
 public class ProductListFragment extends Fragment {
@@ -120,6 +122,14 @@ public class ProductListFragment extends Fragment {
         final String direction = Constant.SORT_DIRECTIONS[settings.getInt(SORT_DIRECTION, 0)];
         Comparator<Product> comparator = new ProductComparator(attribute, direction).getComparator();
         Collections.sort(list, comparator);
+    }
+
+    public void updateList(Product product){
+        int index = productsList.indexOf(product);
+        if(index >= 0){
+            productsList.set(index, product);
+            adapter.notifyDataSetChanged();
+        }
     }
 }
 
