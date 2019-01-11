@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
@@ -22,8 +23,11 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.app.bjork.R;
+import com.example.app.bjork.api.BjorkAPI;
+import com.example.app.bjork.constant.Constant;
 import com.example.app.bjork.model.Product;
 import com.github.chrisbanes.photoview.PhotoView;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -39,6 +43,8 @@ public class ImageDetailActivity extends AppCompatActivity {
     private PhotoView photoView;
     private ImageView shareView;
     private ImageView downloadView;
+    private ImageView likeView;
+    private String currentUserId;
 
     private Bitmap bitmap;
 
@@ -52,6 +58,8 @@ public class ImageDetailActivity extends AppCompatActivity {
         photoView = findViewById(R.id.photoView);
         shareView = findViewById(R.id.share);
         downloadView = findViewById(R.id.download);
+        likeView = findViewById(R.id.like);
+        currentUserId = FirebaseAuth.getInstance().getUid();
 
         Glide.with(this)
                 .load(product.getImageUrl())
@@ -84,6 +92,21 @@ public class ImageDetailActivity extends AppCompatActivity {
                                 checkPermissionAndDownload(resource);
                             }
                         });
+            }
+        });
+
+        showCorrectLikeIcon();
+
+        likeView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                BjorkAPI.likeProduct(product);
+                product.likeProduct(currentUserId);
+                showCorrectLikeIcon();
+                LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(ImageDetailActivity.this);
+                Intent intent = new Intent(Constant.BROADCAST_LIKE_PRODUCT);
+                intent.putExtra("product", product);
+                localBroadcastManager.sendBroadcast(intent);
             }
         });
     }
@@ -153,6 +176,14 @@ public class ImageDetailActivity extends AppCompatActivity {
             startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.share_with)));
         }else{
             Log.e(TAG, "shareImage: image not in cache");
+        }
+    }
+
+    public void showCorrectLikeIcon(){
+        if(product.likedByUser(currentUserId)){
+            likeView.setImageResource(R.drawable.ic_favorite_heart);
+        }else{
+            likeView.setImageResource(R.drawable.ic_heart);
         }
     }
 }
