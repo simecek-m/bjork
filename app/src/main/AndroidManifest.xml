@@ -74,6 +74,16 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+
+        <provider
+            android:name=".provider.ImageFileProvider"
+            android:authorities="com.example.app.bjork"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"/>
+        </provider>
     </application>
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>

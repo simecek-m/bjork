@@ -1,13 +1,16 @@
 package com.example.app.bjork.activity;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
@@ -39,6 +42,7 @@ public class ImageDetailActivity extends AppCompatActivity {
 
     private Bitmap bitmap;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,28 +60,35 @@ public class ImageDetailActivity extends AppCompatActivity {
         shareView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getBaseContext(), getString(R.string.feature_not_available), Toast.LENGTH_SHORT).show();
+                Glide.with(view)
+                        .asFile()
+                        .load(product.getImageUrl())
+                        .into(new SimpleTarget<File>() {
+                            @Override
+                            public void onResourceReady(@NonNull File resource, @Nullable Transition<? super File> transition) {
+                                shareImage(resource);
+                            }
+                        });
             }
         });
 
         downloadView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Glide.with(getBaseContext())
+                Glide.with(ImageDetailActivity.this)
                         .asBitmap()
                         .load(product.getImageUrl())
                         .into(new SimpleTarget<Bitmap>() {
                             @Override
-                            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                                bitmap = resource;
-                                checkExternalStoragePermission();
+                            public void onResourceReady(@NonNull final Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                checkPermissionAndDownload(resource);
                             }
                         });
             }
         });
     }
 
-    public void downloadImage(Bitmap resource){
+    public void downloadImage(Bitmap bitmap){
         if(isExternalStorageWritable()){
             File album = getPublicAlbumStorageDir(ALBUM_NAME);
             String fileName = System.currentTimeMillis() + ".jpg";
@@ -85,7 +96,7 @@ public class ImageDetailActivity extends AppCompatActivity {
             FileOutputStream fos;
             try {
                 fos = new FileOutputStream(file);
-                resource.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
                 fos.close();
                 Toast toast = Toast.makeText(getBaseContext(), getString(R.string.image_downloaded), Toast.LENGTH_LONG);
                 toast.setGravity(Gravity.BOTTOM | Gravity.CLIP_VERTICAL, 0, 180);
@@ -112,10 +123,11 @@ public class ImageDetailActivity extends AppCompatActivity {
         return file;
     }
 
-    public void checkExternalStoragePermission(){
+    public void checkPermissionAndDownload(Bitmap bitmap){
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
             downloadImage(bitmap);
         }else{
+            this.bitmap = bitmap;
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     EXTERNAL_STORAGE_REQUEST);
@@ -128,6 +140,19 @@ public class ImageDetailActivity extends AppCompatActivity {
             if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                 downloadImage(bitmap);
             }
+        }
+    }
+
+    public void shareImage(File file){
+        if(file.exists()){
+            Uri uriImage = FileProvider.getUriForFile(this, "com.example.app.bjork", file);
+            Intent shareIntent = new Intent();
+            shareIntent.setType("image/jpeg");
+            shareIntent.setAction(Intent.ACTION_SEND);
+            shareIntent.putExtra(Intent.EXTRA_STREAM, uriImage);
+            startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.share_with)));
+        }else{
+            Log.e(TAG, "shareImage: image not in cache");
         }
     }
 }
