@@ -33,7 +33,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.example.app.bjork.R;
 import com.example.app.bjork.adapter.ShoppingCartAdapter;
 import com.example.app.bjork.animation.Animation;
-import com.example.app.bjork.api.BjorkAPI;
+import com.example.app.bjork.database.Database;
 import com.example.app.bjork.model.CartItem;
 import com.example.app.bjork.model.UserInfo;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -147,7 +147,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
                 final CartItem deletedCartItem = adapter.getCartItem(position);
                 final View layout = findViewById(R.id.layout);
                 adapter.removeItem(position);
-                BjorkAPI.removeItemFromCart(auth.getUid(), deletedCartItem.getId()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                Database.removeItemFromCart(auth.getUid(), deletedCartItem.getId()).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if(task.isComplete() && task.isSuccessful()){
@@ -165,7 +165,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
                                         public void onClick(View view) {
                                             if(firstClick){
                                                 firstClick = false;
-                                                BjorkAPI.restoreCartItem(currentUser.getId(), deletedCartItem);
+                                                Database.restoreCartItem(currentUser.getId(), deletedCartItem);
                                                 adapter.addItemOnPosition(deletedCartItem, position);
                                                 updateOrderBottomSheetPrice();
                                                 if(adapter.getItemCount() == 1){
@@ -214,7 +214,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
     }
 
     public void loadData(){
-        BjorkAPI.getShoppingCart().addOnSuccessListener(new OnSuccessListener<HttpsCallableResult>() {
+        Database.getShoppingCart().addOnSuccessListener(new OnSuccessListener<HttpsCallableResult>() {
                     @Override
                     public void onSuccess(HttpsCallableResult httpsCallableResult) {
                         List<Object> result = (List<Object>) httpsCallableResult.getData();
@@ -271,7 +271,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
                 confirmButton.setVisibility(View.GONE);
                 progressLayout.setVisibility(View.VISIBLE);
                 orderInfo.setVisibility(View.GONE);
-                BjorkAPI.newOrder().addOnSuccessListener(new OnSuccessListener<HttpsCallableResult>() {
+                Database.newOrder().addOnSuccessListener(new OnSuccessListener<HttpsCallableResult>() {
                     @Override
                     public void onSuccess(HttpsCallableResult httpsCallableResult) {
                         progressBar.setVisibility(View.GONE);
@@ -345,7 +345,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        BjorkAPI.loadUserInfo(auth.getUid()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        Database.loadUserInfo(auth.getUid()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 currentUser = documentSnapshot.toObject(UserInfo.class);

@@ -18,7 +18,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.app.bjork.R;
-import com.example.app.bjork.api.BjorkAPI;
+import com.example.app.bjork.database.Database;
 import com.example.app.bjork.model.Product;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -184,7 +184,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                 String color = colorText.getSelectedItem().toString();
                 Integer quantity = Integer.parseInt(quantityText.getText().toString());
                 addToCartBottomSheet.dismiss();
-                BjorkAPI.addToCart(mAuth.getUid(), product, color, quantity);
+                Database.addToCart(mAuth.getUid(), product, color, quantity);
                 finish();
             }
         });

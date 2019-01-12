@@ -1,4 +1,4 @@
-package com.example.app.bjork.api;
+package com.example.app.bjork.database;
 
 import com.algolia.search.saas.Client;
 import com.algolia.search.saas.CompletionHandler;
@@ -20,7 +20,7 @@ import com.google.firebase.functions.HttpsCallableResult;
 
 import java.util.List;
 
-public class BjorkAPI {
+public class Database {
 
     private static final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -108,7 +108,7 @@ public class BjorkAPI {
                 .call();
     }
 
-    public static void addFeedback(Feedback feedback){
+    public static void sendFeedback(Feedback feedback){
         db.collection(FEEDBACKS_COLLECTION)
                 .add(feedback);
     }

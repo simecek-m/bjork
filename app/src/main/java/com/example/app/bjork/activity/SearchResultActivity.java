@@ -16,7 +16,7 @@ import com.algolia.search.saas.AlgoliaException;
 import com.algolia.search.saas.CompletionHandler;
 import com.example.app.bjork.R;
 import com.example.app.bjork.adapter.SearchAdapter;
-import com.example.app.bjork.api.BjorkAPI;
+import com.example.app.bjork.database.Database;
 import com.example.app.bjork.model.Product;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -69,7 +69,7 @@ public class SearchResultActivity extends AppCompatActivity {
 
     public void searchProducts(String query){
         final View emptyView = findViewById(R.id.empty_search);
-        BjorkAPI.searchProducts(query, new CompletionHandler() {
+        Database.searchProducts(query, new CompletionHandler() {
             @Override
             public void requestCompleted(JSONObject jsonObject, AlgoliaException e) {
                 List<Product> result = new ArrayList<>();

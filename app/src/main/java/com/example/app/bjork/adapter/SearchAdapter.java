@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.app.bjork.R;
 import com.example.app.bjork.activity.ProductDetailActivity;
-import com.example.app.bjork.api.BjorkAPI;
+import com.example.app.bjork.database.Database;
 import com.example.app.bjork.model.Product;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -76,7 +76,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
                 @Override
                 public void onClick(View view) {
                     Product algoliaProduct = productsList.get(getAdapterPosition());
-                    BjorkAPI.getDocument(algoliaProduct.getId()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    Database.getDocument(algoliaProduct.getId()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                         @Override
                         public void onSuccess(DocumentSnapshot documentSnapshot) {
                             Intent intent = new Intent(context, ProductDetailActivity.class);

@@ -14,7 +14,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.example.app.bjork.R;
-import com.example.app.bjork.api.BjorkAPI;
+import com.example.app.bjork.database.Database;
 import com.example.app.bjork.constant.Constant;
 import com.example.app.bjork.model.UserInfo;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -78,7 +78,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     String address = addressText.getText().toString();
                     String gender = Constant.GENDERS[genderSpinner.getSelectedItemPosition()];
                     defaultUserInfo = new UserInfo(auth.getUid(), auth.getCurrentUser().getEmail() ,firstname, lastname, address, gender);
-                    BjorkAPI.addUserInfo(defaultUserInfo);
+                    Database.addUserInfo(defaultUserInfo);
                     resultIntent.putExtra("userInfo", defaultUserInfo);
                     setResult(RESULT_OK, resultIntent);
                     finish();
@@ -137,7 +137,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     public void loadUserInfo(final String userId){
-        BjorkAPI.loadUserInfo(userId)
+        Database.loadUserInfo(userId)
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {

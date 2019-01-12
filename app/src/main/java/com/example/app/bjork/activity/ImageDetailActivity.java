@@ -23,7 +23,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.app.bjork.R;
-import com.example.app.bjork.api.BjorkAPI;
+import com.example.app.bjork.database.Database;
 import com.example.app.bjork.constant.Constant;
 import com.example.app.bjork.model.Product;
 import com.github.chrisbanes.photoview.PhotoView;
@@ -100,7 +100,7 @@ public class ImageDetailActivity extends AppCompatActivity {
         likeView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                BjorkAPI.likeProduct(product);
+                Database.likeProduct(product);
                 product.likeProduct(currentUserId);
                 showCorrectLikeIcon();
                 LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(ImageDetailActivity.this);

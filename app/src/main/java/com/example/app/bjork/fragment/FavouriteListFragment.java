@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 
 import com.example.app.bjork.R;
 import com.example.app.bjork.adapter.FavouriteProductsListAdapter;
-import com.example.app.bjork.api.BjorkAPI;
+import com.example.app.bjork.database.Database;
 import com.example.app.bjork.comparator.ProductComparator;
 import com.example.app.bjork.constant.Constant;
 import com.example.app.bjork.model.Product;
@@ -102,9 +102,9 @@ public class FavouriteListFragment extends Fragment {
 
             Task<QuerySnapshot> task;
             if(filterType == Constant.PRODUCT_TYPES[0]){
-                task = BjorkAPI.loadFavouritesProducts(auth.getUid());
+                task = Database.loadFavouritesProducts(auth.getUid());
             }else{
-                task = BjorkAPI.loadFavouritesProducts(auth.getUid(), filterType);
+                task = Database.loadFavouritesProducts(auth.getUid(), filterType);
             }
             task.addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                         @Override
