@@ -1,12 +1,13 @@
 package com.example.app.bjork.activity;
 
 import android.Manifest;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -23,43 +24,39 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.app.bjork.R;
-import com.example.app.bjork.database.Database;
 import com.example.app.bjork.constant.Constant;
 import com.example.app.bjork.model.Product;
+import com.example.app.bjork.viewmodel.ImageDetailViewModel;
 import com.github.chrisbanes.photoview.PhotoView;
-import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.File;
-import java.io.FileOutputStream;
 
 public class ImageDetailActivity extends AppCompatActivity {
 
-    private static final String TAG = "ImageDetailActivity";
-    private static final String ALBUM_NAME = "Bjork";
     public static int EXTERNAL_STORAGE_REQUEST = 1;
+    private static final String TAG = "ImageDetailActivity";
 
+    private ImageDetailViewModel imageDetailViewModel;
     private Product product;
-
-    private PhotoView photoView;
-    private ImageView shareView;
-    private ImageView downloadView;
-    private ImageView likeView;
-    private String currentUserId;
-
     private Bitmap bitmap;
 
+    private ImageView likeView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_detail);
 
+        imageDetailViewModel = ViewModelProviders.of(this).get(ImageDetailViewModel.class);
+
         product = (Product)getIntent().getSerializableExtra("product");
-        photoView = findViewById(R.id.photoView);
-        shareView = findViewById(R.id.share);
-        downloadView = findViewById(R.id.download);
+
+        PhotoView photoView = findViewById(R.id.photoView);
+        ImageView shareView = findViewById(R.id.share);
+        ImageView downloadView = findViewById(R.id.download);
         likeView = findViewById(R.id.like);
-        currentUserId = FirebaseAuth.getInstance().getUid();
+
+        initialLikeButton();
 
         Glide.with(this)
                 .load(product.getImageUrl())
@@ -89,20 +86,49 @@ public class ImageDetailActivity extends AppCompatActivity {
                         .into(new SimpleTarget<Bitmap>() {
                             @Override
                             public void onResourceReady(@NonNull final Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                                checkPermissionAndDownload(resource);
+                                bitmap = resource;
+                                checkPermissionAndDownload(bitmap);
                             }
                         });
             }
         });
 
-        showCorrectLikeIcon();
-
         likeView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Database.likeProduct(product);
-                product.likeProduct(currentUserId);
-                showCorrectLikeIcon();
+                imageDetailViewModel.likeProduct(product);
+            }
+        });
+    }
+
+    private void initialLikeButton() {
+        if(imageDetailViewModel.isLikedByUser(product)){
+            likeView.setImageResource(R.drawable.ic_favorite_heart);
+        };
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        imageDetailViewModel.getImageDownloaded().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean imageDownloaded) {
+                if(imageDownloaded != null && imageDownloaded){
+                    showToast(getString(R.string.image_downloaded));
+                }
+            }
+        });
+
+        imageDetailViewModel.getLikedByUser().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean likedByUser) {
+                if(likedByUser == null){
+                    showToast(getString(R.string.unlogged_user));
+                }else if(likedByUser){
+                    likeView.setImageResource(R.drawable.ic_favorite_heart);
+                }else{
+                    likeView.setImageResource(R.drawable.ic_heart);
+                }
                 LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(ImageDetailActivity.this);
                 Intent intent = new Intent(Constant.BROADCAST_LIKE_PRODUCT);
                 intent.putExtra("product", product);
@@ -111,46 +137,16 @@ public class ImageDetailActivity extends AppCompatActivity {
         });
     }
 
-    public void downloadImage(Bitmap bitmap){
-        if(isExternalStorageWritable()){
-            File album = getPublicAlbumStorageDir(ALBUM_NAME);
-            String fileName = System.currentTimeMillis() + ".jpg";
-            File file = new File(album, fileName);
-            FileOutputStream fos;
-            try {
-                fos = new FileOutputStream(file);
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-                fos.close();
-                Toast toast = Toast.makeText(getBaseContext(), getString(R.string.image_downloaded), Toast.LENGTH_LONG);
-                toast.setGravity(Gravity.BOTTOM | Gravity.CLIP_VERTICAL, 0, 180);
-                toast.show();
-            } catch (Exception e) {
-                e.printStackTrace();
-                Log.e(TAG, "downloadImage: ", e);
-            }
-        }
-    }
-
-    public boolean isExternalStorageWritable() {
-        String state = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state)) {
-            return true;
-        }
-        return false;
-    }
-
-    public File getPublicAlbumStorageDir(String albumName) {
-        File file = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), albumName);
-        file.mkdirs();
-        return file;
+    @Override
+    protected void onStop() {
+        super.onStop();
+        imageDetailViewModel.getImageDownloaded().removeObservers(this);
     }
 
     public void checkPermissionAndDownload(Bitmap bitmap){
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
-            downloadImage(bitmap);
+            imageDetailViewModel.downloadImage(bitmap);
         }else{
-            this.bitmap = bitmap;
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     EXTERNAL_STORAGE_REQUEST);
@@ -161,7 +157,7 @@ public class ImageDetailActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if(requestCode == EXTERNAL_STORAGE_REQUEST){
             if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                downloadImage(bitmap);
+                imageDetailViewModel.downloadImage(bitmap);
             }
         }
     }
@@ -179,11 +175,9 @@ public class ImageDetailActivity extends AppCompatActivity {
         }
     }
 
-    public void showCorrectLikeIcon(){
-        if(product.likedByUser(currentUserId)){
-            likeView.setImageResource(R.drawable.ic_favorite_heart);
-        }else{
-            likeView.setImageResource(R.drawable.ic_heart);
-        }
+    public void showToast(String toastMessage){
+        Toast toast = Toast.makeText(getBaseContext(), toastMessage, Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.BOTTOM | Gravity.CLIP_VERTICAL, 0, 180);
+        toast.show();
     }
 }
