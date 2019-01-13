@@ -141,6 +141,7 @@ public class ImageDetailActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         imageDetailViewModel.getImageDownloaded().removeObservers(this);
+        imageDetailViewModel.getLikedByUser().removeObservers(this);
     }
 
     public void checkPermissionAndDownload(Bitmap bitmap){

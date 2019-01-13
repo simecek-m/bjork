@@ -80,6 +80,12 @@ public class NearestStoreActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        nearestStoreViewModel.getNearestStore().removeObservers(this);
+    }
+
     public void openNavigation(){
         Uri uri = nearestStoreViewModel.getNearestStoreUri();
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, uri);
