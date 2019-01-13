@@ -20,7 +20,7 @@ public class FeedbackActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feedback);
 
-        createToolbar();
+        showToolbar();
 
         feedbackViewModel = ViewModelProviders.of(this).get(FeedbackViewModel.class);
 
@@ -35,7 +35,7 @@ public class FeedbackActivity extends AppCompatActivity {
         });
     }
 
-    public void createToolbar(){
+    public void showToolbar(){
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar ab = getSupportActionBar();

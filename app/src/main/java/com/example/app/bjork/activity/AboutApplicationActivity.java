@@ -24,11 +24,7 @@ public class AboutApplicationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about_application);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        ActionBar ab = getSupportActionBar();
-        ab.setTitle(R.string.about);
-        ab.setDisplayHomeAsUpEnabled(true);
+        showToolbar();
 
         TextView osVersionText = findViewById(R.id.os_version);
         TextView appVersionText = findViewById(R.id.app_version);
@@ -51,5 +47,13 @@ public class AboutApplicationActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    public void showToolbar(){
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar ab = getSupportActionBar();
+        ab.setTitle(R.string.about);
+        ab.setDisplayHomeAsUpEnabled(true);
     }
 }

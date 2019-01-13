@@ -26,7 +26,6 @@ import java.util.List;
 
 public class ProductDetailActivity extends AppCompatActivity {
 
-    private Toolbar toolbar;
     private Product product;
 
     private ImageView image;
@@ -46,11 +45,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_detail);
 
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        ActionBar ab = getSupportActionBar();
-        ab.setTitle(R.string.detail_product);
-        ab.setDisplayHomeAsUpEnabled(true);
+        showToolbar();
 
         createLoginBottomSheet();
 
@@ -188,5 +183,13 @@ public class ProductDetailActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    public void showToolbar(){
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar ab = getSupportActionBar();
+        ab.setTitle(R.string.detail_product);
+        ab.setDisplayHomeAsUpEnabled(true);
     }
 }

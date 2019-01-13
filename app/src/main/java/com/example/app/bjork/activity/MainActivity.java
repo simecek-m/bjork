@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
     private String currentUserId;
     private UserInfo currentUser;
 
-    private Toolbar toolbar;
     private Menu menu;
     private BottomSheetDialog loginBottomSheet;
     private BottomSheetDialog sortBottomSheet;
@@ -81,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        createToolbar();
+        showToolbar();
         createLoginBottomSheet();
 
         db = FirebaseFirestore.getInstance();
@@ -206,8 +205,8 @@ public class MainActivity extends AppCompatActivity {
         return this.currentUserId != mAuth.getUid();
     }
 
-    public void createToolbar(){
-        toolbar = findViewById(R.id.toolbar);
+    public void showToolbar(){
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);

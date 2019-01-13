@@ -41,7 +41,6 @@ public class NearestStoreActivity extends AppCompatActivity {
     private Button navigateButton;
     private GoogleMap map;
     private SupportMapFragment mapFragment;
-    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,11 +49,7 @@ public class NearestStoreActivity extends AppCompatActivity {
 
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        ActionBar ab = getSupportActionBar();
-        ab.setTitle(R.string.nearest_store);
-        ab.setDisplayHomeAsUpEnabled(true);
+        showToolbar();
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("nearest_store")
@@ -138,5 +133,13 @@ public class NearestStoreActivity extends AppCompatActivity {
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, intentUri);
         mapIntent.setPackage(GOOGLE_MAPS_APP_PACKAGE);
         startActivity(mapIntent);
+    }
+
+    public void showToolbar(){
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar ab = getSupportActionBar();
+        ab.setTitle(R.string.nearest_store);
+        ab.setDisplayHomeAsUpEnabled(true);
     }
 }

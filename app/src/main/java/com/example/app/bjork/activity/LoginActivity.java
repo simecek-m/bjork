@@ -55,10 +55,7 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
         }
 
         setContentView(R.layout.activity_login);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        ActionBar ab = getSupportActionBar();
-        ab.setTitle(R.string.login);
+        showToolbar();
 
         validator = new Validator(this);
         validator.setValidationListener(this);
@@ -140,5 +137,12 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
                 Toast.makeText(this, message, Toast.LENGTH_LONG).show();
             }
         }
+    }
+
+    public void showToolbar(){
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar ab = getSupportActionBar();
+        ab.setTitle(R.string.login);
     }
 }

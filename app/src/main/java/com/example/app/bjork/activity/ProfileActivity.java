@@ -51,11 +51,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         }else{
             setContentView(R.layout.activity_profile);
 
-            Toolbar toolbar = findViewById(R.id.toolbar);
-            setSupportActionBar(toolbar);
-            ActionBar ab = getSupportActionBar();
-            ab.setTitle(R.string.profile);
-            ab.setDisplayHomeAsUpEnabled(true);
+            showToolbar();
 
             firstnameText = findViewById(R.id.firstnameText);
             lastnameText = findViewById(R.id.lastnameText);
@@ -171,5 +167,13 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             genderSpinner.setSelection(0);
         }
         defaultRender();
+    }
+
+    public void showToolbar(){
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar ab = getSupportActionBar();
+        ab.setTitle(R.string.profile);
+        ab.setDisplayHomeAsUpEnabled(true);
     }
 }

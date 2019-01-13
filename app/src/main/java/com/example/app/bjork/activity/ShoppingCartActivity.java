@@ -72,11 +72,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shopping_cart);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        ActionBar ab = getSupportActionBar();
-        ab.setTitle(R.string.cart);
-        ab.setDisplayHomeAsUpEnabled(true);
+        showToolbar();
 
         auth = FirebaseAuth.getInstance();
         list = new ArrayList<>();
@@ -352,5 +348,14 @@ public class ShoppingCartActivity extends AppCompatActivity {
                 createOrderBottomSheet();
             }
         });
+    }
+
+    public void showToolbar(){
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar ab = getSupportActionBar();
+        ab.setTitle(R.string.cart);
+        ab.setDisplayHomeAsUpEnabled(true);
+
     }
 }

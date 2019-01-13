@@ -42,21 +42,14 @@ public class SearchResultActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_result);
 
+        showToolbar();
 
         recyclerView = findViewById(R.id.recyclerView);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        ActionBar ab = getSupportActionBar();
-        ab.setTitle(R.string.search);
-        ab.setDisplayHomeAsUpEnabled(true);
-
-
         adapter = new SearchAdapter(this);
         layoutManager = new LinearLayoutManager(this);
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, layoutManager.getOrientation());
         recyclerView.addItemDecoration(dividerItemDecoration);
-
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
 
@@ -93,5 +86,13 @@ public class SearchResultActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public void showToolbar(){
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar ab = getSupportActionBar();
+        ab.setTitle(R.string.search);
+        ab.setDisplayHomeAsUpEnabled(true);
     }
 }
