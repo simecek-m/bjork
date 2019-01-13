@@ -145,4 +145,9 @@ public class Database {
                 .document(productId)
                 .get();
     }
+
+    public static Task<QuerySnapshot> getNearestStore(){
+        return db.collection("nearest_store")
+                .get();
+    }
 }

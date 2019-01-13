@@ -1,6 +1,9 @@
 package com.example.app.bjork.model;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 public class Store {
 
@@ -51,5 +54,16 @@ public class Store {
 
     public void setOpeningTime(HashMap<String, String> openingTime) {
         this.openingTime = openingTime;
+    }
+
+    public String getOpeningTimeByDay(String day){
+        return openingTime.get(day);
+    }
+
+    public String getOpeningTimeToday(){
+        SimpleDateFormat sdf = new SimpleDateFormat("EEEE", Locale.US);
+        Date now = new Date();
+        String today = sdf.format(now);
+        return getOpeningTimeByDay(today);
     }
 }
