@@ -1,24 +1,19 @@
 package com.example.app.bjork.activity;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.example.app.bjork.R;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
-import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.example.app.bjork.viewmodel.LoginViewModel;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.Email;
@@ -28,10 +23,6 @@ import com.mobsandgeeks.saripaar.annotation.Password;
 import java.util.List;
 
 public class LoginActivity extends AppCompatActivity implements Validator.ValidationListener {
-
-
-    private static final String TAG = "LoginActivity";
-    private FirebaseAuth mAuth;
 
     @NotEmpty
     @Email
@@ -45,16 +36,15 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
     private Validator validator;
 
     private BottomSheetDialog registrationBottomSheet;
+    private LoginViewModel loginViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAuth = FirebaseAuth.getInstance();
-        if(mAuth.getCurrentUser() != null){
-            finish();
-        }
-
         setContentView(R.layout.activity_login);
+
+        loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
+
         showToolbar();
 
         validator = new Validator(this);
@@ -86,39 +76,15 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
     }
 
     public void login(){
-        final String email = mEmail.getText().toString();
+        String email = mEmail.getText().toString();
         String password = mPassword.getText().toString();
-        mAuth.signInWithEmailAndPassword(email, password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-            @Override
-            public void onSuccess(AuthResult authResult) {
-                finish();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                try{
-                    throw e;
-                }catch (FirebaseAuthInvalidUserException invalidUserException) {
-                    registrationBottomSheet.show();
-                }catch (FirebaseAuthInvalidCredentialsException ex){
-                    mPassword.setError(getString(R.string.wrong_password));
-                }catch (Exception ex){
-                    Log.e(TAG, "onFailure: ", ex);
-                }
-            }
-        });
+        loginViewModel.login(email, password);
     }
 
     public void registration(){
-        final String email = mEmail.getText().toString();
-        final String password = mPassword.getText().toString();
-        mAuth.createUserWithEmailAndPassword(email, password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-            @Override
-            public void onSuccess(AuthResult authResult) {
-                registrationBottomSheet.dismiss();
-                login();
-            }
-        });
+        String email = mEmail.getText().toString();
+        String password = mPassword.getText().toString();
+        loginViewModel.registration(email, password);
     }
 
     @Override
@@ -133,8 +99,6 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
             String message = error.getCollatedErrorMessage(this);
             if (view instanceof EditText) {
                 ((EditText) view).setError(message);
-            } else {
-                Toast.makeText(this, message, Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -144,5 +108,38 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
         setSupportActionBar(toolbar);
         ActionBar ab = getSupportActionBar();
         ab.setTitle(R.string.login);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        loginViewModel.getLoginFinished().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean loginFinished) {
+                if(loginFinished == null){
+                    registrationBottomSheet.show();
+                }else if(loginFinished){
+                    finish();
+                }else{
+                    mPassword.setError(getString(R.string.wrong_password));
+                }
+            }
+        });
+        loginViewModel.getRegistrationFinished().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean registrationFinished) {
+                if(registrationFinished != null && registrationFinished){
+                    registrationBottomSheet.dismiss();
+                    login();
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        loginViewModel.getRegistrationFinished().removeObservers(this);
+        loginViewModel.getLoginFinished().removeObservers(this);
     }
 }
