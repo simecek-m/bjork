@@ -66,9 +66,13 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             logoutButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    BjorkAPI.updateMessagingToken(auth.getUid(), null);
-                    auth.signOut();
-                    finish();
+                    BjorkAPI.updateMessagingToken(auth.getUid(), null).addOnSuccessListener(new OnSuccessListener() {
+                        @Override
+                        public void onSuccess(Object o) {
+                            auth.signOut();
+                            finish();
+                        }
+                    });
                 }
             });
             saveUserInfoButton.setOnClickListener(new View.OnClickListener() {

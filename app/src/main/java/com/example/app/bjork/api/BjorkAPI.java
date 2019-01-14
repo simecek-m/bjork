@@ -147,8 +147,8 @@ public class BjorkAPI {
                 .get();
     }
 
-    public static void updateMessagingToken(String userId, String token){
-        db.collection(USER_INFO_COLLECTION)
+    public static Task updateMessagingToken(String userId, String token){
+        return db.collection(USER_INFO_COLLECTION)
                 .document(userId)
                 .update(MESSAGING_TOKEN_FIELD, token);
     }
