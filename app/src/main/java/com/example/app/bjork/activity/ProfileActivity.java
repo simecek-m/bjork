@@ -66,6 +66,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             logoutButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    BjorkAPI.updateMessagingToken(auth.getUid(), null);
                     auth.signOut();
                     finish();
                 }
@@ -77,7 +78,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     String lastname = lastnameText.getText().toString();
                     String address = addressText.getText().toString();
                     String gender = Constant.GENDERS[genderSpinner.getSelectedItemPosition()];
-                    defaultUserInfo = new UserInfo(auth.getUid(), auth.getCurrentUser().getEmail() ,firstname, lastname, address, gender);
+                    defaultUserInfo = new UserInfo(auth.getUid(), auth.getCurrentUser().getEmail() ,firstname, lastname, address, gender, defaultUserInfo.getMessagingToken());
                     BjorkAPI.addUserInfo(defaultUserInfo);
                     resultIntent.putExtra("userInfo", defaultUserInfo);
                     setResult(RESULT_OK, resultIntent);
@@ -147,9 +148,11 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                             firstnameText.setText(defaultUserInfo.getFirstname());
                             lastnameText.setText(defaultUserInfo.getLastname());
                             addressText.setText(defaultUserInfo.getAddress());
-                            List<String> genders = Arrays.asList(Constant.GENDERS);
-                            int selectedGenderIndex = genders.indexOf(defaultUserInfo.getGender());
-                            genderSpinner.setSelection(selectedGenderIndex);
+                            if(defaultUserInfo.getGender() != null){
+                                List<String> genders = Arrays.asList(Constant.GENDERS);
+                                int selectedGenderIndex = genders.indexOf(defaultUserInfo.getGender());
+                                genderSpinner.setSelection(selectedGenderIndex);
+                            }
                         }
                         defaultRender();
                     }

@@ -75,6 +75,12 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
+        <service android:name=".service.BjorkFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
         <provider
             android:name=".provider.ImageFileProvider"
             android:authorities="com.example.app.bjork"
