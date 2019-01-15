@@ -68,6 +68,7 @@ public class BjorkFirebaseMessagingService extends FirebaseMessagingService {
                 .setContentText(content)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
+                .addAction(getAddToCartAction(product))
                 .setColor(getResources().getColor(R.color.colorPrimary))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
         loadNotificationImage(product, builder);
@@ -81,6 +82,14 @@ public class BjorkFirebaseMessagingService extends FirebaseMessagingService {
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         stackBuilder.addNextIntentWithParentStack(intent);
         return stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+    public NotificationCompat.Action getAddToCartAction(Product product){
+        Intent intent = new Intent(this, ProductDetailActivity.class);
+        intent.putExtra("addToCart", true);
+        intent.putExtra("product", product);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return new NotificationCompat.Action(R.drawable.ic_shopping_cart, getString(R.string.add_to_cart), pendingIntent);
     }
 
     public void createNotificationChannel(){

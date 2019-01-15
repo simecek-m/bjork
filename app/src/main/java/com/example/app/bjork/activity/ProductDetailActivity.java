@@ -62,6 +62,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         money = findViewById(R.id.moneyText);
         description = findViewById(R.id.description);
 
+        boolean addToCart = getIntent().getBooleanExtra("addToCart", false);
         product = (Product) getIntent().getSerializableExtra("product");
         createAddToCartBottomSheet();
 
@@ -95,6 +96,8 @@ public class ProductDetailActivity extends AppCompatActivity {
         description.setText(product.getDescription());
 
         mAuth = FirebaseAuth.getInstance();
+
+        if(addToCart) addToCartBottomSheet.show();
     }
 
     @Override
