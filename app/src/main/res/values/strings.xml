@@ -72,6 +72,7 @@
     <string name="storage_unavailable">Nedostupné úložiště</string>
     <string name="image_downloaded">Obrázek uložen</string>
     <string name="share_with">Sdílet s…</string>
+    <string name="like_remove">Odebrat z oblíbených</string>
     <string name="discount_notification_text">Produkt zlevněn na </string>
     <string name="discount_notification_channel_name">Zvýhodněné nabídky</string>
     <string name="discount_notification_channel_description">Zobrazování zvýhodněných nabídek Vašich oblíbených produktů</string>

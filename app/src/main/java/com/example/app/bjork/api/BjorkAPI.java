@@ -38,7 +38,7 @@ public class BjorkAPI {
     private static final String GET_SHOPPING_CART_FUNCTION = "getShoppingCart";
     private static final String DELETE_CART_FUNCTION = "deleteCart";
 
-    public static void likeProduct(Product product){
+    public static void updateLikes(Product product){
         List<String> likes = product.getLikes();
         db.collection(PRODUCTS_COLLECTION)
                 .document(product.getId())

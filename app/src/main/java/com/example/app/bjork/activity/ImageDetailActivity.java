@@ -100,8 +100,8 @@ public class ImageDetailActivity extends AppCompatActivity {
         likeView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                BjorkAPI.likeProduct(product);
                 product.likeProduct(currentUserId);
+                BjorkAPI.updateLikes(product);
                 showCorrectLikeIcon();
                 LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(ImageDetailActivity.this);
                 Intent intent = new Intent(Constant.BROADCAST_LIKE_PRODUCT);
