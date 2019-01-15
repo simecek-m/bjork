@@ -70,7 +70,7 @@ public class BjorkFirebaseMessagingService extends FirebaseMessagingService {
                 .setAutoCancel(true)
                 .addAction(getAddToCartAction(product))
                 .setColor(getResources().getColor(R.color.colorPrimary))
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                .setPriority(NotificationCompat.PRIORITY_MAX);
         loadNotificationImage(product, builder);
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         notificationManager.notify(notificationId, builder.build());
@@ -96,7 +96,7 @@ public class BjorkFirebaseMessagingService extends FirebaseMessagingService {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             CharSequence name = getString(R.string.discount_notification_channel_name);
             String description = getString(R.string.discount_notification_channel_description);
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            int importance = NotificationManager.IMPORTANCE_HIGH;
             NotificationChannel channel = new NotificationChannel(DISCOUNT_CHANNEL, name, importance);
             channel.setDescription(description);
             NotificationManager manager = getSystemService(NotificationManager.class);
