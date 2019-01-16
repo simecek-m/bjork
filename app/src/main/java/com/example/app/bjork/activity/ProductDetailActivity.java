@@ -3,6 +3,7 @@ package com.example.app.bjork.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -41,6 +42,8 @@ public class ProductDetailActivity extends AppCompatActivity {
     private BottomSheetDialog loginBottomSheet;
     private BottomSheetDialog addToCartBottomSheet;
 
+    private boolean addToCartIntent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,7 +65,6 @@ public class ProductDetailActivity extends AppCompatActivity {
         money = findViewById(R.id.moneyText);
         description = findViewById(R.id.description);
 
-        boolean addToCart = getIntent().getBooleanExtra("addToCart", false);
         product = (Product) getIntent().getSerializableExtra("product");
         createAddToCartBottomSheet();
 
@@ -97,7 +99,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        if(addToCart) addToCartBottomSheet.show();
+        cancelDiscountNotification();
     }
 
     @Override
@@ -191,5 +193,14 @@ public class ProductDetailActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    public void cancelDiscountNotification(){
+        addToCartIntent = getIntent().getBooleanExtra("addToCart", false);
+        if(addToCartIntent) {
+            addToCartBottomSheet.show();
+            NotificationManagerCompat manager = NotificationManagerCompat.from(this);
+            manager.cancel(Integer.parseInt(product.getId()));
+        }
     }
 }

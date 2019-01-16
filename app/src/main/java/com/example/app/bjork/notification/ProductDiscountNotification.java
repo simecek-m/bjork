@@ -1,5 +1,6 @@
 package com.example.app.bjork.notification;
 
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -22,10 +23,12 @@ public class ProductDiscountNotification {
 
     public static String DISCOUNT_NOTIFICATION_CHANNEL = "product_discount_notifications";
 
+    private int id;
     private Context context;
     private Product product;
 
     public ProductDiscountNotification(Context context, Product product) {
+        this.id = Integer.parseInt(product.getId());
         this.context = context;
         this.product = product;
     }
@@ -43,29 +46,29 @@ public class ProductDiscountNotification {
     }
 
     public void createNotification(){
-        int notificationId = (int)System.currentTimeMillis()/1000;
-        PendingIntent pendingIntent = createPendingIntent(product);
+        PendingIntent openProductDetailIntent = openProductDetailIntent(product);
         String content = context.getString(R.string.discount_notification_text) + " " + product.getDiscountedPrice() + ",- Kč (-" + product.getDiscountPercentage()+"%)";
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(context, DISCOUNT_NOTIFICATION_CHANNEL)
                 .setSmallIcon(R.drawable.ic_notification_icon)
                 .setContentTitle(product.getName())
                 .setContentText(content)
-                .setContentIntent(pendingIntent)
+                .setContentIntent(openProductDetailIntent)
                 .setAutoCancel(true)
                 .addAction(getAddToCartAction(product))
                 .setColor(context.getResources().getColor(R.color.colorPrimary))
                 .setPriority(NotificationCompat.PRIORITY_MAX);
         loadNotificationImage(product, builder);
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        notificationManager.notify(notificationId, builder.build());
+        notificationManager.notify(id, builder.build());
     }
 
-    private PendingIntent createPendingIntent(Product product) {
+    private PendingIntent openProductDetailIntent(Product product) {
         Intent intent = new Intent(context, ProductDetailActivity.class);
         intent.putExtra("product", product);
+
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
         stackBuilder.addNextIntentWithParentStack(intent);
-        return stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        return stackBuilder.getPendingIntent(0,PendingIntent.FLAG_ONE_SHOT);
     }
 
     public void loadNotificationImage(Product product, NotificationCompat.Builder builder){
@@ -88,7 +91,7 @@ public class ProductDiscountNotification {
         Intent intent = new Intent(context, ProductDetailActivity.class);
         intent.putExtra("addToCart", true);
         intent.putExtra("product", product);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_ONE_SHOT);
         return new NotificationCompat.Action(R.drawable.ic_shopping_cart, context.getString(R.string.add_to_cart), pendingIntent);
     }
 
