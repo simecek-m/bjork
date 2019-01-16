@@ -14,10 +14,8 @@ import android.support.v4.content.FileProvider;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -26,6 +24,7 @@ import com.example.app.bjork.R;
 import com.example.app.bjork.api.BjorkAPI;
 import com.example.app.bjork.constant.Constant;
 import com.example.app.bjork.model.Product;
+import com.example.app.bjork.notification.DownloadImageNotification;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -112,6 +111,10 @@ public class ImageDetailActivity extends AppCompatActivity {
     }
 
     public void downloadImage(Bitmap bitmap){
+        DownloadImageNotification downloadImageNotification = new DownloadImageNotification(this, bitmap);
+        downloadImageNotification.createNotificationChannel();
+        downloadImageNotification.createNotification();
+
         if(isExternalStorageWritable()){
             File album = getPublicAlbumStorageDir(ALBUM_NAME);
             String fileName = System.currentTimeMillis() + ".jpg";
@@ -121,12 +124,11 @@ public class ImageDetailActivity extends AppCompatActivity {
                 fos = new FileOutputStream(file);
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
                 fos.close();
-                Toast toast = Toast.makeText(getBaseContext(), getString(R.string.image_downloaded), Toast.LENGTH_LONG);
-                toast.setGravity(Gravity.BOTTOM | Gravity.CLIP_VERTICAL, 0, 180);
-                toast.show();
+                downloadImageNotification.downloadCompleted(file);
             } catch (Exception e) {
                 e.printStackTrace();
                 Log.e(TAG, "downloadImage: ", e);
+                downloadImageNotification.downloadFailed();
             }
         }
     }
