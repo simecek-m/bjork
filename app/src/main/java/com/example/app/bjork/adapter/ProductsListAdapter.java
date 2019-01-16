@@ -71,7 +71,7 @@ public class ProductsListAdapter extends RecyclerView.Adapter<ProductsListAdapte
                 if(mAuth.getUid() != null){
                     product.likeProduct(mAuth.getUid());
                     switchHeartIcon(holder, product);
-                    BjorkAPI.likeProduct(product);
+                    BjorkAPI.updateLikes(product);
                 }
                 if(onLikeClickListener != null){
                     onLikeClickListener.onLikeClick(product);

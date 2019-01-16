@@ -13,12 +13,16 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.app.bjork.R;
+import com.example.app.bjork.api.BjorkAPI;
+import com.example.app.bjork.model.UserInfo;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.Email;
@@ -45,6 +49,8 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
     private Validator validator;
 
     private BottomSheetDialog registrationBottomSheet;
+    private View registrationButton;
+    private View progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +85,8 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
     private void createRegistrationBottomSheet() {
         registrationBottomSheet = new BottomSheetDialog(this, R.style.BottomSheetDialog);
         registrationBottomSheet.setContentView(R.layout.registration_bottom_sheet);
-        View registrationButton = registrationBottomSheet.findViewById(R.id.registration);
+        registrationButton = registrationBottomSheet.findViewById(R.id.registration);
+        progressBar = registrationBottomSheet.findViewById(R.id.progress_bar);
         registrationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -93,7 +100,14 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
         String password = mPassword.getText().toString();
         mAuth.signInWithEmailAndPassword(email, password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
             @Override
-            public void onSuccess(AuthResult authResult) {
+            public void onSuccess(final AuthResult authResult) {
+                FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(new OnSuccessListener<InstanceIdResult>() {
+                    @Override
+                    public void onSuccess(InstanceIdResult instanceIdResult) {
+                        String token = instanceIdResult.getToken();
+                        BjorkAPI.updateMessagingToken(authResult.getUser().getUid(), token);
+                    }
+                });
                 finish();
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -113,13 +127,29 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
     }
 
     public void registration(){
+        registrationButton.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
         final String email = mEmail.getText().toString();
         final String password = mPassword.getText().toString();
         mAuth.createUserWithEmailAndPassword(email, password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
             @Override
             public void onSuccess(AuthResult authResult) {
-                registrationBottomSheet.dismiss();
-                login();
+                UserInfo userInfo = new UserInfo();
+                userInfo.setId(authResult.getUser().getUid());
+                userInfo.setEmail(authResult.getUser().getEmail());
+                BjorkAPI.addUserInfo(userInfo).addOnSuccessListener(new OnSuccessListener() {
+                    @Override
+                    public void onSuccess(Object o) {
+                        registrationBottomSheet.dismiss();
+                        login();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        registrationButton.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.GONE);
+                    }
+                });
             }
         });
     }

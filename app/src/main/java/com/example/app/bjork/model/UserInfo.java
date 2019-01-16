@@ -10,17 +10,19 @@ public class UserInfo implements Serializable {
     private String email;
     private String address;
     private String gender;
+    private String messagingToken;
 
     public UserInfo() {
     }
 
-    public UserInfo(String id, String email, String firstname, String lastname, String address, String gender) {
+    public UserInfo(String id, String email, String firstname, String lastname, String address, String gender, String messagingToken) {
         this.id = id;
         this.email = email;
         this.firstname = firstname;
         this.lastname = lastname;
         this.address = address;
         this.gender = gender;
+        this.messagingToken = messagingToken;
     }
 
     public String getId() {
@@ -70,6 +72,14 @@ public class UserInfo implements Serializable {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    public String getMessagingToken() {
+        return messagingToken;
+    }
+
+    public void setMessagingToken(String messagingToken) {
+        this.messagingToken = messagingToken;
     }
 
     @Override
