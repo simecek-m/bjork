@@ -1,5 +1,8 @@
 package com.example.app.bjork.activity;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -8,9 +11,11 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.Snackbar;
+import android.support.v4.util.Pair;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
@@ -18,7 +23,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,28 +40,19 @@ import com.example.app.bjork.animation.Animation;
 import com.example.app.bjork.database.Database;
 import com.example.app.bjork.model.CartItem;
 import com.example.app.bjork.model.UserInfo;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.functions.HttpsCallableResult;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
+import com.example.app.bjork.viewmodel.ShoppingCartViewModel;
+import com.example.app.bjork.wrapper.DataWrapper;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class ShoppingCartActivity extends AppCompatActivity {
 
     private static final String TAG = "ShoppingCartActivity";
-    private static final int ORDER_DELAY = 2000;
-    private static final int MINIMAL_ANIMATION_TIMER = 1000;
+    private static final int DISMISS_NEW_ORDER_DELAY = 2000;
 
-    private FirebaseAuth auth;
-    private List<CartItem> list;
+    private ShoppingCartViewModel shoppingCartViewModel;
+    private UserInfo currentUser;
 
     private RecyclerView recyclerView;
     private ShoppingCartAdapter adapter;
@@ -65,21 +60,25 @@ public class ShoppingCartActivity extends AppCompatActivity {
 
     private Menu menu;
     private BottomSheetDialog orderBottomSheet;
-    private UserInfo currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shopping_cart);
 
+        shoppingCartViewModel = ViewModelProviders.of(this).get(ShoppingCartViewModel.class);
+
+        currentUser = ((UserInfo) getIntent().getSerializableExtra("currentUser"));
+        if (currentUser == null) {
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
         showToolbar();
 
-        auth = FirebaseAuth.getInstance();
-        list = new ArrayList<>();
-
         recyclerView = findViewById(R.id.cart_list);
-        recyclerView.hasFixedSize();
-        adapter = new ShoppingCartAdapter(this, list);
+        adapter = new ShoppingCartAdapter(this);
         layoutManager = new LinearLayoutManager(this);
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), layoutManager.getOrientation());
@@ -87,111 +86,71 @@ public class ShoppingCartActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(dividerItemDecoration);
-        currentUser = (UserInfo) getIntent().getSerializableExtra("currentUser");
 
-        if(auth.getUid() == null){
-            Intent intent = new Intent(this, LoginActivity.class);
-            startActivity(intent);
-            finish();
-        }else{
-            createOrderBottomSheet();
-            loadData();
-        }
+        createOrderBottomSheet();
+        new ItemTouchHelper(new ShoppingCartTouchHelper()).attachToRecyclerView(recyclerView);
 
-        // swipe gesture - remove product from shopping cart
-        final ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT){
-            @Override
-            public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
-                View itemView = viewHolder.itemView;
-
-                final ColorDrawable background = new ColorDrawable(getResources().getColor(R.color.colorPrimaryDark));
-                final Drawable icon = getDrawable(R.drawable.ic_delete);
-                icon.setTint(Color.WHITE);
-
-                int iconWidth = 100;
-                int iconHeight = 100;
-                int horizontalMargin = 50;
-                int verticalMargin = (itemView.getHeight()-iconHeight) / 2;
-
-                //swipe right
-                if(dX > 0){
-                    background.setBounds(0, itemView.getTop(),   itemView.getLeft() + (int)dX, itemView.getBottom());
-                    background.draw(c);
-                    if(dX > horizontalMargin*2+iconWidth){
-                        icon.setBounds(horizontalMargin, itemView.getTop()+verticalMargin, horizontalMargin+iconWidth, itemView.getBottom()-verticalMargin);
-                        icon.draw(c);
-                    }
-                }else{
-                    background.setBounds(itemView.getRight() + (int)dX, itemView.getTop(), itemView.getRight(), itemView.getBottom());
-                    background.draw(c);
-                    if(-dX > horizontalMargin*2+iconWidth){
-                        icon.setBounds(itemView.getRight()-horizontalMargin-iconWidth, itemView.getTop()+verticalMargin, itemView.getRight()-horizontalMargin, itemView.getBottom()-verticalMargin);
-                        icon.draw(c);
-                    }
-                }
-            }
-
-            @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int i) {
-                final int position = viewHolder.getAdapterPosition();
-                final CartItem deletedCartItem = adapter.getCartItem(position);
-                final View layout = findViewById(R.id.layout);
-                adapter.removeItem(position);
-                Database.removeItemFromCart(auth.getUid(), deletedCartItem.getId()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if(task.isComplete() && task.isSuccessful()){
-                            updateOrderBottomSheetPrice();
-                            String text = deletedCartItem.getName() + " " + getString(R.string.cart_item_removed);
-                            Snackbar.make(recyclerView, text, Snackbar.LENGTH_INDEFINITE)
-                                    .setActionTextColor(getResources().getColor(R.color.blue))
-                                    .setAction(R.string.undo, new View.OnClickListener() {
-
-                                        private boolean firstClick = true;
-                                        private View emptyCart = layout.findViewById(R.id.empty_cart);
-                                        private View cartList = layout.findViewById(R.id.cart_list);
-
-                                        @Override
-                                        public void onClick(View view) {
-                                            if(firstClick){
-                                                firstClick = false;
-                                                Database.restoreCartItem(currentUser.getId(), deletedCartItem);
-                                                adapter.addItemOnPosition(deletedCartItem, position);
-                                                updateOrderBottomSheetPrice();
-                                                if(adapter.getItemCount() == 1){
-                                                    Animation.transitionViews(emptyCart, cartList);
-                                                }
-                                            }
-                                        }
-                                    })
-                                    .show();
-                        }
-                    }
-                });
-                if(adapter.getItemCount() == 0){
-                    View cartListView = findViewById(R.id.cart_list);
-                    View emptyListView = findViewById(R.id.empty_cart);
-                    Animation.transitionViews(cartListView, emptyListView);
-                    menu = null;
-                }
-
-            }
-        };
-        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
     }
 
-    public int getPrice(){
-        int result = 0;
-        for(CartItem item: list){
-            result += item.getPrice();
-        }
-        return result;
+    @Override
+    protected void onStart() {
+        super.onStart();
+        shoppingCartViewModel.getCartItemsList().observe(this, new Observer<DataWrapper<List<CartItem>>>() {
+            @Override
+            public void onChanged(@Nullable DataWrapper<List<CartItem>> list) {
+                if(list.getError() != null){
+                    showError();
+                }else{
+                    if(list.getData().size() == 0){
+                        showEmptyCart();
+                    }else{
+                        adapter.setList(list.getData());
+                        adapter.notifyDataSetChanged();
+                        showShoppingCart();
+                    }
+
+                }
+            }
+        });
+
+        shoppingCartViewModel.getDeletedCartItem().observe(this, new Observer<DataWrapper<Pair<Integer, CartItem>>>() {
+            @Override
+            public void onChanged(@Nullable final DataWrapper<Pair<Integer, CartItem>> deletedItem) {
+                System.out.println("deletedItem changed: " + deletedItem);
+                final int position = deletedItem.getData().first;
+                final CartItem deletedCartItem = deletedItem.getData().second;
+                if(deletedItem.getError() == null){
+                    String text = deletedCartItem.getName() + " " + getString(R.string.cart_item_removed);
+                    Snackbar.make(recyclerView, text, Snackbar.LENGTH_INDEFINITE)
+                            .setActionTextColor(getResources().getColor(R.color.blue))
+                            .setAction(R.string.undo, new View.OnClickListener() {
+                                private boolean firstClick = true;
+                                private View emptyCart = findViewById(R.id.empty_cart);
+                                private View cartList = findViewById(R.id.cart_list);
+                                @Override
+                                public void onClick(View view) {
+                                    if(firstClick){
+                                        firstClick = false;
+                                        Database.restoreCartItem(currentUser.getId(), deletedCartItem);
+                                        adapter.addItemOnPosition(deletedCartItem, position);
+                                        if(adapter.getItemCount() == 1){
+                                            Animation.transitionViews(emptyCart, cartList);
+                                            getMenuInflater().inflate(R.menu.shopping_cart_menu, menu);
+                                        }
+                                    }
+                                }
+                            })
+                            .show();
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        shoppingCartViewModel.getCartItemsList().removeObservers(this);
+        shoppingCartViewModel.getDeletedCartItem().removeObservers(this);
     }
 
     @Override
@@ -204,120 +163,65 @@ public class ShoppingCartActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.menu_order:
-                orderBottomSheet.show();
+                showOrderBottomSheet();
         }
         return super.onOptionsItemSelected(item);
     }
 
-    public void loadData(){
-        Database.getShoppingCart().addOnSuccessListener(new OnSuccessListener<HttpsCallableResult>() {
-                    @Override
-                    public void onSuccess(HttpsCallableResult httpsCallableResult) {
-                        List<Object> result = (List<Object>) httpsCallableResult.getData();
-                        for(Object obj: result) {
-                            Gson gson = new Gson();
-                            JsonElement element = gson.toJsonTree(obj);
-                            CartItem item = gson.fromJson(element, CartItem.class);
-                            list.add(item);
-                        }
-                        adapter.notifyDataSetChanged();
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                if(list.size() > 0){
-                                    showShoppingCart();
-                                }else{
-                                    showEmptyCart();
-                                }
-                            }
-                        }, MINIMAL_ANIMATION_TIMER);
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                showError();
-                            }
-                        }, MINIMAL_ANIMATION_TIMER);
-                        Log.i(TAG, "load getShoppingCart failed: ", e);
-                    }
-                });
+    private void showOrderBottomSheet() {
+        shoppingCartViewModel.getTotalPrice().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(@Nullable Integer totalPrice) {
+                TextView  priceTextView = orderBottomSheet.findViewById(R.id.moneyText);
+                priceTextView.setText(totalPrice + ",- Kč");
+            }
+        });
+        orderBottomSheet.show();
     }
 
     public void createOrderBottomSheet() {
         orderBottomSheet = new BottomSheetDialog(this, R.style.BottomSheetDialog);
         orderBottomSheet.setContentView(R.layout.order_bottom_sheet);
-        final Button confirmButton = orderBottomSheet.findViewById(R.id.confirmButton);
-        final LinearLayout progressLayout = orderBottomSheet.findViewById(R.id.progressLayout);
-        final ProgressBar progressBar = orderBottomSheet.findViewById(R.id.progressBar);
-        final TextView progressText = orderBottomSheet.findViewById(R.id.progressText);
-        final ConstraintLayout orderInfo = orderBottomSheet.findViewById(R.id.orderInfo);
-
-        final Spinner deliveryList = orderBottomSheet.findViewById(R.id.deliveryText);
-        List<String> methods = Arrays.asList(getResources().getStringArray(R.array.delivery_methods));
-        ArrayAdapter<String> deliveryAdapter = new ArrayAdapter<String>(this, R.layout.spinner_item, methods);
-        deliveryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        deliveryList.setAdapter(deliveryAdapter);
-
-        confirmButton.setOnClickListener(new View.OnClickListener() {
+        fillBottomSheetData();
+        orderBottomSheet.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
-            public void onClick(View v) {
-                confirmButton.setVisibility(View.GONE);
-                progressLayout.setVisibility(View.VISIBLE);
-                orderInfo.setVisibility(View.GONE);
-                Database.newOrder().addOnSuccessListener(new OnSuccessListener<HttpsCallableResult>() {
-                    @Override
-                    public void onSuccess(HttpsCallableResult httpsCallableResult) {
-                        progressBar.setVisibility(View.GONE);
-                        progressText.setText(getString(R.string.order_complete));
-                        final Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                orderBottomSheet.dismiss();
-                                finish();
-                            }
-                        }, ORDER_DELAY);
-                    }
-                });
+            public void onDismiss(DialogInterface dialogInterface) {
+                shoppingCartViewModel.getNewOrder().removeObservers(ShoppingCartActivity.this);
+                shoppingCartViewModel.getTotalPrice().removeObservers(ShoppingCartActivity.this);
             }
         });
-        TextView  user = orderBottomSheet.findViewById(R.id.userText);
-        TextView  address = orderBottomSheet.findViewById(R.id.addressText);
-        TextView uncompleteProfile = orderBottomSheet.findViewById(R.id.uncomplete_profile);
-        if(currentUser != null){
-            user.setText(currentUser.getFirstname() + " " + currentUser.getLastname());
-            address.setText(currentUser.getAddress());
-            if(currentUser.getFirstname().isEmpty() || currentUser.getLastname().isEmpty()){
-                user.setText(R.string.unknown);
-                confirmButton.setEnabled(false);
-                uncompleteProfile.setVisibility(View.VISIBLE);
-            }if(currentUser.getAddress().isEmpty()){
-                address.setText(R.string.unknown);
-                confirmButton.setEnabled(false);
-                uncompleteProfile.setVisibility(View.VISIBLE);
-            }
-        }else{
-            user.setText(R.string.unknown);
-            address.setText(R.string.unknown);
-            confirmButton.setEnabled(false);
-            uncompleteProfile.setVisibility(View.VISIBLE);
-        }
-    }
 
-    public void updateOrderBottomSheetPrice(){
-        TextView  money = orderBottomSheet.findViewById(R.id.moneyText);
-        money.setText(getPrice() + ",- Kč");
+
+        shoppingCartViewModel.getNewOrder().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean orderFinished) {
+                final ProgressBar progressBar = orderBottomSheet.findViewById(R.id.progressBar);
+                final TextView progressText = orderBottomSheet.findViewById(R.id.progressText);
+                if (orderFinished) {
+                    progressBar.setVisibility(View.GONE);
+                    progressText.setText(getString(R.string.order_complete));
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            orderBottomSheet.dismiss();
+                            finish();
+                        }
+                    }, DISMISS_NEW_ORDER_DELAY);
+                }
+            }
+        });
     }
 
     public void showShoppingCart(){
-        getMenuInflater().inflate(R.menu.shopping_cart_menu, menu);
-        updateOrderBottomSheetPrice();
-        View loadingAnimation = findViewById(R.id.loading_animation);
+        if(menu.findItem(R.id.menu_order) == null){
+            getMenuInflater().inflate(R.menu.shopping_cart_menu, menu);
+        }
         View cartList = findViewById(R.id.cart_list);
-        Animation.transitionViews(loadingAnimation, cartList);
+        if(cartList.getVisibility() != View.VISIBLE){
+            View loadingAnimation = findViewById(R.id.loading_animation);
+            Animation.transitionViews(loadingAnimation, cartList);
+        }
+
     }
 
     public void showEmptyCart(){
@@ -335,19 +239,6 @@ public class ShoppingCartActivity extends AppCompatActivity {
         error.setText(R.string.connection_error);
         errorDescription.setVisibility(View.VISIBLE);
         errorDescription.setText(R.string.connection_error_description);
-
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Database.loadUserInfo(auth.getUid()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                currentUser = documentSnapshot.toObject(UserInfo.class);
-                createOrderBottomSheet();
-            }
-        });
     }
 
     public void showToolbar(){
@@ -357,5 +248,112 @@ public class ShoppingCartActivity extends AppCompatActivity {
         ab.setTitle(R.string.cart);
         ab.setDisplayHomeAsUpEnabled(true);
 
+    }
+
+    public void fillBottomSheetData(){
+        final Button confirmButton = orderBottomSheet.findViewById(R.id.confirmButton);
+        final LinearLayout progressLayout = orderBottomSheet.findViewById(R.id.progressLayout);
+        final ConstraintLayout orderInfo = orderBottomSheet.findViewById(R.id.orderInfo);
+
+        final Spinner deliveryList = orderBottomSheet.findViewById(R.id.deliveryText);
+        List<String> methods = Arrays.asList(getResources().getStringArray(R.array.delivery_methods));
+        ArrayAdapter<String> deliveryAdapter = new ArrayAdapter<String>(this, R.layout.spinner_item, methods);
+        deliveryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        deliveryList.setAdapter(deliveryAdapter);
+
+        confirmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                confirmButton.setVisibility(View.GONE);
+                orderInfo.setVisibility(View.GONE);
+                progressLayout.setVisibility(View.VISIBLE);
+                shoppingCartViewModel.newOrder();
+            }
+        });
+        TextView  user = orderBottomSheet.findViewById(R.id.userText);
+        TextView  address = orderBottomSheet.findViewById(R.id.addressText);
+        TextView uncompleteProfile = orderBottomSheet.findViewById(R.id.uncomplete_profile);
+
+        if(currentUser != null){
+            user.setText(currentUser.getFirstname() + " " + currentUser.getLastname());
+            address.setText(currentUser.getAddress());
+            if(currentUser.getFirstname() == null || currentUser.getLastname() == null || currentUser.getFirstname().isEmpty() || currentUser.getLastname().isEmpty()){
+                user.setText(R.string.unknown);
+                uncompleteProfile.setVisibility(View.VISIBLE);
+                confirmButton.setEnabled(false);
+            }if(currentUser.getAddress() == null || currentUser.getAddress().isEmpty()){
+                address.setText(R.string.unknown);
+                confirmButton.setEnabled(false);
+                uncompleteProfile.setVisibility(View.VISIBLE);
+                confirmButton.setEnabled(false);
+            }
+        }else{
+            user.setText(R.string.unknown);
+            address.setText(R.string.unknown);
+            confirmButton.setEnabled(false);
+            uncompleteProfile.setVisibility(View.VISIBLE);
+        }
+    }
+
+
+    // helper for touch gestures callbacks
+    private class ShoppingCartTouchHelper extends ItemTouchHelper.SimpleCallback{
+
+        public ShoppingCartTouchHelper() {
+            super(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
+        }
+
+        @Override
+        public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+            View itemView = viewHolder.itemView;
+
+            final ColorDrawable background = new ColorDrawable(getResources().getColor(R.color.grey));
+            final Drawable icon = getDrawable(R.drawable.ic_delete);
+            icon.setTint(Color.WHITE);
+
+            int iconWidth = 100;
+            int iconHeight = 100;
+            int horizontalMargin = 50;
+            int verticalMargin = (itemView.getHeight()-iconHeight) / 2;
+
+            //swipe right
+            if(dX > 0){
+                background.setBounds(0, itemView.getTop(),   itemView.getLeft() + (int)dX, itemView.getBottom());
+                background.draw(c);
+                if(dX > horizontalMargin*2+iconWidth){
+                    icon.setBounds(horizontalMargin, itemView.getTop()+verticalMargin, horizontalMargin+iconWidth, itemView.getBottom()-verticalMargin);
+                    icon.draw(c);
+                }
+            }else{
+                background.setBounds(itemView.getRight() + (int)dX, itemView.getTop(), itemView.getRight(), itemView.getBottom());
+                background.draw(c);
+                if(-dX > horizontalMargin*2+iconWidth){
+                    icon.setBounds(itemView.getRight()-horizontalMargin-iconWidth, itemView.getTop()+verticalMargin, itemView.getRight()-horizontalMargin, itemView.getBottom()-verticalMargin);
+                    icon.draw(c);
+                }
+            }
+        }
+
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int i) {
+            final int position = viewHolder.getAdapterPosition();
+            final CartItem deletedCartItem = adapter.getCartItem(position);
+            final View layout = findViewById(R.id.layout);
+            adapter.removeItem(position);
+            shoppingCartViewModel.removeItemFromCart(new Pair<Integer, CartItem>(position, deletedCartItem));
+            if(adapter.getItemCount() == 0){
+                View cartListView = findViewById(R.id.cart_list);
+                View emptyListView = findViewById(R.id.empty_cart);
+                Animation.transitionViews(cartListView, emptyListView);
+                menu.clear();
+            }
+
+        }
     }
 }

@@ -253,6 +253,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
         }else{
+            currentUser = null;
             name.setText(null);
             email.setText(R.string.unlogged_user);
             profileImage.setImageDrawable(null);

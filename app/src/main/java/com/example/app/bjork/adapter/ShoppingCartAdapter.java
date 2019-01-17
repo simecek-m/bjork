@@ -20,9 +20,8 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
     private Context context;
     private List<CartItem> cartItemList;
 
-    public ShoppingCartAdapter(Context context, List<CartItem> cartItemList) {
+    public ShoppingCartAdapter(Context context){
         this.context = context;
-        this.cartItemList = cartItemList;
     }
 
     @NonNull
