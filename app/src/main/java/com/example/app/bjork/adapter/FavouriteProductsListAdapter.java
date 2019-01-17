@@ -70,7 +70,7 @@ public class FavouriteProductsListAdapter extends RecyclerView.Adapter<Favourite
             public void onClick(View v) {
                 if(mAuth.getUid() != null){
                     product.getLikes().remove(mAuth.getUid());
-                    Database.likeProduct(product);
+                    Database.updateLikes(product);
                 }
                 if(onLikeClickListener != null){
                     onLikeClickListener.onLikeClick(product);

@@ -72,6 +72,15 @@
     <string name="storage_unavailable">Nedostupné úložiště</string>
     <string name="image_downloaded">Obrázek uložen</string>
     <string name="share_with">Sdílet</string>
+    <string name="like_remove">Odebrat z oblíbených</string>
+    <string name="discount_notification_text">Produkt zlevněn na </string>
+    <string name="discount_notification_channel_name">Zvýhodněné nabídky</string>
+    <string name="discount_notification_channel_description">Zobrazení zvýhodněných nabídek Vašich oblíbených produktů</string>
+    <string name="progress_notification_channel_name">Postup stahování</string>
+    <string name="progress_notification_channel_description">Zobrazení postupu operací prováděných na pozadí</string>
+    <string name="image_downloading">Stahování obrázku</string>
+    <string name="image_download_failed">Stažení obrázku se nezdařilo</string>
+    <string name="image_download_completed">Obrázek úspěšně stažen</string>
 
     <string-array name="genders">
         <item>Muž</item>

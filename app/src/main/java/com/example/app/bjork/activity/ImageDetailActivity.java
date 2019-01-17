@@ -27,6 +27,7 @@ import com.example.app.bjork.R;
 import com.example.app.bjork.constant.Constant;
 import com.example.app.bjork.model.Product;
 import com.example.app.bjork.viewmodel.ImageDetailViewModel;
+import com.example.app.bjork.notification.DownloadImageNotification;
 import com.github.chrisbanes.photoview.PhotoView;
 
 import java.io.File;
@@ -176,9 +177,11 @@ public class ImageDetailActivity extends AppCompatActivity {
         }
     }
 
-    public void showToast(String toastMessage){
-        Toast toast = Toast.makeText(getBaseContext(), toastMessage, Toast.LENGTH_LONG);
-        toast.setGravity(Gravity.BOTTOM | Gravity.CLIP_VERTICAL, 0, 180);
-        toast.show();
+    public void showCorrectLikeIcon(){
+        if(product.likedByUser(currentUserId)){
+            likeView.setImageResource(R.drawable.ic_favorite_heart);
+        }else{
+            likeView.setImageResource(R.drawable.ic_heart);
+        }
     }
 }

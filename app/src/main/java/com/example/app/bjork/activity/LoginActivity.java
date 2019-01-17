@@ -13,7 +13,11 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.app.bjork.R;
+import com.example.app.bjork.api.BjorkAPI;
+import com.example.app.bjork.model.UserInfo;
 import com.example.app.bjork.viewmodel.LoginViewModel;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.Email;
@@ -36,6 +40,8 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
     private Validator validator;
 
     private BottomSheetDialog registrationBottomSheet;
+    private View registrationButton;
+    private View progressBar;
     private LoginViewModel loginViewModel;
 
     @Override
@@ -66,7 +72,8 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
     private void createRegistrationBottomSheet() {
         registrationBottomSheet = new BottomSheetDialog(this, R.style.BottomSheetDialog);
         registrationBottomSheet.setContentView(R.layout.registration_bottom_sheet);
-        View registrationButton = registrationBottomSheet.findViewById(R.id.registration);
+        registrationButton = registrationBottomSheet.findViewById(R.id.registration);
+        progressBar = registrationBottomSheet.findViewById(R.id.progress_bar);
         registrationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

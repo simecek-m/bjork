@@ -33,11 +33,12 @@ public class Database {
     private static final String LIKES_FIELD = "likes";
     private static final String TYPE_FIELD = "type";
     private static final String NAME_FIELD = "name";
+    private static final String MESSAGING_TOKEN_FIELD = "messagingToken";
 
     private static final String GET_SHOPPING_CART_FUNCTION = "getShoppingCart";
     private static final String DELETE_CART_FUNCTION = "deleteCart";
 
-    public static void likeProduct(Product product){
+    public static void updateLikes(Product product){
         List<String> likes = product.getLikes();
         db.collection(PRODUCTS_COLLECTION)
                 .document(product.getId())
@@ -75,8 +76,8 @@ public class Database {
                 .get();
     }
 
-    public static void addUserInfo(UserInfo userInfo){
-        db.collection(USER_INFO_COLLECTION)
+    public static Task addUserInfo(UserInfo userInfo){
+        return db.collection(USER_INFO_COLLECTION)
                 .document(userInfo.getId())
                 .set(userInfo);
     }
@@ -144,6 +145,12 @@ public class Database {
         return db.collection(PRODUCTS_COLLECTION)
                 .document(productId)
                 .get();
+    }
+
+    public static Task updateMessagingToken(String userId, String token){
+        return db.collection(USER_INFO_COLLECTION)
+                .document(userId)
+                .update(MESSAGING_TOKEN_FIELD, token);
     }
 
     public static Task<QuerySnapshot> getNearestStore(){

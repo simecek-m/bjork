@@ -3,6 +3,7 @@ package com.example.app.bjork.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -90,6 +91,8 @@ public class ProductDetailActivity extends AppCompatActivity {
         description.setText(product.getDescription());
 
         mAuth = FirebaseAuth.getInstance();
+
+        cancelDiscountNotification();
     }
 
     @Override
@@ -191,5 +194,14 @@ public class ProductDetailActivity extends AppCompatActivity {
         ActionBar ab = getSupportActionBar();
         ab.setTitle(R.string.detail_product);
         ab.setDisplayHomeAsUpEnabled(true);
+    }
+
+    public void cancelDiscountNotification(){
+        addToCartIntent = getIntent().getBooleanExtra("addToCart", false);
+        if(addToCartIntent) {
+            addToCartBottomSheet.show();
+            NotificationManagerCompat manager = NotificationManagerCompat.from(this);
+            manager.cancel(Integer.parseInt(product.getId()));
+        }
     }
 }

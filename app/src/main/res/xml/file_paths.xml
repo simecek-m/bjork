@@ -1,3 +1,4 @@
 <paths xmlns:tools="http://schemas.android.com/tools">
     <cache-path name="share" path="image_manager_disk_cache" tools:path="DiskCache.Factory.DEFAULT_DISK_CACHE_DIR" />
+    <external-path name="pictures" path="Pictures/Bjork"/>
 </paths>
