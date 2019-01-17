@@ -2,6 +2,7 @@ package com.example.app.bjork.activity;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
@@ -68,6 +69,12 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
     private void createRegistrationBottomSheet() {
         registrationBottomSheet = new BottomSheetDialog(this, R.style.BottomSheetDialog);
         registrationBottomSheet.setContentView(R.layout.registration_bottom_sheet);
+        registrationBottomSheet.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                loginViewModel.resetLoginAttempt();
+            }
+        });
         registrationButton = registrationBottomSheet.findViewById(R.id.registration);
         progressBar = registrationBottomSheet.findViewById(R.id.progress_bar);
         registrationButton.setOnClickListener(new View.OnClickListener() {
@@ -87,6 +94,8 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
     public void registration(){
         String email = mEmail.getText().toString();
         String password = mPassword.getText().toString();
+        registrationButton.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
         loginViewModel.registration(email, password);
     }
 
@@ -116,24 +125,27 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
     @Override
     protected void onStart() {
         super.onStart();
-        loginViewModel.getLoginFinished().observe(this, new Observer<Boolean>() {
+        loginViewModel.getLoginFinished().observe(this, new Observer<Integer>() {
             @Override
-            public void onChanged(@Nullable Boolean loginFinished) {
-                if(loginFinished == null){
+            public void onChanged(@Nullable Integer loginResult) {
+                if(loginResult == LoginViewModel.LOGIN_USER_NOT_FOUND){
                     registrationBottomSheet.show();
-                }else if(loginFinished){
+                }else if(loginResult == LoginViewModel.LOGIN_SUCCESSFUL){
                     finish();
-                }else{
+                }else if(loginResult == LoginViewModel.LOGIN_WRONG_CREDENTIALS){
                     mPassword.setError(getString(R.string.wrong_password));
                 }
             }
         });
-        loginViewModel.getRegistrationFinished().observe(this, new Observer<Boolean>() {
+        loginViewModel.getRegistrationFinished().observe(this, new Observer<Integer>() {
             @Override
-            public void onChanged(@Nullable Boolean registrationFinished) {
-                if(registrationFinished != null && registrationFinished){
+            public void onChanged(@Nullable Integer registrationResult) {
+                if(registrationResult == LoginViewModel.REGISTRATION_COMPLETED){
                     registrationBottomSheet.dismiss();
                     login();
+                }else if(registrationResult == LoginViewModel.REGISTRATION_FAILED){
+                    registrationButton.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
                 }
             }
         });
