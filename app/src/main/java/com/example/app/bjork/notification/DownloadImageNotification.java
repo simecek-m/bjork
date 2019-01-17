@@ -55,9 +55,9 @@ public class DownloadImageNotification {
         notificationManager.notify(id, builder.build());
     }
 
-    public void downloadFailed(){
+    public void downloadFailed(String message){
         builder.setProgress(0,0, false);
-        builder.setContentText(context.getString(R.string.image_download_failed));
+        builder.setContentText(message);
         notificationManager.notify(id, builder.build());
     }
 

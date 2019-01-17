@@ -13,11 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.app.bjork.R;
-import com.example.app.bjork.api.BjorkAPI;
-import com.example.app.bjork.model.UserInfo;
 import com.example.app.bjork.viewmodel.LoginViewModel;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.Email;

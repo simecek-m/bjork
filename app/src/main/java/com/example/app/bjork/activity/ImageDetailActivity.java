@@ -37,6 +37,8 @@ public class ImageDetailActivity extends AppCompatActivity {
     public static int EXTERNAL_STORAGE_REQUEST = 1;
     private static final String TAG = "ImageDetailActivity";
 
+    private DownloadImageNotification notification;
+
     private ImageDetailViewModel imageDetailViewModel;
     private Product product;
     private Bitmap bitmap;
@@ -49,7 +51,6 @@ public class ImageDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_image_detail);
 
         imageDetailViewModel = ViewModelProviders.of(this).get(ImageDetailViewModel.class);
-
         product = (Product)getIntent().getSerializableExtra("product");
 
         PhotoView photoView = findViewById(R.id.photoView);
@@ -88,6 +89,9 @@ public class ImageDetailActivity extends AppCompatActivity {
                             @Override
                             public void onResourceReady(@NonNull final Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                                 bitmap = resource;
+                                notification = new DownloadImageNotification(ImageDetailActivity.this, bitmap);
+                                notification.createNotificationChannel();
+                                notification.createNotification();
                                 checkPermissionAndDownload(bitmap);
                             }
                         });
@@ -105,20 +109,12 @@ public class ImageDetailActivity extends AppCompatActivity {
     private void initialLikeButton() {
         if(imageDetailViewModel.isLikedByUser(product)){
             likeView.setImageResource(R.drawable.ic_favorite_heart);
-        };
+        }
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        imageDetailViewModel.getImageDownloaded().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(@Nullable Boolean imageDownloaded) {
-                if(imageDownloaded != null && imageDownloaded){
-                    showToast(getString(R.string.image_downloaded));
-                }
-            }
-        });
 
         imageDetailViewModel.getLikedByUser().observe(this, new Observer<Boolean>() {
             @Override
@@ -141,13 +137,12 @@ public class ImageDetailActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        imageDetailViewModel.getImageDownloaded().removeObservers(this);
         imageDetailViewModel.getLikedByUser().removeObservers(this);
     }
 
     public void checkPermissionAndDownload(Bitmap bitmap){
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
-            imageDetailViewModel.downloadImage(bitmap);
+            downloadImage(bitmap);
         }else{
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
@@ -159,7 +154,9 @@ public class ImageDetailActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if(requestCode == EXTERNAL_STORAGE_REQUEST){
             if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                imageDetailViewModel.downloadImage(bitmap);
+                downloadImage(bitmap);
+            }else{
+                notification.downloadFailed(getString(R.string.storage_permission_denied));
             }
         }
     }
@@ -177,11 +174,19 @@ public class ImageDetailActivity extends AppCompatActivity {
         }
     }
 
-    public void showCorrectLikeIcon(){
-        if(product.likedByUser(currentUserId)){
-            likeView.setImageResource(R.drawable.ic_favorite_heart);
+    public void downloadImage(Bitmap bitmap){
+        File file = imageDetailViewModel.downloadImage(bitmap);
+        if(file != null){
+            notification.downloadCompleted(file);
         }else{
-            likeView.setImageResource(R.drawable.ic_heart);
+            notification.downloadFailed(getString(R.string.image_download_failed));
         }
     }
+
+    public void showToast(String toastMessage){
+        Toast toast = Toast.makeText(getBaseContext(), toastMessage, Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.BOTTOM | Gravity.CLIP_VERTICAL, 0, 180);
+        toast.show();
+    }
+
 }

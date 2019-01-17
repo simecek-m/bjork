@@ -81,6 +81,7 @@
     <string name="image_downloading">Stahování obrázku</string>
     <string name="image_download_failed">Stažení obrázku se nezdařilo</string>
     <string name="image_download_completed">Obrázek úspěšně stažen</string>
+    <string name="storage_permission_denied">K uložení obrázků nám musíte dát přístup k vašemu úložišti</string>
 
     <string-array name="genders">
         <item>Muž</item>

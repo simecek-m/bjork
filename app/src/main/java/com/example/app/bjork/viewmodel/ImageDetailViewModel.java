@@ -20,21 +20,20 @@ public class ImageDetailViewModel extends ViewModel {
     private static final String ALBUM_NAME = "Bjork";
 
     private FirebaseAuth auth = FirebaseAuth.getInstance();
-    private MutableLiveData<Boolean> imageDownloaded = new MutableLiveData<>();
     private MutableLiveData<Boolean> likedByUser = new MutableLiveData<>();
 
     public void likeProduct(Product product) {
         String currentUserId = auth.getUid();
         if(currentUserId != null){
-            Database.likeProduct(product);
             product.likeProduct(currentUserId);
+            Database.updateLikes(product);
             likedByUser.setValue(product.likedByUser(currentUserId));
         }else{
             likedByUser.setValue(null);
         }
     }
 
-    public void downloadImage(Bitmap bitmap) {
+    public File downloadImage(Bitmap bitmap) {
         if(isExternalStorageWritable()){
             File album = getPublicAlbumStorageDir(ALBUM_NAME);
             String fileName = System.currentTimeMillis() + ".jpg";
@@ -44,11 +43,14 @@ public class ImageDetailViewModel extends ViewModel {
                 fos = new FileOutputStream(file);
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
                 fos.close();
-                imageDownloaded.setValue(true);
+                return file;
             } catch (IOException e) {
                 e.printStackTrace();
                 Log.e(TAG, "downloadImage: ", e);
+                return null;
             }
+        }else{
+            return null;
         }
     }
 
@@ -62,10 +64,6 @@ public class ImageDetailViewModel extends ViewModel {
                 Environment.DIRECTORY_PICTURES), albumName);
         file.mkdirs();
         return file;
-    }
-
-    public MutableLiveData<Boolean> getImageDownloaded(){
-        return imageDownloaded;
     }
 
     public MutableLiveData<Boolean> getLikedByUser() {

@@ -41,6 +41,8 @@ public class ProductDetailActivity extends AppCompatActivity {
     private BottomSheetDialog loginBottomSheet;
     private BottomSheetDialog addToCartBottomSheet;
 
+    private boolean addToCartIntent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
