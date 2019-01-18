@@ -114,7 +114,7 @@ public class Database {
                 .add(feedback);
     }
 
-    public static Task<Void> removeItemFromCart(String userId, String cartItemId){
+    public static Task<Void> deleteCartItem(String userId, String cartItemId){
         return db.collection(CARTS_COLLECTION)
                 .document(userId)
                 .collection(CART_ITEMS_COLLECTION)
@@ -122,13 +122,10 @@ public class Database {
                 .delete();
     }
 
-    public static void restoreCartItem(String userId, CartItem restoreItem){
-
+    public static Task restoreCartItem(String userId, CartItem restoreItem){
         DocumentReference docRef = db.document(restoreItem.getDocRef());
-
         CartItemReference item = new CartItemReference(restoreItem.getColor(), restoreItem.getQuantity(), docRef);
-
-        db.collection(CARTS_COLLECTION)
+        return db.collection(CARTS_COLLECTION)
                 .document(userId)
                 .collection(CART_ITEMS_COLLECTION)
                 .document(restoreItem.getId())

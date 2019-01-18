@@ -11,7 +11,6 @@ public class FeedbackViewModel extends ViewModel {
     FirebaseAuth auth = FirebaseAuth.getInstance();
 
     public void sendFeedback(String feedbackMessage){
-        System.out.println("sending feedback from viewModel!");
         Feedback feedback = new Feedback(auth.getUid(), feedbackMessage);
         Database.sendFeedback(feedback);
     }
