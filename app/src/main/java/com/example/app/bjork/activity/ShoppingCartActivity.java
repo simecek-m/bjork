@@ -61,31 +61,23 @@ public class ShoppingCartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shopping_cart);
-
         shoppingCartViewModel = ViewModelProviders.of(this).get(ShoppingCartViewModel.class);
-
         currentUser = ((UserInfo) getIntent().getSerializableExtra("currentUser"));
         if (currentUser == null) {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             finish();
         }
-
         showToolbar();
-
         recyclerView = findViewById(R.id.cart_list);
         adapter = new ShoppingCartAdapter(this);
-        layoutManager = new LinearLayoutManager(this);
-
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), layoutManager.getOrientation());
-
-        recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), layoutManager.getOrientation());
         recyclerView.addItemDecoration(dividerItemDecoration);
-
-        createOrderBottomSheet();
         new ItemTouchHelper(new ShoppingCartTouchHelper()).attachToRecyclerView(recyclerView);
-
+        createOrderBottomSheet();
     }
 
     @Override
@@ -95,15 +87,14 @@ public class ShoppingCartActivity extends AppCompatActivity {
             @Override
             public void onChanged(@Nullable DataWrapper<List<CartItem>> listDataWrapper) {
                 if(listDataWrapper.getError() == null){
-                    if(listDataWrapper.getMesaage() == ShoppingCartViewModel.REMOVED_ITEM_MESSAGE){
-                        showDeleteItemSnackbar();
+                    String message = listDataWrapper.getMesaage();
+                    if(message != null && message.equals(ShoppingCartViewModel.REMOVED_ITEM_MESSAGE)){
+                        showDeletedItemSnackbar();
                     }
                     if(listDataWrapper.getData().size() == 0){
                         showEmptyCart();
                     }else{
-                        adapter.setList(listDataWrapper.getData());
-                        adapter.notifyDataSetChanged();
-                        showShoppingCart();
+                        showShoppingCart(listDataWrapper.getData());
                     }
                 }else{
                     showError();
@@ -114,9 +105,9 @@ public class ShoppingCartActivity extends AppCompatActivity {
         shoppingCartViewModel.getNewOrder().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(@Nullable Boolean orderFinished) {
-                final ProgressBar progressBar = orderBottomSheet.findViewById(R.id.progressBar);
-                final TextView progressText = orderBottomSheet.findViewById(R.id.progressText);
                 if (orderFinished) {
+                    final ProgressBar progressBar = orderBottomSheet.findViewById(R.id.progressBar);
+                    final TextView progressText = orderBottomSheet.findViewById(R.id.progressText);
                     progressBar.setVisibility(View.GONE);
                     progressText.setText(getString(R.string.order_complete));
                     new Handler().postDelayed(new Runnable() {
@@ -139,7 +130,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
         });
     }
 
-    private void showDeleteItemSnackbar() {
+    private void showDeletedItemSnackbar() {
         CartItem deletedCartItem = shoppingCartViewModel.getDeletedCartItem();
         String text = deletedCartItem.getName() + " " + getString(R.string.cart_item_removed);
         Snackbar.make(recyclerView, text, Snackbar.LENGTH_INDEFINITE)
@@ -151,7 +142,6 @@ public class ShoppingCartActivity extends AppCompatActivity {
                     }
                 })
                 .show();
-
     }
 
     @Override
@@ -160,7 +150,6 @@ public class ShoppingCartActivity extends AppCompatActivity {
         shoppingCartViewModel.getCartItemsList().removeObservers(this);
         shoppingCartViewModel.getNewOrder().removeObservers(this);
         shoppingCartViewModel.getTotalPrice().removeObservers(this);
-
     }
 
     @Override
@@ -184,11 +173,11 @@ public class ShoppingCartActivity extends AppCompatActivity {
         fillBottomSheetData();
     }
 
-    public void showShoppingCart(){
+    public void showShoppingCart(List<CartItem> list){
+        adapter.setList(list);
         if(menu.findItem(R.id.menu_order) == null){
             getMenuInflater().inflate(R.menu.shopping_cart_menu, menu);
         }
-
         View cartListView = findViewById(R.id.cart_list);
         if(cartListView.getVisibility() != View.VISIBLE){
             View currentShownView = findViewById(R.id.empty_cart).getVisibility() == View.VISIBLE ?
@@ -220,7 +209,6 @@ public class ShoppingCartActivity extends AppCompatActivity {
         ActionBar ab = getSupportActionBar();
         ab.setTitle(R.string.cart);
         ab.setDisplayHomeAsUpEnabled(true);
-
     }
 
     public void fillBottomSheetData(){
@@ -232,41 +220,33 @@ public class ShoppingCartActivity extends AppCompatActivity {
         ArrayAdapter<String> deliveryAdapter = new ArrayAdapter<String>(this, R.layout.spinner_item, methods);
         deliveryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         deliveryList.setAdapter(deliveryAdapter);
-
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 confirmButton.setVisibility(View.GONE);
                 orderInfo.setVisibility(View.GONE);
                 progressLayout.setVisibility(View.VISIBLE);
-                shoppingCartViewModel.newOrder();
+                shoppingCartViewModel.setNewOrder();
             }
         });
-
         TextView  user = orderBottomSheet.findViewById(R.id.userText);
         TextView  address = orderBottomSheet.findViewById(R.id.addressText);
         TextView uncompleteProfile = orderBottomSheet.findViewById(R.id.uncomplete_profile);
-        if(currentUser != null){
+        if(currentUser.getFirstname() == null || currentUser.getFirstname() != null) {
+            user.setText(getString(R.string.unknown));
+            uncompleteProfile.setVisibility(View.VISIBLE);
+            confirmButton.setEnabled(false);
+        }else {
             user.setText(currentUser.getFirstname() + " " + currentUser.getLastname());
-            address.setText(currentUser.getAddress());
-            if(currentUser.getFirstname() == null || currentUser.getLastname() == null || currentUser.getFirstname().isEmpty() || currentUser.getLastname().isEmpty()){
-                user.setText(R.string.unknown);
-                uncompleteProfile.setVisibility(View.VISIBLE);
-                confirmButton.setEnabled(false);
-            }if(currentUser.getAddress() == null || currentUser.getAddress().isEmpty()){
-                address.setText(R.string.unknown);
-                confirmButton.setEnabled(false);
-                uncompleteProfile.setVisibility(View.VISIBLE);
-                confirmButton.setEnabled(false);
-            }
-        }else{
-            user.setText(R.string.unknown);
+        }if(currentUser.getAddress() == null){
             address.setText(R.string.unknown);
             confirmButton.setEnabled(false);
             uncompleteProfile.setVisibility(View.VISIBLE);
+            confirmButton.setEnabled(false);
+        }else {
+            address.setText(currentUser.getAddress());
         }
     }
-
 
     // helper for touch gestures callbacks
     private class ShoppingCartTouchHelper extends ItemTouchHelper.SimpleCallback{
@@ -280,7 +260,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
             View itemView = viewHolder.itemView;
 
-            final ColorDrawable background = new ColorDrawable(getResources().getColor(R.color.grey));
+            final ColorDrawable background = new ColorDrawable(getResources().getColor(R.color.greyDarker));
             final Drawable icon = getDrawable(R.drawable.ic_delete);
             icon.setTint(Color.WHITE);
 
@@ -316,7 +296,6 @@ public class ShoppingCartActivity extends AppCompatActivity {
         public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int i) {
             final int position = viewHolder.getAdapterPosition();
             final CartItem deletedCartItem = adapter.getCartItem(position);
-            final View layout = findViewById(R.id.layout);
             adapter.removeItem(position);
             shoppingCartViewModel.deleteCartItem(deletedCartItem);
             if(adapter.getItemCount() == 0){

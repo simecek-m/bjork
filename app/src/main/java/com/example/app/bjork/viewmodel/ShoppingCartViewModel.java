@@ -3,7 +3,6 @@ package com.example.app.bjork.viewmodel;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.example.app.bjork.database.Database;
 import com.example.app.bjork.model.CartItem;
@@ -21,11 +20,9 @@ import java.util.List;
 
 public class ShoppingCartViewModel extends ViewModel {
 
-    private static final String TAG = "ShoppingCartViewModel";
-    
     public static final int DATA_UNAVAILABLE_ERROR = 1;
-    public static final int ITEM_NOT_REMOVED_ERROR = 2;
-    public static final int ITEM_NOT_RESTORED_ERROR = 3;
+    public static final int NO_ITEM_WAS_REMOVED_ERROR = 2;
+    public static final int NO_ITEM_WAS_RESTORED_ERROR = 3;
 
     public static final String REMOVED_ITEM_MESSAGE = "item removed";
     public static final String RESTORED_ITEM_MESSAGE = "item restored";
@@ -51,7 +48,7 @@ public class ShoppingCartViewModel extends ViewModel {
                 }
                 Collections.sort(result);
                 cartItemsList.setValue(new DataWrapper<>(result));
-                calculateNewTotalPrice(result);
+                calculateTotalPrice(result);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -66,7 +63,7 @@ public class ShoppingCartViewModel extends ViewModel {
         return totalPrice;
     }
 
-    public void calculateNewTotalPrice(List<CartItem> list){
+    private void calculateTotalPrice(List<CartItem> list){
         int result = 0;
         for(CartItem item: list){
             result += item.getPrice();
@@ -74,10 +71,7 @@ public class ShoppingCartViewModel extends ViewModel {
         totalPrice.setValue(result);
     }
 
-
-
     public void deleteCartItem(final CartItem cartItem){
-        Log.i(TAG, "deleteCartItem: ");
         Database.deleteCartItem(auth.getUid(), cartItem.getId()).addOnSuccessListener(new OnSuccessListener<Void>() {
             public void onSuccess(Void aVoid) {
                 List<CartItem> updatedList = cartItemsList.getValue().getData();
@@ -89,12 +83,12 @@ public class ShoppingCartViewModel extends ViewModel {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                cartItemsList.setValue(new DataWrapper<List<CartItem>>(ITEM_NOT_REMOVED_ERROR));
+                cartItemsList.setValue(new DataWrapper<List<CartItem>>(NO_ITEM_WAS_REMOVED_ERROR));
             }
         });
     }
 
-    public void newOrder(){
+    public void setNewOrder(){
         Database.newOrder().addOnSuccessListener(new OnSuccessListener<HttpsCallableResult>() {
             @Override
             public void onSuccess(HttpsCallableResult httpsCallableResult) {
@@ -113,7 +107,6 @@ public class ShoppingCartViewModel extends ViewModel {
     }
 
     public void restoreDeletedCartItem(){
-        Log.i(TAG, "restoreDeletedCartItem: ");
         final CartItem cartItem = deletedCartItem.getValue();
         if(cartItem != null){
             Database.restoreCartItem(auth.getUid(), cartItem).addOnSuccessListener(new OnSuccessListener() {
@@ -128,7 +121,7 @@ public class ShoppingCartViewModel extends ViewModel {
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    cartItemsList.setValue(new DataWrapper<List<CartItem>>(ITEM_NOT_RESTORED_ERROR));
+                    cartItemsList.setValue(new DataWrapper<List<CartItem>>(NO_ITEM_WAS_RESTORED_ERROR));
                 }
             });
         }
