@@ -67,17 +67,18 @@ public class ShoppingCartActivity extends AppCompatActivity {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             finish();
+        }else{
+            showToolbar();
+            recyclerView = findViewById(R.id.cart_list);
+            adapter = new ShoppingCartAdapter(this);
+            recyclerView.setAdapter(adapter);
+            layoutManager = new LinearLayoutManager(this);
+            recyclerView.setLayoutManager(layoutManager);
+            DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), layoutManager.getOrientation());
+            recyclerView.addItemDecoration(dividerItemDecoration);
+            new ItemTouchHelper(new ShoppingCartTouchHelper()).attachToRecyclerView(recyclerView);
+            createOrderBottomSheet();
         }
-        showToolbar();
-        recyclerView = findViewById(R.id.cart_list);
-        adapter = new ShoppingCartAdapter(this);
-        recyclerView.setAdapter(adapter);
-        layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), layoutManager.getOrientation());
-        recyclerView.addItemDecoration(dividerItemDecoration);
-        new ItemTouchHelper(new ShoppingCartTouchHelper()).attachToRecyclerView(recyclerView);
-        createOrderBottomSheet();
     }
 
     @Override
@@ -232,13 +233,13 @@ public class ShoppingCartActivity extends AppCompatActivity {
         TextView  user = orderBottomSheet.findViewById(R.id.userText);
         TextView  address = orderBottomSheet.findViewById(R.id.addressText);
         TextView uncompleteProfile = orderBottomSheet.findViewById(R.id.uncomplete_profile);
-        if(currentUser.getFirstname() == null || currentUser.getFirstname() != null) {
+        if(currentUser.getFirstname() == null || currentUser.getFirstname().isEmpty() || currentUser.getLastname() == null || currentUser.getLastname().isEmpty()) {
             user.setText(getString(R.string.unknown));
             uncompleteProfile.setVisibility(View.VISIBLE);
             confirmButton.setEnabled(false);
         }else {
             user.setText(currentUser.getFirstname() + " " + currentUser.getLastname());
-        }if(currentUser.getAddress() == null){
+        }if(currentUser.getAddress() == null || currentUser.getAddress().isEmpty()){
             address.setText(R.string.unknown);
             confirmButton.setEnabled(false);
             uncompleteProfile.setVisibility(View.VISIBLE);

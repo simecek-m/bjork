@@ -265,6 +265,7 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == CHANGE_PROFILE_INFO_REQUEST && resultCode == RESULT_OK){
             UserInfo userInfo = (UserInfo) data.getSerializableExtra("userInfo");
+            currentUser = userInfo;
             name.setText(userInfo.getFirstname() + " " + userInfo.getLastname());
             email.setText(userInfo.getEmail());
             if(userInfo.getGender().equals(GENDER_MALE)){
