@@ -57,7 +57,8 @@
     <string name="uncomplete_profile">Bohužel nemáte dokončený profil</string>
     <string name="gender">Pohlaví</string>
     <string name="wrong_password">Chybné heslo</string>
-    <string name="loading">Připravujeme Váš košík</string>
+    <string name="loading_cart">Připravujeme Váš košík</string>
+    <string name="loading_search">Hledáme produkty</string>
     <string name="cart_item_removed">odebrán z košíku</string>
     <string name="undo">Vrátit</string>
     <string name="connection_error">Nedostupná data</string>
