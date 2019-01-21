@@ -17,6 +17,8 @@ public class ProfileViewModel extends ViewModel {
     public static final int UPDATE_MESSAGING_TOKEN_ERROR = 1;
     public static final int UPDATE_USER_INFO_ERROR = 2;
 
+    public static final String UPDATED_USER_INFO_MESSAGE = "user info updated";
+
     private MutableLiveData<DataWrapper<Boolean>> loggedOff = new MutableLiveData<>();
     private MutableLiveData<DataWrapper<UserInfo>> currentUserInfo = new MutableLiveData<>();
 
@@ -24,10 +26,6 @@ public class ProfileViewModel extends ViewModel {
 
     public FirebaseUser getCurrentUser(){
         return currentUser;
-    }
-
-    public void editUserInfo(){
-
     }
 
     public void logout(){
@@ -50,14 +48,14 @@ public class ProfileViewModel extends ViewModel {
         return loggedOff;
     }
 
-    public void changeUserInfo(String firstname, String lastname, String address, String gender){
+    public void updateUserInfo(String firstname, String lastname, String address, String gender){
         FirebaseUser currentUser = getCurrentUser();
         String messagingToken = currentUserInfo.getValue().getData().getMessagingToken();
         final UserInfo userInfo = new UserInfo(currentUser.getUid(), currentUser.getEmail(), firstname, lastname, address, gender, messagingToken);
         Database.updateUserInfo(userInfo).addOnSuccessListener(new OnSuccessListener() {
             @Override
             public void onSuccess(Object o) {
-                currentUserInfo.setValue(new DataWrapper<>(userInfo));
+                currentUserInfo.setValue(new DataWrapper<>(userInfo, UPDATED_USER_INFO_MESSAGE));
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -68,7 +66,7 @@ public class ProfileViewModel extends ViewModel {
     }
 
     public void setCurrentUserInfo(UserInfo userInfo){
-        this.currentUserInfo.setValue(new DataWrapper<UserInfo>(userInfo));
+        this.currentUserInfo.setValue(new DataWrapper<>(userInfo));
     }
 
     public MutableLiveData<DataWrapper<UserInfo>> getCurrentUserInfo(){

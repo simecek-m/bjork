@@ -28,24 +28,22 @@ import java.util.List;
 
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private EditText firstnameText;
-    private EditText lastnameText;
+    private EditText firstNameText;
+    private EditText lastNameText;
     private EditText addressText;
     private Spinner genderSpinner;
-
     private Button logoutButton;
-    private Button saveUserInfoButton;
-    private boolean defaultState = true;
+    private Button updateUserInfoButton;
 
+    private boolean defaultState = true;
     private ProfileViewModel profileViewModel;
-    private UserInfo defaultUserInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         profileViewModel = ViewModelProviders.of(this).get(ProfileViewModel.class);
-        defaultUserInfo = (UserInfo)getIntent().getSerializableExtra("currentUser");
-        profileViewModel.setCurrentUserInfo(defaultUserInfo);
+        UserInfo userInfo = (UserInfo)getIntent().getSerializableExtra("currentUser");
+        profileViewModel.setCurrentUserInfo(userInfo);
         final FirebaseUser currentUser = profileViewModel.getCurrentUser();
         if(currentUser == null){
             Intent intent = new Intent(this, LoginActivity.class);
@@ -54,42 +52,32 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         }else{
             setContentView(R.layout.activity_profile);
             showToolbar();
-            firstnameText = findViewById(R.id.firstnameText);
-            lastnameText = findViewById(R.id.lastnameText);
+            firstNameText = findViewById(R.id.firstname_text);
+            lastNameText = findViewById(R.id.lastname_text);
             addressText = findViewById(R.id.addressText);
             genderSpinner = findViewById(R.id.gender);
-            logoutButton = findViewById(R.id.logoutButton);
-            saveUserInfoButton = findViewById(R.id.saveUserInfoButton);
+            logoutButton = findViewById(R.id.logout_user_button);
+            updateUserInfoButton = findViewById(R.id.update_user_info_button);
             logoutButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     profileViewModel.logout();
                 }
             });
-            saveUserInfoButton.setOnClickListener(new View.OnClickListener() {
+            updateUserInfoButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String firstname = firstnameText.getText().toString();
-                    String lastname = lastnameText.getText().toString();
+                    String firstName = firstNameText.getText().toString();
+                    String lastName = lastNameText.getText().toString();
                     String address = addressText.getText().toString();
                     String gender = Constant.GENDERS[genderSpinner.getSelectedItemPosition()];
-                    profileViewModel.changeUserInfo(firstname, lastname, address, gender);
+                    profileViewModel.updateUserInfo(firstName, lastName, address, gender);
 
                 }
             });
-            firstnameText.setOnClickListener(this);
-            lastnameText.setOnClickListener(this);
+            firstNameText.setOnClickListener(this);
+            lastNameText.setOnClickListener(this);
             addressText.setOnClickListener(this);
-            defaultUserInfo = (UserInfo)getIntent().getSerializableExtra("currentUser");
-            firstnameText.setText(defaultUserInfo.getFirstname());
-            lastnameText.setText(defaultUserInfo.getLastname());
-            addressText.setText(defaultUserInfo.getAddress());
-            if(defaultUserInfo.getGender() != null){
-                List<String> genders = Arrays.asList(Constant.GENDERS);
-                int selectedGenderIndex = genders.indexOf(defaultUserInfo.getGender());
-                genderSpinner.setSelection(selectedGenderIndex);
-            }
-            defaultRender();
         }
     }
 
@@ -108,46 +96,61 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             @Override
             public void onChanged(@Nullable DataWrapper<UserInfo> userInfoDataWrapper) {
                 if(userInfoDataWrapper.getError() == null){
-                    defaultUserInfo = userInfoDataWrapper.getData();
-                    Intent resultIntent = new Intent();
-                    resultIntent.putExtra("userInfo", defaultUserInfo);
-                    setResult(RESULT_OK, resultIntent);
-                    finish();
+                    String message = userInfoDataWrapper.getMesaage();
+                    if(message != null && message.equals(profileViewModel.UPDATED_USER_INFO_MESSAGE)){
+                        UserInfo updatedUserInfo = userInfoDataWrapper.getData();
+                        Intent resultIntent = new Intent();
+                        resultIntent.putExtra("userInfo", updatedUserInfo);
+                        setResult(RESULT_OK, resultIntent);
+                        finish();
+                    }else{
+                        renderDefaultState(userInfoDataWrapper.getData());
+                    }
                 }
             }
         });
     }
 
-    public void editUser(){
+    public void renderEditUserState(){
         defaultState = false;
-        firstnameText.setInputType(InputType.TYPE_CLASS_TEXT);
-        firstnameText.setFocusableInTouchMode(true);
-        lastnameText.setInputType(InputType.TYPE_CLASS_TEXT);
-        lastnameText.setFocusableInTouchMode(true);
+        firstNameText.setInputType(InputType.TYPE_CLASS_TEXT);
+        firstNameText.setFocusableInTouchMode(true);
+        lastNameText.setInputType(InputType.TYPE_CLASS_TEXT);
+        lastNameText.setFocusableInTouchMode(true);
         addressText.setInputType(InputType.TYPE_CLASS_TEXT);
         addressText.setFocusableInTouchMode(true);
         genderSpinner.setVisibility(View.VISIBLE);
-        saveUserInfoButton.setVisibility(View.VISIBLE);
+        updateUserInfoButton.setVisibility(View.VISIBLE);
         logoutButton.setVisibility(View.GONE);
     }
 
-    public void defaultRender(){
+    public void renderDefaultState(UserInfo userInfo){
         defaultState = true;
-        firstnameText.setInputType(InputType.TYPE_NULL);
-        firstnameText.setFocusable(false);
-        lastnameText.setInputType(InputType.TYPE_NULL);
-        lastnameText.setFocusable(false);
+        firstNameText.setInputType(InputType.TYPE_NULL);
+        firstNameText.setFocusable(false);
+        firstNameText.setText(userInfo.getFirstname());
+        lastNameText.setInputType(InputType.TYPE_NULL);
+        lastNameText.setFocusable(false);
+        lastNameText.setText(userInfo.getLastname());
         addressText.setInputType(InputType.TYPE_NULL);
         addressText.setFocusable(false);
+        addressText.setText(userInfo.getAddress());
         genderSpinner.setVisibility(View.INVISIBLE);
-        saveUserInfoButton.setVisibility(View.GONE);
+        if(userInfo.getGender() != null){
+            List<String> genders = Arrays.asList(Constant.GENDERS);
+            int selectedGenderIndex = genders.indexOf(userInfo.getGender());
+            genderSpinner.setSelection(selectedGenderIndex);
+        }else{
+            genderSpinner.setSelection(0);
+        }
+        updateUserInfoButton.setVisibility(View.GONE);
         logoutButton.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onClick(View v) {
         if (v instanceof EditText && defaultState) {
-            editUser();
+            renderEditUserState();
             EditText focusText = (EditText) v;
             focusText.requestFocus();
             focusText.setSelection(focusText.getText().length());
@@ -160,17 +163,9 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     public void onBackPressed() {
         if(defaultState){
             super.onBackPressed();
-        }else if(defaultUserInfo != null){
-            firstnameText.setText(defaultUserInfo.getFirstname());
-            lastnameText.setText(defaultUserInfo.getLastname());
-            addressText.setText(defaultUserInfo.getAddress());
-            List<String> genders = Arrays.asList(Constant.GENDERS);
-            int selectedGenderIndex = genders.indexOf(defaultUserInfo.getGender());
-            genderSpinner.setSelection(selectedGenderIndex);
         }else{
-            genderSpinner.setSelection(0);
+            renderDefaultState(profileViewModel.getCurrentUserInfo().getValue().getData());
         }
-        defaultRender();
     }
 
     public void showToolbar(){
