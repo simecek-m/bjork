@@ -68,7 +68,7 @@ public class LoginViewModel extends ViewModel {
                 UserInfo userInfo = new UserInfo();
                 userInfo.setId(authResult.getUser().getUid());
                 userInfo.setEmail(authResult.getUser().getEmail());
-                Database.addUserInfo(userInfo).addOnSuccessListener(new OnSuccessListener() {
+                Database.updateUserInfo(userInfo).addOnSuccessListener(new OnSuccessListener() {
                     @Override
                     public void onSuccess(Object o) {
                         registrationFinished.setValue(REGISTRATION_COMPLETED);

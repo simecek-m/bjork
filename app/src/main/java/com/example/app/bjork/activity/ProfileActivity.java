@@ -1,8 +1,11 @@
 package com.example.app.bjork.activity;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -14,12 +17,11 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.example.app.bjork.R;
-import com.example.app.bjork.database.Database;
 import com.example.app.bjork.constant.Constant;
 import com.example.app.bjork.model.UserInfo;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentSnapshot;
+import com.example.app.bjork.viewmodel.ProfileViewModel;
+import com.example.app.bjork.wrapper.DataWrapper;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Arrays;
 import java.util.List;
@@ -34,25 +36,24 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private Button logoutButton;
     private Button saveUserInfoButton;
     private boolean defaultState = true;
-    private FirebaseAuth auth;
 
+    private ProfileViewModel profileViewModel;
     private UserInfo defaultUserInfo;
-    private Intent resultIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        resultIntent = new Intent();
-        auth = FirebaseAuth.getInstance();
-        if(auth.getUid() == null){
+        profileViewModel = ViewModelProviders.of(this).get(ProfileViewModel.class);
+        defaultUserInfo = (UserInfo)getIntent().getSerializableExtra("currentUser");
+        profileViewModel.setCurrentUserInfo(defaultUserInfo);
+        final FirebaseUser currentUser = profileViewModel.getCurrentUser();
+        if(currentUser == null){
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             finish();
         }else{
             setContentView(R.layout.activity_profile);
-
             showToolbar();
-
             firstnameText = findViewById(R.id.firstnameText);
             lastnameText = findViewById(R.id.lastnameText);
             addressText = findViewById(R.id.addressText);
@@ -62,13 +63,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             logoutButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Database.updateMessagingToken(auth.getUid(), null).addOnSuccessListener(new OnSuccessListener() {
-                        @Override
-                        public void onSuccess(Object o) {
-                            auth.signOut();
-                            finish();
-                        }
-                    });
+                    profileViewModel.logout();
                 }
             });
             saveUserInfoButton.setOnClickListener(new View.OnClickListener() {
@@ -78,19 +73,49 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     String lastname = lastnameText.getText().toString();
                     String address = addressText.getText().toString();
                     String gender = Constant.GENDERS[genderSpinner.getSelectedItemPosition()];
-                    defaultUserInfo = new UserInfo(auth.getUid(), auth.getCurrentUser().getEmail() ,firstname, lastname, address, gender, defaultUserInfo.getMessagingToken());
-                    Database.addUserInfo(defaultUserInfo);
-                    resultIntent.putExtra("userInfo", defaultUserInfo);
-                    setResult(RESULT_OK, resultIntent);
-                    finish();
+                    profileViewModel.changeUserInfo(firstname, lastname, address, gender);
+
                 }
             });
             firstnameText.setOnClickListener(this);
             lastnameText.setOnClickListener(this);
             addressText.setOnClickListener(this);
+            defaultUserInfo = (UserInfo)getIntent().getSerializableExtra("currentUser");
+            firstnameText.setText(defaultUserInfo.getFirstname());
+            lastnameText.setText(defaultUserInfo.getLastname());
+            addressText.setText(defaultUserInfo.getAddress());
+            if(defaultUserInfo.getGender() != null){
+                List<String> genders = Arrays.asList(Constant.GENDERS);
+                int selectedGenderIndex = genders.indexOf(defaultUserInfo.getGender());
+                genderSpinner.setSelection(selectedGenderIndex);
+            }
             defaultRender();
-            loadUserInfo(auth.getUid());
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        profileViewModel.getLoggedOff().observe(this, new Observer<DataWrapper<Boolean>>() {
+            @Override
+            public void onChanged(@Nullable DataWrapper<Boolean> userLoggedOffDataWrapper) {
+                if(userLoggedOffDataWrapper.getError() == null && userLoggedOffDataWrapper.getData()){
+                    finish();
+                }
+            }
+        });
+        profileViewModel.getCurrentUserInfo().observe(this, new Observer<DataWrapper<UserInfo>>() {
+            @Override
+            public void onChanged(@Nullable DataWrapper<UserInfo> userInfoDataWrapper) {
+                if(userInfoDataWrapper.getError() == null){
+                    defaultUserInfo = userInfoDataWrapper.getData();
+                    Intent resultIntent = new Intent();
+                    resultIntent.putExtra("userInfo", defaultUserInfo);
+                    setResult(RESULT_OK, resultIntent);
+                    finish();
+                }
+            }
+        });
     }
 
     public void editUser(){
@@ -129,34 +154,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.showSoftInput(focusText, InputMethodManager.SHOW_IMPLICIT);
         }
-    }
-
-    public boolean isProfileIncomplete(){
-        return firstnameText.getText().toString().matches("") ||
-                lastnameText.getText().toString().matches("") ||
-                addressText.getText().toString().matches("");
-    }
-
-    public void loadUserInfo(final String userId){
-        Database.loadUserInfo(userId)
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        defaultUserInfo = documentSnapshot.toObject(UserInfo.class);
-                        if(defaultUserInfo != null){
-                            defaultUserInfo.setId(documentSnapshot.getId());
-                            firstnameText.setText(defaultUserInfo.getFirstname());
-                            lastnameText.setText(defaultUserInfo.getLastname());
-                            addressText.setText(defaultUserInfo.getAddress());
-                            if(defaultUserInfo.getGender() != null){
-                                List<String> genders = Arrays.asList(Constant.GENDERS);
-                                int selectedGenderIndex = genders.indexOf(defaultUserInfo.getGender());
-                                genderSpinner.setSelection(selectedGenderIndex);
-                            }
-                        }
-                        defaultRender();
-                    }
-                });
     }
 
     @Override

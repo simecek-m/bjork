@@ -76,7 +76,7 @@ public class Database {
                 .get();
     }
 
-    public static Task addUserInfo(UserInfo userInfo){
+    public static Task updateUserInfo(UserInfo userInfo){
         return db.collection(USER_INFO_COLLECTION)
                 .document(userInfo.getId())
                 .set(userInfo);

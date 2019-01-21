@@ -191,6 +191,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.nav_profile:
                 item.setChecked(true);
                 intent = new Intent(this, ProfileActivity.class);
+                intent.putExtra("currentUser", currentUser);
                 startActivityForResult(intent, CHANGE_PROFILE_INFO_REQUEST);
                 break;
             case R.id.nav_about:
