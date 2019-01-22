@@ -53,12 +53,12 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         }else{
             setContentView(R.layout.activity_profile);
             showToolbar();
-            firstnameText = findViewById(R.id.firstnameText);
-            lastnameText = findViewById(R.id.lastnameText);
+            firstnameText = findViewById(R.id.firstname_text);
+            lastnameText = findViewById(R.id.lastname_text);
             addressText = findViewById(R.id.addressText);
             genderSpinner = findViewById(R.id.gender);
-            logoutButton = findViewById(R.id.logoutButton);
-            saveUserInfoButton = findViewById(R.id.saveUserInfoButton);
+            logoutButton = findViewById(R.id.logout_user_button);
+            saveUserInfoButton = findViewById(R.id.update_user_info_button);
             logoutButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
