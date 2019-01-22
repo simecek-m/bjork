@@ -133,7 +133,11 @@ public class MainActivity extends AppCompatActivity {
         localBroadcastManager.registerReceiver(likeBroadcastReceiver, new IntentFilter(BROADCAST_LIKE_PRODUCT));
         localBroadcastManager.registerReceiver(logoutReceiver, new IntentFilter(BROADCAST_USER_LOG_OUT));
         localBroadcastManager.registerReceiver(loginReceiver, new IntentFilter(BROADCAST_USER_LOG_IN));
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
         mainViewModel.getUserInfo().observe(this, new Observer<DataWrapper<UserInfo>>() {
             @Override
             public void onChanged(@Nullable DataWrapper<UserInfo> userInfoDataWrapper) {
@@ -145,6 +149,12 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mainViewModel.getUserInfo().removeObservers(this);
     }
 
     @Override
