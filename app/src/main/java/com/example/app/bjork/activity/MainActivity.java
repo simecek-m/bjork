@@ -81,10 +81,10 @@ public class MainActivity extends AppCompatActivity {
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         viewPager = findViewById(R.id.viewPager);
         pagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager(), this);
-        final FirebaseUser currentUser = mainViewModel.getCurrentUser();
         pagerAdapter.addOnLikeClickListener(new ProductsListAdapter.OnLikeClickListener() {
             @Override
             public void onLikeClick(Product product) {
+                FirebaseUser currentUser = mainViewModel.getCurrentUser();
                 if(currentUser == null){
                     loginBottomSheet.show();
                 }else{
@@ -101,9 +101,11 @@ public class MainActivity extends AppCompatActivity {
         pagerAdapter.addOnLikeClickListener(new FavouriteProductsListAdapter.OnLikeClickListener() {
             @Override
             public void onLikeClick(Product product) {
-                    ProductListFragment listFragment = (ProductListFragment) pagerAdapter.getItem(0);
-                    listFragment.removeFavouriteProduct(product, currentUser.getUid());
-                    favouriteListFragment.removeFavouriteProduct(product);
+                FirebaseUser currentUser = mainViewModel.getCurrentUser();
+                ProductListFragment listFragment = (ProductListFragment) pagerAdapter.getItem(0);
+                listFragment.removeFavouriteProduct(product, currentUser.getUid());
+                favouriteListFragment.removeFavouriteProduct(product);
+                favouriteListFragment.removeFavouriteProduct(product);
             }
         });
 
