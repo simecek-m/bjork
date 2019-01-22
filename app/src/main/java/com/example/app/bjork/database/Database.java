@@ -70,10 +70,9 @@ public class Database {
                 .get();
     }
 
-    public static Task<DocumentSnapshot> loadUserInfo(String userId){
+    public static DocumentReference loadUserInfo(String userId){
         return db.collection(USER_INFO_COLLECTION)
-                .document(userId)
-                .get();
+                .document(userId);
     }
 
     public static Task updateUserInfo(UserInfo userInfo){

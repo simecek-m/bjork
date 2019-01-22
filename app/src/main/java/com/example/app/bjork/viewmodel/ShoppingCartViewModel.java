@@ -33,7 +33,6 @@ public class ShoppingCartViewModel extends ViewModel {
     private FirebaseAuth auth = FirebaseAuth.getInstance();
 
     private MutableLiveData<DataWrapper<List<CartItem>>> cartItemsList = new MutableLiveData<>();
-    private MutableLiveData<DataWrapper<UserInfo>> currentUserInfo = new MutableLiveData<>();
     private MutableLiveData<Integer> totalPrice = new MutableLiveData<>();
     private MutableLiveData<Boolean> newOrder = new MutableLiveData<>();
     private MutableLiveData<CartItem> deletedCartItem = new MutableLiveData<>();
@@ -137,20 +136,5 @@ public class ShoppingCartViewModel extends ViewModel {
 
     public CartItem getDeletedCartItem(){
         return deletedCartItem.getValue();
-    }
-
-    public MutableLiveData<DataWrapper<UserInfo>> getCurrentUserInfo(){
-        FirebaseUser user = getCurrentUser();
-        if(user != null){
-            Database.loadUserInfo(user.getUid()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                @Override
-                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    UserInfo userInfo = documentSnapshot.toObject(UserInfo.class);
-                    currentUserInfo.setValue(new DataWrapper<>(userInfo));
-                }
-            });
-
-        }
-        return currentUserInfo;
     }
 }

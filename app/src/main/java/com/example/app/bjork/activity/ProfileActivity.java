@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 
 import com.example.app.bjork.R;
@@ -33,6 +34,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private EditText lastnameText;
     private EditText addressText;
     private Spinner genderSpinner;
+    private ImageView profilePicture;
 
     private Button logoutButton;
     private Button saveUserInfoButton;
@@ -57,6 +59,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             lastnameText = findViewById(R.id.lastname_text);
             addressText = findViewById(R.id.addressText);
             genderSpinner = findViewById(R.id.gender);
+            profilePicture = findViewById(R.id.profile_picture);
             logoutButton = findViewById(R.id.logout_user_button);
             saveUserInfoButton = findViewById(R.id.update_user_info_button);
             logoutButton.setOnClickListener(new View.OnClickListener() {
@@ -68,17 +71,21 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             saveUserInfoButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String firstname = firstnameText.getText().toString();
-                    String lastname = lastnameText.getText().toString();
-                    String address = addressText.getText().toString();
-                    String gender = Constant.GENDERS[genderSpinner.getSelectedItemPosition()];
-                    profileViewModel.updateUserInfo(firstname, lastname, address, gender);
+                    defaultUserInfo.setFirstname(firstnameText.getText().toString());
+                    defaultUserInfo.setLastname(lastnameText.getText().toString());
+                    defaultUserInfo.setAddress(addressText.getText().toString());
+                    defaultUserInfo.setGender(Constant.GENDERS[genderSpinner.getSelectedItemPosition()]);
+                    profileViewModel.updateUserInfo(defaultUserInfo);
+                    switchToDefaultState();
 
                 }
             });
             firstnameText.setOnClickListener(this);
             lastnameText.setOnClickListener(this);
             addressText.setOnClickListener(this);
+
+            defaultUserInfo = (UserInfo)getIntent().getSerializableExtra("userInfo");
+            updateUserInfo();
         }
     }
 
@@ -88,7 +95,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         profileViewModel.getLoggedOut().observe(this, new Observer<DataWrapper<Boolean>>() {
             @Override
             public void onChanged(@Nullable DataWrapper<Boolean> userLoggedOutDataWrapper) {
-                if(userLoggedOutDataWrapper.getError() == null && userLoggedOutDataWrapper.getData()){
+                if (userLoggedOutDataWrapper.getError() == null && userLoggedOutDataWrapper.getData()) {
                     LocalBroadcastManager manager = LocalBroadcastManager.getInstance(ProfileActivity.this);
                     Intent intent = new Intent(Constant.BROADCAST_USER_LOG_OUT);
                     manager.sendBroadcast(intent);
@@ -96,25 +103,12 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 }
             }
         });
-        profileViewModel.getCurrentUserInfo().observe(this, new Observer<DataWrapper<UserInfo>>() {
+        profileViewModel.getUserInfo().observe(this, new Observer<DataWrapper<UserInfo>>() {
             @Override
             public void onChanged(@Nullable DataWrapper<UserInfo> userInfoDataWrapper) {
-                if(userInfoDataWrapper.getError() == null){
-                    String message = userInfoDataWrapper.getMesaage();
-                    if(message != null && message.equals(ProfileViewModel.UPDATED_USER_INFO_MESSAGE)){
-                        finish();
-                    }else{
-                        defaultUserInfo = userInfoDataWrapper.getData();
-                        firstnameText.setText(defaultUserInfo.getFirstname());
-                        lastnameText.setText(defaultUserInfo.getLastname());
-                        addressText.setText(defaultUserInfo.getAddress());
-                        if(defaultUserInfo.getGender() != null){
-                            List<String> genders = Arrays.asList(Constant.GENDERS);
-                            int selectedGenderIndex = genders.indexOf(defaultUserInfo.getGender());
-                            genderSpinner.setSelection(selectedGenderIndex);
-                        }
-                        defaultRender();
-                    }
+                if(userInfoDataWrapper != null && userInfoDataWrapper.getData() != null){
+                    defaultUserInfo = userInfoDataWrapper.getData();
+                    updateUserInfo();
                 }
             }
         });
@@ -124,10 +118,29 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     protected void onStop() {
         super.onStop();
         profileViewModel.getLoggedOut().removeObservers(this);
-        profileViewModel.getCurrentUserInfo().removeObservers(this);
+
     }
 
-    public void editUser(){
+    public void updateUserInfo(){
+        firstnameText.setText(defaultUserInfo.getFirstname());
+        lastnameText.setText(defaultUserInfo.getLastname());
+        addressText.setText(defaultUserInfo.getAddress());
+        if(defaultUserInfo.getGender() != null){
+            List<String> genders = Arrays.asList(Constant.GENDERS);
+            int selectedGenderIndex = genders.indexOf(defaultUserInfo.getGender());
+            genderSpinner.setSelection(selectedGenderIndex);
+            if(defaultUserInfo.getGender().equals(Constant.GENDERS[0])){
+                profilePicture.setImageDrawable(getDrawable(R.drawable.avatar_man));
+            }else{
+                profilePicture.setImageDrawable(getDrawable(R.drawable.avatar_woman));
+            }
+        }else{
+            profilePicture.setImageDrawable(null);
+        }
+        switchToDefaultState();
+    }
+
+    public void switchToEditState(){
         defaultState = false;
         firstnameText.setInputType(InputType.TYPE_CLASS_TEXT);
         firstnameText.setFocusableInTouchMode(true);
@@ -140,7 +153,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         logoutButton.setVisibility(View.GONE);
     }
 
-    public void defaultRender(){
+    public void switchToDefaultState(){
         defaultState = true;
         firstnameText.setInputType(InputType.TYPE_NULL);
         firstnameText.setFocusable(false);
@@ -156,7 +169,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onClick(View v) {
         if (v instanceof EditText && defaultState) {
-            editUser();
+            switchToEditState();
             EditText focusText = (EditText) v;
             focusText.requestFocus();
             focusText.setSelection(focusText.getText().length());
@@ -170,16 +183,10 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         if(defaultState){
             super.onBackPressed();
         }else if(defaultUserInfo != null){
-            firstnameText.setText(defaultUserInfo.getFirstname());
-            lastnameText.setText(defaultUserInfo.getLastname());
-            addressText.setText(defaultUserInfo.getAddress());
-            List<String> genders = Arrays.asList(Constant.GENDERS);
-            int selectedGenderIndex = genders.indexOf(defaultUserInfo.getGender());
-            genderSpinner.setSelection(selectedGenderIndex);
+            updateUserInfo();
         }else{
             genderSpinner.setSelection(0);
         }
-        defaultRender();
     }
 
     public void showToolbar(){

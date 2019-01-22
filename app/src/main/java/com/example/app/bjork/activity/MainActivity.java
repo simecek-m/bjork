@@ -1,6 +1,8 @@
 package com.example.app.bjork.activity;
 
 import android.app.SearchManager;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -10,6 +12,7 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.LocalBroadcastManager;
@@ -38,10 +41,9 @@ import com.example.app.bjork.fragment.FavouriteListFragment;
 import com.example.app.bjork.fragment.ProductListFragment;
 import com.example.app.bjork.model.Product;
 import com.example.app.bjork.model.UserInfo;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
+import com.example.app.bjork.viewmodel.MainViewModel;
+import com.example.app.bjork.wrapper.DataWrapper;
+import com.google.firebase.auth.FirebaseUser;
 
 import static com.example.app.bjork.constant.Constant.BROADCAST_LIKE_PRODUCT;
 import static com.example.app.bjork.constant.Constant.BROADCAST_USER_LOG_IN;
@@ -54,49 +56,39 @@ public class MainActivity extends AppCompatActivity {
 
     private String GENDER_MALE = Constant.GENDERS[0];
 
+    private MainViewModel mainViewModel;
+    private Menu menu;
     private ViewPager viewPager;
     private ScreenSlidePagerAdapter pagerAdapter;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
-    private FirebaseAuth mAuth;
-    private String currentUserId;
-    private UserInfo currentUser;
-
-    private Menu menu;
+    private FavouriteListFragment favouriteListFragment;
+    private ProductListFragment productListFragment;
     private BottomSheetDialog loginBottomSheet;
     private BottomSheetDialog sortBottomSheet;
-
     private TextView name;
     private TextView email;
     private ImageView profileImage;
-    private FirebaseFirestore db;
-
     private LocalBroadcastManager localBroadcastManager;
-    private ProductListFragment productListFragment;
-    private FavouriteListFragment favouriteListFragment;
-
+    private UserInfo userInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         showToolbar();
         createLoginBottomSheet();
-
-        db = FirebaseFirestore.getInstance();
-
-        mAuth = FirebaseAuth.getInstance();
-        currentUserId = mAuth.getUid();
+        mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         viewPager = findViewById(R.id.viewPager);
         pagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager(), this);
+        final FirebaseUser currentUser = mainViewModel.getCurrentUser();
         pagerAdapter.addOnLikeClickListener(new ProductsListAdapter.OnLikeClickListener() {
             @Override
             public void onLikeClick(Product product) {
-                if(mAuth.getUid() == null){
+                if(currentUser == null){
                     loginBottomSheet.show();
                 }else{
-                    if(product.likedByUser(mAuth.getUid())){
+                    if(product.likedByUser(currentUser.getUid())){
                         favouriteListFragment.addFavouriteProduct(product);
                     }else{
                         favouriteListFragment.removeFavouriteProduct(product);
@@ -110,18 +102,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onLikeClick(Product product) {
                     ProductListFragment listFragment = (ProductListFragment) pagerAdapter.getItem(0);
-                    listFragment.removeFavouriteProduct(product, mAuth.getUid());
+                    listFragment.removeFavouriteProduct(product, currentUser.getUid());
                     favouriteListFragment.removeFavouriteProduct(product);
             }
         });
 
         productListFragment = (ProductListFragment) pagerAdapter.getItem(0);
         favouriteListFragment = (FavouriteListFragment) pagerAdapter.getItem(1);
-
         viewPager.setAdapter(pagerAdapter);
-
         drawerLayout = findViewById(R.id.drawer_layout);
-
         navigationView = findViewById(R.id.navigation_view);
         navigationView.setCheckedItem(R.id.nav_products);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -138,12 +127,23 @@ public class MainActivity extends AppCompatActivity {
         name = header.findViewById(R.id.name);
         email = header.findViewById(R.id.email);
         profileImage = header.findViewById(R.id.profileImage);
-        updateUserInfo();
-
         localBroadcastManager = LocalBroadcastManager.getInstance(this);
         localBroadcastManager.registerReceiver(likeBroadcastReceiver, new IntentFilter(BROADCAST_LIKE_PRODUCT));
         localBroadcastManager.registerReceiver(logoutReceiver, new IntentFilter(BROADCAST_USER_LOG_OUT));
         localBroadcastManager.registerReceiver(loginReceiver, new IntentFilter(BROADCAST_USER_LOG_IN));
+
+        mainViewModel.getUserInfo().observe(this, new Observer<DataWrapper<UserInfo>>() {
+            @Override
+            public void onChanged(@Nullable DataWrapper<UserInfo> userInfoDataWrapper) {
+                System.out.println("logged user info changed");
+                if(userInfoDataWrapper != null && userInfoDataWrapper.getData() != null){
+                    userInfo = userInfoDataWrapper.getData();
+                    updateNavigationHeader(userInfo);
+                }else{
+                    updateNavigationHeader(null);
+                }
+            }
+        });
     }
 
     @Override
@@ -167,12 +167,6 @@ public class MainActivity extends AppCompatActivity {
             item.collapseActionView();
         }
         navigationView.setCheckedItem(R.id.nav_products);
-        if(currentUserChanged()){
-            currentUserId = mAuth.getUid();
-            productListFragment.loadList();
-            favouriteListFragment.loadList();
-            updateUserInfo();
-        }
     }
 
     public void openItemActivity(MenuItem item){
@@ -188,12 +182,13 @@ public class MainActivity extends AppCompatActivity {
             case R.id.nav_cart:
                 item.setChecked(true);
                 intent = new Intent(this, ShoppingCartActivity.class);
+                intent.putExtra("userInfo", userInfo);
                 startActivity(intent);
                 break;
             case R.id.nav_profile:
                 item.setChecked(true);
                 intent = new Intent(this, ProfileActivity.class);
-                intent = new Intent(this, ProfileActivity.class);
+                intent.putExtra("userInfo", userInfo);
                 startActivity(intent);
                 break;
             case R.id.nav_about:
@@ -202,10 +197,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
                 break;
         }
-    }
-
-    public boolean currentUserChanged(){
-        return this.currentUserId != mAuth.getUid();
     }
 
     public void showToolbar(){
@@ -234,29 +225,21 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void updateUserInfo(){
-        if(mAuth.getUid() != null){
-            db.collection("user_info")
-                    .document(mAuth.getUid())
-                    .get()
-                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            currentUser = documentSnapshot.toObject(UserInfo.class);
-                            if(currentUser != null){
-                                if(currentUser.getFirstname() != null && currentUser.getLastname() != null) {
-                                    name.setText(currentUser.getFirstname() + " " + currentUser.getLastname());
-                                }if(currentUser.getGender() != null && currentUser.equals(GENDER_MALE)){
-                                    profileImage.setImageResource(R.drawable.avatar_man);
-                                }else if (currentUser.getGender() != null && currentUser.equals(GENDER_MALE)){
-                                    profileImage.setImageResource(R.drawable.avatar_woman);
-                                }
-                            }
-                            email.setText(mAuth.getCurrentUser().getEmail());
-                        }
-                    });
+    public void updateNavigationHeader(UserInfo currentUserInfo){
+        FirebaseUser currentUser = mainViewModel.getCurrentUser();
+        if(currentUser != null && currentUserInfo != null){
+            String userGender = currentUserInfo.getGender();
+            if(currentUserInfo.getFirstname() != null && currentUserInfo.getLastname() != null) {
+                name.setText(currentUserInfo.getFirstname() + " " + currentUserInfo.getLastname());
+            }if(userGender == null){
+                profileImage.setImageDrawable(null);
+            }else if(userGender.equals(GENDER_MALE)){
+                profileImage.setImageDrawable(getDrawable(R.drawable.avatar_man));
+            }else{
+                profileImage.setImageDrawable(getDrawable(R.drawable.avatar_woman));
+            }
+            email.setText(currentUser.getEmail());
         }else{
-            currentUser = null;
             name.setText(null);
             email.setText(R.string.unlogged_user);
             profileImage.setImageDrawable(null);
@@ -337,6 +320,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mainViewModel.getUserInfo().removeObservers(this);
         localBroadcastManager.unregisterReceiver(likeBroadcastReceiver);
         localBroadcastManager.unregisterReceiver(loginReceiver);
         localBroadcastManager.unregisterReceiver(logoutReceiver);
