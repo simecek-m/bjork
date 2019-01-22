@@ -39,6 +39,7 @@ import com.example.app.bjork.model.CartItem;
 import com.example.app.bjork.model.UserInfo;
 import com.example.app.bjork.viewmodel.ShoppingCartViewModel;
 import com.example.app.bjork.wrapper.DataWrapper;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Arrays;
 import java.util.List;
@@ -48,7 +49,6 @@ public class ShoppingCartActivity extends AppCompatActivity {
     private static final int DISMISS_NEW_ORDER_DELAY = 2000;
 
     private ShoppingCartViewModel shoppingCartViewModel;
-    private UserInfo currentUser;
 
     private RecyclerView recyclerView;
     private ShoppingCartAdapter adapter;
@@ -62,7 +62,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shopping_cart);
         shoppingCartViewModel = ViewModelProviders.of(this).get(ShoppingCartViewModel.class);
-        currentUser = ((UserInfo) getIntent().getSerializableExtra("currentUser"));
+        FirebaseUser currentUser = shoppingCartViewModel.getCurrentUser();
         if (currentUser == null) {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
@@ -129,6 +129,18 @@ public class ShoppingCartActivity extends AppCompatActivity {
                 priceTextView.setText(totalPrice + ",- Kč");
             }
         });
+
+        shoppingCartViewModel.getCurrentUserInfo().observe(this, new Observer<DataWrapper<UserInfo>>() {
+            @Override
+            public void onChanged(@Nullable DataWrapper<UserInfo> userInfoDataWrapper) {
+                if(userInfoDataWrapper.getData() != null){
+                    fillBottomSheetData(userInfoDataWrapper.getData());
+                }else{
+                    Button confirmButton = orderBottomSheet.findViewById(R.id.confirmButton);
+                    confirmButton.setEnabled(false);
+                }
+            }
+        });
     }
 
     private void showDeletedItemSnackbar() {
@@ -171,7 +183,6 @@ public class ShoppingCartActivity extends AppCompatActivity {
     public void createOrderBottomSheet() {
         orderBottomSheet = new BottomSheetDialog(this, R.style.BottomSheetDialog);
         orderBottomSheet.setContentView(R.layout.order_bottom_sheet);
-        fillBottomSheetData();
     }
 
     public void showShoppingCart(List<CartItem> list){
@@ -212,7 +223,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
         ab.setDisplayHomeAsUpEnabled(true);
     }
 
-    public void fillBottomSheetData(){
+    public void fillBottomSheetData(UserInfo currentUserInfo){
         final Button confirmButton = orderBottomSheet.findViewById(R.id.confirmButton);
         final LinearLayout progressLayout = orderBottomSheet.findViewById(R.id.progressLayout);
         final ConstraintLayout orderInfo = orderBottomSheet.findViewById(R.id.orderInfo);
@@ -233,19 +244,18 @@ public class ShoppingCartActivity extends AppCompatActivity {
         TextView  user = orderBottomSheet.findViewById(R.id.userText);
         TextView  address = orderBottomSheet.findViewById(R.id.addressText);
         TextView uncompleteProfile = orderBottomSheet.findViewById(R.id.uncomplete_profile);
-        if(currentUser.getFirstname() == null || currentUser.getFirstname().isEmpty() || currentUser.getLastname() == null || currentUser.getLastname().isEmpty()) {
+        if(currentUserInfo.getFirstname() == null || currentUserInfo.getFirstname().isEmpty() || currentUserInfo.getLastname() == null || currentUserInfo.getLastname().isEmpty()) {
             user.setText(getString(R.string.unknown));
             uncompleteProfile.setVisibility(View.VISIBLE);
             confirmButton.setEnabled(false);
         }else {
-            user.setText(currentUser.getFirstname() + " " + currentUser.getLastname());
-        }if(currentUser.getAddress() == null || currentUser.getAddress().isEmpty()){
+            user.setText(currentUserInfo.getFirstname() + " " + currentUserInfo.getLastname());
+        }if(currentUserInfo.getAddress() == null || currentUserInfo.getAddress().isEmpty()){
             address.setText(R.string.unknown);
-            confirmButton.setEnabled(false);
             uncompleteProfile.setVisibility(View.VISIBLE);
             confirmButton.setEnabled(false);
         }else {
-            address.setText(currentUser.getAddress());
+            address.setText(currentUserInfo.getAddress());
         }
     }
 
@@ -305,7 +315,6 @@ public class ShoppingCartActivity extends AppCompatActivity {
                 Animation.transitionViews(cartListView, emptyListView);
                 menu.clear();
             }
-
         }
     }
 }

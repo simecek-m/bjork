@@ -44,13 +44,14 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import static com.example.app.bjork.constant.Constant.BROADCAST_LIKE_PRODUCT;
+import static com.example.app.bjork.constant.Constant.BROADCAST_USER_LOG_IN;
+import static com.example.app.bjork.constant.Constant.BROADCAST_USER_LOG_OUT;
 import static com.example.app.bjork.constant.Constant.FILTER_TYPE;
 import static com.example.app.bjork.constant.Constant.SORT_ATTRIBUTE;
 import static com.example.app.bjork.constant.Constant.SORT_DIRECTION;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int CHANGE_PROFILE_INFO_REQUEST = 1;
     private String GENDER_MALE = Constant.GENDERS[0];
 
     private ViewPager viewPager;
@@ -141,6 +142,8 @@ public class MainActivity extends AppCompatActivity {
 
         localBroadcastManager = LocalBroadcastManager.getInstance(this);
         localBroadcastManager.registerReceiver(likeBroadcastReceiver, new IntentFilter(BROADCAST_LIKE_PRODUCT));
+        localBroadcastManager.registerReceiver(logoutReceiver, new IntentFilter(BROADCAST_USER_LOG_OUT));
+        localBroadcastManager.registerReceiver(loginReceiver, new IntentFilter(BROADCAST_USER_LOG_IN));
     }
 
     @Override
@@ -185,14 +188,13 @@ public class MainActivity extends AppCompatActivity {
             case R.id.nav_cart:
                 item.setChecked(true);
                 intent = new Intent(this, ShoppingCartActivity.class);
-                intent.putExtra("currentUser", currentUser);
                 startActivity(intent);
                 break;
             case R.id.nav_profile:
                 item.setChecked(true);
                 intent = new Intent(this, ProfileActivity.class);
-                intent.putExtra("currentUser", currentUser);
-                startActivityForResult(intent, CHANGE_PROFILE_INFO_REQUEST);
+                intent = new Intent(this, ProfileActivity.class);
+                startActivity(intent);
                 break;
             case R.id.nav_about:
                 item.setChecked(true);
@@ -258,22 +260,6 @@ public class MainActivity extends AppCompatActivity {
             name.setText(null);
             email.setText(R.string.unlogged_user);
             profileImage.setImageDrawable(null);
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == CHANGE_PROFILE_INFO_REQUEST && resultCode == RESULT_OK){
-            UserInfo userInfo = (UserInfo) data.getSerializableExtra("userInfo");
-            currentUser = userInfo;
-            name.setText(userInfo.getFirstname() + " " + userInfo.getLastname());
-            email.setText(userInfo.getEmail());
-            if(userInfo.getGender().equals(GENDER_MALE)){
-                profileImage.setImageResource(R.drawable.avatar_man);
-            }else{
-                profileImage.setImageResource(R.drawable.avatar_woman);
-            }
         }
     }
 
@@ -352,6 +338,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         localBroadcastManager.unregisterReceiver(likeBroadcastReceiver);
+        localBroadcastManager.unregisterReceiver(loginReceiver);
+        localBroadcastManager.unregisterReceiver(logoutReceiver);
     }
 
     private BroadcastReceiver likeBroadcastReceiver = new BroadcastReceiver(){
@@ -360,6 +348,22 @@ public class MainActivity extends AppCompatActivity {
             Product product = (Product) intent.getSerializableExtra("product");
             productListFragment.updateList(product);
             favouriteListFragment.updateList(product);
+        }
+    };
+
+    private BroadcastReceiver loginReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            productListFragment.loadList();
+            favouriteListFragment.loadList();
+        }
+    };
+
+    private BroadcastReceiver logoutReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            productListFragment.loadList();
+            favouriteListFragment.loadList();
         }
     };
 }

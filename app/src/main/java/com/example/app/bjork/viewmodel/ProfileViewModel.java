@@ -11,13 +11,16 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 public class ProfileViewModel extends ViewModel {
 
     public static final int UPDATE_MESSAGING_TOKEN_ERROR = 1;
     public static final int UPDATE_USER_INFO_ERROR = 2;
 
-    private MutableLiveData<DataWrapper<Boolean>> loggedOff = new MutableLiveData<>();
+    public static final String UPDATED_USER_INFO_MESSAGE = "updated-user-info-message";
+
+    private MutableLiveData<DataWrapper<Boolean>> loggedOut = new MutableLiveData<>();
     private MutableLiveData<DataWrapper<UserInfo>> currentUserInfo = new MutableLiveData<>();
 
     private FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -26,38 +29,34 @@ public class ProfileViewModel extends ViewModel {
         return currentUser;
     }
 
-    public void editUserInfo(){
-
-    }
-
     public void logout(){
         final FirebaseAuth auth = FirebaseAuth.getInstance();
         Database.updateMessagingToken(auth.getUid(), null).addOnSuccessListener(new OnSuccessListener() {
             @Override
             public void onSuccess(Object o) {
                 auth.signOut();
-                loggedOff.setValue(new DataWrapper<>(true));
+                loggedOut.setValue(new DataWrapper<>(true));
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                loggedOff.setValue(new DataWrapper<Boolean>(UPDATE_MESSAGING_TOKEN_ERROR));
+                loggedOut.setValue(new DataWrapper<Boolean>(UPDATE_MESSAGING_TOKEN_ERROR));
             }
         });
     }
 
-    public MutableLiveData<DataWrapper<Boolean>> getLoggedOff(){
-        return loggedOff;
+    public MutableLiveData<DataWrapper<Boolean>> getLoggedOut(){
+        return loggedOut;
     }
 
-    public void changeUserInfo(String firstname, String lastname, String address, String gender){
+    public void updateUserInfo(String firstname, String lastname, String address, String gender){
         FirebaseUser currentUser = getCurrentUser();
         String messagingToken = currentUserInfo.getValue().getData().getMessagingToken();
         final UserInfo userInfo = new UserInfo(currentUser.getUid(), currentUser.getEmail(), firstname, lastname, address, gender, messagingToken);
         Database.updateUserInfo(userInfo).addOnSuccessListener(new OnSuccessListener() {
             @Override
             public void onSuccess(Object o) {
-                currentUserInfo.setValue(new DataWrapper<>(userInfo));
+                currentUserInfo.setValue(new DataWrapper<>(userInfo, UPDATED_USER_INFO_MESSAGE));
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -67,11 +66,18 @@ public class ProfileViewModel extends ViewModel {
         });
     }
 
-    public void setCurrentUserInfo(UserInfo userInfo){
-        this.currentUserInfo.setValue(new DataWrapper<UserInfo>(userInfo));
-    }
-
     public MutableLiveData<DataWrapper<UserInfo>> getCurrentUserInfo(){
+        FirebaseUser user = getCurrentUser();
+        if(user != null){
+            Database.loadUserInfo(user.getUid()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    UserInfo userInfo = documentSnapshot.toObject(UserInfo.class);
+                    currentUserInfo.setValue(new DataWrapper<>(userInfo));
+                }
+            });
+
+        }
         return currentUserInfo;
     }
 }

@@ -3,9 +3,11 @@ package com.example.app.bjork.activity;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -14,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.app.bjork.R;
+import com.example.app.bjork.constant.Constant;
 import com.example.app.bjork.viewmodel.LoginViewModel;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
@@ -131,6 +134,9 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
                 if(loginResult == LoginViewModel.LOGIN_USER_NOT_FOUND){
                     registrationBottomSheet.show();
                 }else if(loginResult == LoginViewModel.LOGIN_SUCCESSFUL){
+                    LocalBroadcastManager manager = LocalBroadcastManager.getInstance(LoginActivity.this);
+                    Intent intent = new Intent(Constant.BROADCAST_USER_LOG_IN);
+                    manager.sendBroadcast(intent);
                     finish();
                 }else if(loginResult == LoginViewModel.LOGIN_WRONG_CREDENTIALS){
                     mPassword.setError(getString(R.string.wrong_password));

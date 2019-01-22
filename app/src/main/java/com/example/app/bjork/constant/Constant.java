@@ -20,6 +20,8 @@ public class Constant {
 
 
     public static final String BROADCAST_LIKE_PRODUCT = "broadcast-like-product";
+    public static final String BROADCAST_USER_LOG_OUT = "broadcast-user-log-out";
+    public static final String BROADCAST_USER_LOG_IN = "broadcast-user-log-in";
 
 
 }

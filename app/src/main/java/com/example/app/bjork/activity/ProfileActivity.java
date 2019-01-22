@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -44,8 +45,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         profileViewModel = ViewModelProviders.of(this).get(ProfileViewModel.class);
-        defaultUserInfo = (UserInfo)getIntent().getSerializableExtra("currentUser");
-        profileViewModel.setCurrentUserInfo(defaultUserInfo);
         final FirebaseUser currentUser = profileViewModel.getCurrentUser();
         if(currentUser == null){
             Intent intent = new Intent(this, LoginActivity.class);
@@ -73,33 +72,26 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     String lastname = lastnameText.getText().toString();
                     String address = addressText.getText().toString();
                     String gender = Constant.GENDERS[genderSpinner.getSelectedItemPosition()];
-                    profileViewModel.changeUserInfo(firstname, lastname, address, gender);
+                    profileViewModel.updateUserInfo(firstname, lastname, address, gender);
 
                 }
             });
             firstnameText.setOnClickListener(this);
             lastnameText.setOnClickListener(this);
             addressText.setOnClickListener(this);
-            defaultUserInfo = (UserInfo)getIntent().getSerializableExtra("currentUser");
-            firstnameText.setText(defaultUserInfo.getFirstname());
-            lastnameText.setText(defaultUserInfo.getLastname());
-            addressText.setText(defaultUserInfo.getAddress());
-            if(defaultUserInfo.getGender() != null){
-                List<String> genders = Arrays.asList(Constant.GENDERS);
-                int selectedGenderIndex = genders.indexOf(defaultUserInfo.getGender());
-                genderSpinner.setSelection(selectedGenderIndex);
-            }
-            defaultRender();
         }
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        profileViewModel.getLoggedOff().observe(this, new Observer<DataWrapper<Boolean>>() {
+        profileViewModel.getLoggedOut().observe(this, new Observer<DataWrapper<Boolean>>() {
             @Override
-            public void onChanged(@Nullable DataWrapper<Boolean> userLoggedOffDataWrapper) {
-                if(userLoggedOffDataWrapper.getError() == null && userLoggedOffDataWrapper.getData()){
+            public void onChanged(@Nullable DataWrapper<Boolean> userLoggedOutDataWrapper) {
+                if(userLoggedOutDataWrapper.getError() == null && userLoggedOutDataWrapper.getData()){
+                    LocalBroadcastManager manager = LocalBroadcastManager.getInstance(ProfileActivity.this);
+                    Intent intent = new Intent(Constant.BROADCAST_USER_LOG_OUT);
+                    manager.sendBroadcast(intent);
                     finish();
                 }
             }
@@ -108,14 +100,31 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             @Override
             public void onChanged(@Nullable DataWrapper<UserInfo> userInfoDataWrapper) {
                 if(userInfoDataWrapper.getError() == null){
-                    defaultUserInfo = userInfoDataWrapper.getData();
-                    Intent resultIntent = new Intent();
-                    resultIntent.putExtra("userInfo", defaultUserInfo);
-                    setResult(RESULT_OK, resultIntent);
-                    finish();
+                    String message = userInfoDataWrapper.getMesaage();
+                    if(message != null && message.equals(ProfileViewModel.UPDATED_USER_INFO_MESSAGE)){
+                        finish();
+                    }else{
+                        defaultUserInfo = userInfoDataWrapper.getData();
+                        firstnameText.setText(defaultUserInfo.getFirstname());
+                        lastnameText.setText(defaultUserInfo.getLastname());
+                        addressText.setText(defaultUserInfo.getAddress());
+                        if(defaultUserInfo.getGender() != null){
+                            List<String> genders = Arrays.asList(Constant.GENDERS);
+                            int selectedGenderIndex = genders.indexOf(defaultUserInfo.getGender());
+                            genderSpinner.setSelection(selectedGenderIndex);
+                        }
+                        defaultRender();
+                    }
                 }
             }
         });
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        profileViewModel.getLoggedOut().removeObservers(this);
+        profileViewModel.getCurrentUserInfo().removeObservers(this);
     }
 
     public void editUser(){

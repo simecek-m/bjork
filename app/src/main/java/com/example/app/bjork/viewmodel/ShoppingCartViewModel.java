@@ -6,10 +6,13 @@ import android.support.annotation.NonNull;
 
 import com.example.app.bjork.database.Database;
 import com.example.app.bjork.model.CartItem;
+import com.example.app.bjork.model.UserInfo;
 import com.example.app.bjork.wrapper.DataWrapper;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.functions.HttpsCallableResult;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -30,9 +33,14 @@ public class ShoppingCartViewModel extends ViewModel {
     private FirebaseAuth auth = FirebaseAuth.getInstance();
 
     private MutableLiveData<DataWrapper<List<CartItem>>> cartItemsList = new MutableLiveData<>();
+    private MutableLiveData<DataWrapper<UserInfo>> currentUserInfo = new MutableLiveData<>();
     private MutableLiveData<Integer> totalPrice = new MutableLiveData<>();
     private MutableLiveData<Boolean> newOrder = new MutableLiveData<>();
     private MutableLiveData<CartItem> deletedCartItem = new MutableLiveData<>();
+
+    public FirebaseUser getCurrentUser(){
+        return  auth.getCurrentUser();
+    }
 
     public MutableLiveData<DataWrapper<List<CartItem>>> getCartItemsList(){
         Database.getShoppingCart().addOnSuccessListener(new OnSuccessListener<HttpsCallableResult>() {
@@ -129,5 +137,20 @@ public class ShoppingCartViewModel extends ViewModel {
 
     public CartItem getDeletedCartItem(){
         return deletedCartItem.getValue();
+    }
+
+    public MutableLiveData<DataWrapper<UserInfo>> getCurrentUserInfo(){
+        FirebaseUser user = getCurrentUser();
+        if(user != null){
+            Database.loadUserInfo(user.getUid()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    UserInfo userInfo = documentSnapshot.toObject(UserInfo.class);
+                    currentUserInfo.setValue(new DataWrapper<>(userInfo));
+                }
+            });
+
+        }
+        return currentUserInfo;
     }
 }
