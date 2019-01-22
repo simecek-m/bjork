@@ -115,6 +115,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     protected void onStop() {
         super.onStop();
         profileViewModel.getLoggedOut().removeObservers(this);
+        profileViewModel.getUserInfo().removeObservers(this);
 
     }
 

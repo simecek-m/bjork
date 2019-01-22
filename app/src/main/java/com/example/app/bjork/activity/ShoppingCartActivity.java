@@ -145,6 +145,15 @@ public class ShoppingCartActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        shoppingCartViewModel.getCartItemsList().removeObservers(this);
+        shoppingCartViewModel.getNewOrder().removeObservers(this);
+        shoppingCartViewModel.getTotalPrice().removeObservers(this);
+        shoppingCartViewModel.getUserInfo().removeObservers(this);
+    }
+
     private void showDeletedItemSnackbar() {
         CartItem deletedCartItem = shoppingCartViewModel.getDeletedCartItem();
         String text = deletedCartItem.getName() + " " + getString(R.string.cart_item_removed);
@@ -157,14 +166,6 @@ public class ShoppingCartActivity extends AppCompatActivity {
                     }
                 })
                 .show();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        shoppingCartViewModel.getCartItemsList().removeObservers(this);
-        shoppingCartViewModel.getNewOrder().removeObservers(this);
-        shoppingCartViewModel.getTotalPrice().removeObservers(this);
     }
 
     @Override
