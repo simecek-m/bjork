@@ -132,6 +132,17 @@ public class ShoppingCartActivity extends AppCompatActivity {
                 priceTextView.setText(totalPrice + ",- Kč");
             }
         });
+
+        shoppingCartViewModel.getUserInfo().observe(this, new Observer<DataWrapper<UserInfo>>() {
+            @Override
+            public void onChanged(@Nullable DataWrapper<UserInfo> userInfoDataWrapper) {
+                if(userInfoDataWrapper != null && userInfoDataWrapper.getData() != null){
+                    userInfo = userInfoDataWrapper.getData();
+                    orderBottomSheet.findViewById(R.id.confirmButton).setEnabled(true);
+                    fillBottomSheetData();
+                }
+            }
+        });
     }
 
     private void showDeletedItemSnackbar() {
@@ -174,7 +185,6 @@ public class ShoppingCartActivity extends AppCompatActivity {
     public void createOrderBottomSheet() {
         orderBottomSheet = new BottomSheetDialog(this, R.style.BottomSheetDialog);
         orderBottomSheet.setContentView(R.layout.order_bottom_sheet);
-        fillBottomSheetData();
     }
 
     public void showShoppingCart(List<CartItem> list){

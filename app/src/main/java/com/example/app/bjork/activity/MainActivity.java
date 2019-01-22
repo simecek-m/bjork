@@ -135,7 +135,6 @@ public class MainActivity extends AppCompatActivity {
         mainViewModel.getUserInfo().observe(this, new Observer<DataWrapper<UserInfo>>() {
             @Override
             public void onChanged(@Nullable DataWrapper<UserInfo> userInfoDataWrapper) {
-                System.out.println("logged user info changed");
                 if(userInfoDataWrapper != null && userInfoDataWrapper.getData() != null){
                     userInfo = userInfoDataWrapper.getData();
                     updateNavigationHeader(userInfo);
@@ -182,13 +181,11 @@ public class MainActivity extends AppCompatActivity {
             case R.id.nav_cart:
                 item.setChecked(true);
                 intent = new Intent(this, ShoppingCartActivity.class);
-                intent.putExtra("userInfo", userInfo);
                 startActivity(intent);
                 break;
             case R.id.nav_profile:
                 item.setChecked(true);
                 intent = new Intent(this, ProfileActivity.class);
-                intent.putExtra("userInfo", userInfo);
                 startActivity(intent);
                 break;
             case R.id.nav_about:

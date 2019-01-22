@@ -83,9 +83,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             firstnameText.setOnClickListener(this);
             lastnameText.setOnClickListener(this);
             addressText.setOnClickListener(this);
-
-            defaultUserInfo = (UserInfo)getIntent().getSerializableExtra("userInfo");
-            updateUserInfo();
         }
     }
 

@@ -59,7 +59,6 @@ public class ProfileViewModel extends ViewModel {
 
     public MutableLiveData<DataWrapper<UserInfo>> getUserInfo() {
         final FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        System.out.println("current user: " + currentUser);
         if(currentUser != null){
             Database.loadUserInfo(currentUser.getUid()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
                 @Override

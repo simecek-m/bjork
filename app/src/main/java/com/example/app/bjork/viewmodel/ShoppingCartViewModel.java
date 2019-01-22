@@ -3,6 +3,7 @@ package com.example.app.bjork.viewmodel;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.example.app.bjork.database.Database;
 import com.example.app.bjork.model.CartItem;
@@ -13,6 +14,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.functions.HttpsCallableResult;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -21,8 +24,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 public class ShoppingCartViewModel extends ViewModel {
 
+    private static final String TAG = "ShoppingCartViewModel";
     public static final int DATA_UNAVAILABLE_ERROR = 1;
     public static final int NO_ITEM_WAS_REMOVED_ERROR = 2;
     public static final int NO_ITEM_WAS_RESTORED_ERROR = 3;
@@ -33,6 +39,7 @@ public class ShoppingCartViewModel extends ViewModel {
     private FirebaseAuth auth = FirebaseAuth.getInstance();
 
     private MutableLiveData<DataWrapper<List<CartItem>>> cartItemsList = new MutableLiveData<>();
+    private MutableLiveData<DataWrapper<UserInfo>> currentUserInfo = new MutableLiveData<>();
     private MutableLiveData<Integer> totalPrice = new MutableLiveData<>();
     private MutableLiveData<Boolean> newOrder = new MutableLiveData<>();
     private MutableLiveData<CartItem> deletedCartItem = new MutableLiveData<>();
@@ -136,5 +143,27 @@ public class ShoppingCartViewModel extends ViewModel {
 
     public CartItem getDeletedCartItem(){
         return deletedCartItem.getValue();
+    }
+
+    public MutableLiveData<DataWrapper<UserInfo>> getUserInfo() {
+        final FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if(currentUser != null){
+            Database.loadUserInfo(currentUser.getUid()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                @Override
+                public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                    if(e != null){
+                        Log.e(TAG, "onEvent: ", e);
+                        return;
+                    }
+
+                    if(documentSnapshot != null && documentSnapshot.exists()){
+                        currentUserInfo.setValue(new DataWrapper<>(documentSnapshot.toObject(UserInfo.class)));
+                    }
+                }
+            });
+        }else{
+            currentUserInfo.setValue(null);
+        }
+        return currentUserInfo;
     }
 }
