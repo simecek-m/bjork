@@ -1,6 +1,6 @@
 package com.example.app.bjork.service;
 
-import com.example.app.bjork.api.BjorkAPI;
+import com.example.app.bjork.database.Database;
 import com.example.app.bjork.model.Product;
 import com.example.app.bjork.notification.ProductDiscountNotification;
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,7 +25,7 @@ public class BjorkFirebaseMessagingService extends FirebaseMessagingService {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         String currentUserId = auth.getUid();
         if(currentUserId != null){
-            BjorkAPI.updateMessagingToken(currentUserId, token);
+            Database.updateMessagingToken(currentUserId, token);
         }
     }
 

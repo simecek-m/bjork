@@ -19,7 +19,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.app.bjork.R;
-import com.example.app.bjork.api.BjorkAPI;
+import com.example.app.bjork.database.Database;
 import com.example.app.bjork.model.Product;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -27,54 +27,33 @@ import java.util.List;
 
 public class ProductDetailActivity extends AppCompatActivity {
 
-    private Toolbar toolbar;
     private Product product;
 
-    private ImageView image;
-    private TextView name;
-    private ImageView typeIcon;
-    private TextView size;
-    private TextView color;
-    private TextView money;
-    private TextView description;
-
-    private FirebaseAuth mAuth;
+    private FirebaseAuth auth;
     private BottomSheetDialog loginBottomSheet;
     private BottomSheetDialog addToCartBottomSheet;
-
-    private boolean addToCartIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_detail);
-
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        ActionBar ab = getSupportActionBar();
-        ab.setTitle(R.string.detail_product);
-        ab.setDisplayHomeAsUpEnabled(true);
-
-        createLoginBottomSheet();
-
-        image = findViewById(R.id.image);
-        name = findViewById(R.id.name);
-        typeIcon = findViewById(R.id.typeIcon);
-        size = findViewById(R.id.sizeText);
-        color = findViewById(R.id.colorText);
-        money = findViewById(R.id.moneyText);
-        description = findViewById(R.id.description);
-
+        auth = FirebaseAuth.getInstance();
+        showToolbar();
+        ImageView image = findViewById(R.id.image);
+        TextView name = findViewById(R.id.name);
+        ImageView typeIcon = findViewById(R.id.typeIcon);
+        TextView size = findViewById(R.id.sizeText);
+        TextView color = findViewById(R.id.colorText);
+        TextView money = findViewById(R.id.moneyText);
+        TextView description = findViewById(R.id.description);
         product = (Product) getIntent().getSerializableExtra("product");
         createAddToCartBottomSheet();
-
         RequestOptions options = new RequestOptions();
         options.placeholder(R.drawable.loading).error(R.drawable.error).fallback(R.drawable.error);
         Glide.with(this)
                 .setDefaultRequestOptions(options)
                 .load(product.getImageUrl())
                 .into(image);
-
         image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -83,22 +62,15 @@ public class ProductDetailActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
         name.setText(product.getName());
-
         int iconId = product.getTypeIconId();
         typeIcon.setImageResource(iconId);
         size.setText(product.getSize());
         color.setText(product.getAllColors());
-        if(product.getDiscountPercentage() == 0){
-            money.setText(product.getPrice() + ",- Kč");
-        }else{
-            money.setText(getNewPrice() + ",- Kč");
-        }
+        money.setText(product.getDiscountedPrice() + ",- Kč");
         description.setText(product.getDescription());
-
-        mAuth = FirebaseAuth.getInstance();
-
+        createLoginBottomSheet();
+        createAddToCartBottomSheet();
         cancelDiscountNotification();
     }
 
@@ -120,17 +92,11 @@ public class ProductDetailActivity extends AppCompatActivity {
     }
 
     public void addToCart(){
-        if(mAuth.getUid() == null){
+        if(auth.getUid() == null){
             loginBottomSheet.show();
         }else{
             addToCartBottomSheet.show();
         }
-    }
-
-    public int getNewPrice(){
-        float defaultPrice = product.getPrice();
-        float discount = (defaultPrice/100)*product.getDiscountPercentage();
-        return Math.round(defaultPrice) - Math.round(discount);
     }
 
     public void createLoginBottomSheet(){
@@ -145,20 +111,17 @@ public class ProductDetailActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
     }
 
     public void createAddToCartBottomSheet(){
         addToCartBottomSheet = new BottomSheetDialog(this, R.style.BottomSheetDialog);
         addToCartBottomSheet.setContentView(R.layout.add_to_cart_bottom_sheet);
-
         final TextView quantityText = addToCartBottomSheet.findViewById(R.id.quantityText);
         final Spinner colorText = addToCartBottomSheet.findViewById(R.id.colorText);
         List<String> colorsList = product.getColors();
         ArrayAdapter<String> colorAdapter = new ArrayAdapter<String>(this, R.layout.spinner_item, colorsList);
         colorAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         colorText.setAdapter(colorAdapter);
-
         View up = addToCartBottomSheet.findViewById(R.id.quantityUp);
         up.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,8 +131,6 @@ public class ProductDetailActivity extends AppCompatActivity {
                 quantityText.setText(quantity.toString());
             }
         });
-
-
         View down = addToCartBottomSheet.findViewById(R.id.quantityDown);
         down.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -181,7 +142,6 @@ public class ProductDetailActivity extends AppCompatActivity {
                 }
             }
         });
-
         View confirm = addToCartBottomSheet.findViewById(R.id.confirmButton);
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -189,14 +149,22 @@ public class ProductDetailActivity extends AppCompatActivity {
                 String color = colorText.getSelectedItem().toString();
                 Integer quantity = Integer.parseInt(quantityText.getText().toString());
                 addToCartBottomSheet.dismiss();
-                BjorkAPI.addToCart(mAuth.getUid(), product, color, quantity);
+                Database.addToCart(auth.getUid(), product, color, quantity);
                 finish();
             }
         });
     }
 
+    public void showToolbar(){
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar ab = getSupportActionBar();
+        ab.setTitle(R.string.detail_product);
+        ab.setDisplayHomeAsUpEnabled(true);
+    }
+
     public void cancelDiscountNotification(){
-        addToCartIntent = getIntent().getBooleanExtra("addToCart", false);
+        boolean addToCartIntent = getIntent().getBooleanExtra("addToCart", false);
         if(addToCartIntent) {
             addToCartBottomSheet.show();
             NotificationManagerCompat manager = NotificationManagerCompat.from(this);

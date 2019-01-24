@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 
 import com.example.app.bjork.R;
 import com.example.app.bjork.adapter.ProductsListAdapter;
-import com.example.app.bjork.api.BjorkAPI;
+import com.example.app.bjork.database.Database;
 import com.example.app.bjork.comparator.ProductComparator;
 import com.example.app.bjork.constant.Constant;
 import com.example.app.bjork.model.Product;
@@ -82,9 +82,9 @@ public class ProductListFragment extends Fragment {
         final String filterType = Constant.PRODUCT_TYPES[settings.getInt(FILTER_TYPE, 0)];
         Task<QuerySnapshot> task;
         if(filterType.equals(Constant.PRODUCT_TYPES[0])){
-            task = BjorkAPI.loadProducts();
+            task = Database.loadProducts();
         }else{
-            task = BjorkAPI.loadProducts(filterType);
+            task = Database.loadProducts(filterType);
         }
         task.addOnSuccessListener(new OnSuccessListener<QuerySnapshot>(){
                     @Override

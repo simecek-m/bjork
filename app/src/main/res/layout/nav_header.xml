@@ -6,7 +6,7 @@
     android:layout_height="200dp"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="@color/grey"
+    android:background="@color/colorPrimary"
     android:theme="@style/ThemeOverlay.AppCompat.Light">
 
     <ImageView
@@ -25,6 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/email"
         app:layout_constraintStart_toStartOf="@+id/email" />
 
@@ -38,6 +39,7 @@
         android:text="novak.jan@mail.com"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textSize="16sp"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 

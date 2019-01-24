@@ -1,7 +1,7 @@
 package com.example.app.bjork.model;
 
 
-public class CartItem {
+public class CartItem implements Comparable<CartItem>{
 
     private String id;
     private String name;
@@ -94,5 +94,10 @@ public class CartItem {
 
     public int getPrice(){
         return quantity*pricePerUnit;
+    }
+
+    @Override
+    public int compareTo(CartItem cartItem) {
+        return getName().compareTo(cartItem.getName());
     }
 }

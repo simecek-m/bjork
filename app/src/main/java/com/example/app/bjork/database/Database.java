@@ -1,4 +1,4 @@
-package com.example.app.bjork.api;
+package com.example.app.bjork.database;
 
 import com.algolia.search.saas.Client;
 import com.algolia.search.saas.CompletionHandler;
@@ -20,7 +20,7 @@ import com.google.firebase.functions.HttpsCallableResult;
 
 import java.util.List;
 
-public class BjorkAPI {
+public class Database {
 
     private static final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -70,13 +70,12 @@ public class BjorkAPI {
                 .get();
     }
 
-    public static Task<DocumentSnapshot> loadUserInfo(String userId){
+    public static DocumentReference loadUserInfo(String userId){
         return db.collection(USER_INFO_COLLECTION)
-                .document(userId)
-                .get();
+                .document(userId);
     }
 
-    public static Task addUserInfo(UserInfo userInfo){
+    public static Task updateUserInfo(UserInfo userInfo){
         return db.collection(USER_INFO_COLLECTION)
                 .document(userInfo.getId())
                 .set(userInfo);
@@ -109,12 +108,12 @@ public class BjorkAPI {
                 .call();
     }
 
-    public static void addFeedback(Feedback feedback){
+    public static void sendFeedback(Feedback feedback){
         db.collection(FEEDBACKS_COLLECTION)
                 .add(feedback);
     }
 
-    public static Task<Void> removeItemFromCart(String userId, String cartItemId){
+    public static Task<Void> deleteCartItem(String userId, String cartItemId){
         return db.collection(CARTS_COLLECTION)
                 .document(userId)
                 .collection(CART_ITEMS_COLLECTION)
@@ -122,13 +121,10 @@ public class BjorkAPI {
                 .delete();
     }
 
-    public static void restoreCartItem(String userId, CartItem restoreItem){
-
+    public static Task restoreCartItem(String userId, CartItem restoreItem){
         DocumentReference docRef = db.document(restoreItem.getDocRef());
-
         CartItemReference item = new CartItemReference(restoreItem.getColor(), restoreItem.getQuantity(), docRef);
-
-        db.collection(CARTS_COLLECTION)
+        return db.collection(CARTS_COLLECTION)
                 .document(userId)
                 .collection(CART_ITEMS_COLLECTION)
                 .document(restoreItem.getId())
@@ -151,5 +147,10 @@ public class BjorkAPI {
         return db.collection(USER_INFO_COLLECTION)
                 .document(userId)
                 .update(MESSAGING_TOKEN_FIELD, token);
+    }
+
+    public static Task<QuerySnapshot> getNearestStore(){
+        return db.collection("nearest_store")
+                .get();
     }
 }

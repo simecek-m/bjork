@@ -63,7 +63,11 @@
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_gravity="center"
-            android:background="@drawable/ic_user" />
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/ic_user"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/userText"
@@ -72,9 +76,9 @@
             android:layout_gravity="center"
             android:layout_marginStart="16dp"
             android:fontFamily="@font/roboto_bold"
-            android:text="@string/login"
             android:textColor="@color/black"
             android:textSize="16sp"
+            android:text="@string/unknown"
             app:layout_constraintStart_toEndOf="@+id/userIcon"
             app:layout_constraintTop_toTopOf="@+id/userIcon" />
 
@@ -97,8 +101,8 @@
             android:layout_marginStart="16dp"
             android:fontFamily="@font/roboto_bold"
             android:textColor="@color/black"
-            android:text="@string/login"
             android:textSize="16sp"
+            android:text="@string/unknown"
             app:layout_constraintStart_toEndOf="@+id/addressIcon"
             app:layout_constraintTop_toTopOf="@+id/addressIcon" />
 
@@ -121,7 +125,6 @@
             android:layout_marginStart="16dp"
             android:fontFamily="@font/roboto_bold"
             android:textColor="@color/black"
-            android:text="@string/login"
             android:textSize="16sp"
             app:layout_constraintStart_toEndOf="@+id/moneyIcon"
             app:layout_constraintTop_toTopOf="@+id/moneyIcon" />
@@ -160,6 +163,7 @@
         android:layout_marginEnd="8dp"
         android:text="@string/confirm"
         app:cornerRadius="5dp"
+        android:enabled="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/orderInfo" />

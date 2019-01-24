@@ -16,7 +16,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.app.bjork.R;
 import com.example.app.bjork.activity.ProductDetailActivity;
-import com.example.app.bjork.api.BjorkAPI;
+import com.example.app.bjork.database.Database;
 import com.example.app.bjork.model.Product;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -71,7 +71,7 @@ public class ProductsListAdapter extends RecyclerView.Adapter<ProductsListAdapte
                 if(mAuth.getUid() != null){
                     product.likeProduct(mAuth.getUid());
                     switchHeartIcon(holder, product);
-                    BjorkAPI.updateLikes(product);
+                    Database.updateLikes(product);
                 }
                 if(onLikeClickListener != null){
                     onLikeClickListener.onLikeClick(product);

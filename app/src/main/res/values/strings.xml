@@ -57,8 +57,9 @@
     <string name="uncomplete_profile">Bohužel nemáte dokončený profil</string>
     <string name="gender">Pohlaví</string>
     <string name="wrong_password">Chybné heslo</string>
-    <string name="loading">Připravujeme Váš košík</string>
-    <string name="cart_item_removed">odebrán(a) z košíku</string>
+    <string name="loading_cart">Připravujeme Váš košík</string>
+    <string name="loading_search">Hledáme produkty</string>
+    <string name="cart_item_removed">odebrán z košíku</string>
     <string name="undo">Vrátit</string>
     <string name="connection_error">Nedostupná data</string>
     <string name="connection_error_description">Zkuste to prosím později…</string>
@@ -71,7 +72,7 @@
     <string name="download">Stáhnout</string>
     <string name="storage_unavailable">Nedostupné úložiště</string>
     <string name="image_downloaded">Obrázek uložen</string>
-    <string name="share_with">Sdílet s…</string>
+    <string name="share_with">Sdílet</string>
     <string name="like_remove">Odebrat z oblíbených</string>
     <string name="discount_notification_text">Produkt zlevněn na </string>
     <string name="discount_notification_channel_name">Zvýhodněné nabídky</string>
@@ -81,6 +82,7 @@
     <string name="image_downloading">Stahování obrázku</string>
     <string name="image_download_failed">Stažení obrázku se nezdařilo</string>
     <string name="image_download_completed">Obrázek úspěšně stažen</string>
+    <string name="storage_permission_denied">K uložení obrázků nám musíte dát přístup k vašemu úložišti</string>
 
     <string-array name="genders">
         <item>Muž</item>
