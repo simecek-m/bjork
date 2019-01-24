@@ -149,12 +149,9 @@ public class FavouriteListFragment extends Fragment {
             boolean likedByUser = product.likedByUser(auth.getUid());
             boolean productAlreadyInList = favouriteProductsList.contains(product);
             if (likedByUser && !productAlreadyInList){
-                favouriteProductsList.add(product);
-                sortList(favouriteProductsList);
-                adapter.notifyDataSetChanged();
+                addFavouriteProduct(product);
             }else if(!likedByUser && productAlreadyInList){
-                favouriteProductsList.remove(product);
-                adapter.notifyDataSetChanged();
+                removeFavouriteProduct(product);
             }
         }
     }

@@ -105,7 +105,6 @@ public class MainActivity extends AppCompatActivity {
                 ProductListFragment listFragment = (ProductListFragment) pagerAdapter.getItem(0);
                 listFragment.removeFavouriteProduct(product, currentUser.getUid());
                 favouriteListFragment.removeFavouriteProduct(product);
-                favouriteListFragment.removeFavouriteProduct(product);
             }
         });
 
