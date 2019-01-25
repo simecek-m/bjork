@@ -1,5 +1,7 @@
 package com.example.app.bjork.model;
 
+import android.support.annotation.NonNull;
+
 import com.example.app.bjork.R;
 
 import java.io.Serializable;
@@ -138,9 +140,13 @@ public class Product implements Serializable {
     }
 
     public int getDiscountedPrice(){
-        float defaultPrice = price;
-        float discount = (defaultPrice/100)*discountPercentage;
-        return Math.round(defaultPrice) - Math.round(discount);
+        if(discountPercentage >= 100){
+            return 0;
+        }else{
+            float defaultPrice = price;
+            float discount = (defaultPrice/100)*discountPercentage;
+            return Math.round(defaultPrice) - Math.round(discount);
+        }
     }
 
     @Override
