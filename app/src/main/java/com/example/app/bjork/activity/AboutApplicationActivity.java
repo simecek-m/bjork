@@ -23,23 +23,18 @@ public class AboutApplicationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about_application);
-
         showToolbar();
-
         TextView osVersionText = findViewById(R.id.os_version);
         TextView appVersionText = findViewById(R.id.app_version);
-        Button feedbackButton = findViewById(R.id.feedbackButton);
-
+        Button feedbackButton = findViewById(R.id.feedback_button);
         String osVersion = Build.VERSION.RELEASE;
         osVersionText.setText(getString(R.string.system_version) + ": " + osVersion);
-
         try{
             PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             appVersionText.setText(getString(R.string.version) + ": " + packageInfo.versionName);
         }catch (PackageManager.NameNotFoundException e){
             Log.e(TAG, "PackageName Not Found", e);
         }
-
         feedbackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

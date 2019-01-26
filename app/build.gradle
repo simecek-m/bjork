@@ -17,6 +17,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    testOptions {
+        unitTests {
+            returnDefaultValues = true
+            includeAndroidResources = true
+        }
+    }
 }
 
 dependencies {
@@ -51,6 +57,10 @@ dependencies {
 
     // PhotoView - zoom image
     implementation 'com.github.chrisbanes:PhotoView:2.1.0'
+
+    // unit test
+    testImplementation 'androidx.test:core:1.0.0'
+    testImplementation 'org.robolectric:robolectric:4.1'
 
     implementation 'com.google.android.gms:play-services-maps:16.0.0'
     testImplementation 'junit:junit:4.12'
