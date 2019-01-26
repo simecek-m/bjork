@@ -1,6 +1,6 @@
-package com.example.app.bjork.model;
+package com.example.app.bjork.activity;
 
-import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.Toolbar;
@@ -44,7 +44,7 @@ public class AboutApplicationActivityTest {
     public void clickingFeedback_shouldStartFeedbackActivity(){
         activity.findViewById(R.id.feedback_button).performClick();
         Intent expectedIntent = new Intent(activity, FeedbackActivity.class);
-        Intent actual = shadowOf((Activity) context).getNextStartedActivity();
+        Intent actual = shadowOf((Application) context).getNextStartedActivity();
         assertEquals(expectedIntent.getComponent(), actual.getComponent());
     }
 

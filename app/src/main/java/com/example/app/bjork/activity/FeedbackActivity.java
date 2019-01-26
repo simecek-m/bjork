@@ -19,13 +19,10 @@ public class FeedbackActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feedback);
-
         showToolbar();
-
         feedbackViewModel = ViewModelProviders.of(this).get(FeedbackViewModel.class);
-
-        final TextInputEditText feedbackTextView =  findViewById(R.id.feedbackText);
-        findViewById(R.id.sendButton).setOnClickListener(new View.OnClickListener() {
+        final TextInputEditText feedbackTextView =  findViewById(R.id.feedback_text);
+        findViewById(R.id.send_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String feedbackMessage = feedbackTextView.getText().toString();
