@@ -1,49 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/login_bottom_sheet"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     android:background="@drawable/bottom_sheet_shape"
-    android:padding="20dp">
+    android:padding="@dimen/bottom_sheet_padding">
 
     <TextView
         android:id="@+id/header_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="0dp"
+        android:layout_marginTop="@dimen/space_normal"
         android:fontFamily="@font/roboto_bold"
         android:gravity="center"
         android:text="@string/sort_and_filter"
         android:textColor="@color/colorPrimary"
-        android:textSize="24sp"
+        android:textSize="@dimen/text_big"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/header_description"
-        android:layout_width="200dp"
+        android:layout_width="@dimen/bottom_sheet_description_width"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="@dimen/space_normal"
         android:fontFamily="@font/roboto_italic"
         android:gravity="center"
         android:lines="2"
         android:text="@string/sort_and_filter_description"
-        android:textSize="14sp"
+        android:textSize="@dimen/text_normal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/header_title" />
 
     <View
         android:id="@+id/header_line"
-        android:layout_width="250dp"
-        android:layout_height="1dp"
+        android:layout_width="@dimen/bottom_sheet_separator_width"
+        android:layout_height="@dimen/bottom_sheet_separator_height"
         android:layout_gravity="center"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginTop="@dimen/space_normal"
         android:background="@android:color/darker_gray"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -53,32 +52,35 @@
         android:id="@+id/attributeLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginStart="@dimen/space_big"
+        android:layout_marginTop="@dimen/space_big"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/header_line">
 
         <ImageView
             android:id="@+id/attributeIcon"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size"
             android:layout_gravity="center"
-            android:background="@drawable/ic_attributes" />
+            android:background="@drawable/ic_attributes"
+            app:layout_constraintBottom_toBottomOf="@+id/sortAttributeText"
+            app:layout_constraintTop_toTopOf="@+id/sortAttributeText"
+            tools:ignore="MissingConstraints" />
 
         <Spinner
             android:id="@+id/sortAttributeText"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/bottom_sheet_spinner_width"
+            android:layout_height="@dimen/spinner_height"
             android:layout_gravity="center"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="@dimen/space_normal"
             android:entries="@array/sort_attributes"
             android:fontFamily="@font/roboto_bold"
             android:text="@string/login"
             android:textSize="18sp"
             android:theme="@style/Spinner"
-            app:layout_constraintBottom_toBottomOf="@+id/attributeIcon"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/attributeIcon"
-            app:layout_constraintTop_toTopOf="@+id/attributeIcon" />
+            app:layout_constraintTop_toTopOf="parent" />
 
     </android.support.constraint.ConstraintLayout>
 
@@ -86,32 +88,34 @@
         android:id="@+id/typeLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/space_normal"
         app:layout_constraintStart_toStartOf="@+id/attributeLayout"
         app:layout_constraintTop_toBottomOf="@+id/attributeLayout">
 
         <ImageView
             android:id="@+id/typeIcon"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size"
             android:layout_gravity="center"
-            android:background="@drawable/ic_asc_desc" />
+            android:background="@drawable/ic_asc_desc"
+            app:layout_constraintBottom_toBottomOf="@+id/sortTypeText"
+            app:layout_constraintTop_toTopOf="@+id/sortTypeText"
+            tools:ignore="MissingConstraints" />
 
         <Spinner
             android:id="@+id/sortTypeText"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/bottom_sheet_spinner_width"
+            android:layout_height="@dimen/spinner_height"
             android:layout_gravity="center"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="@dimen/space_normal"
+            android:entries="@array/sort_directions"
             android:fontFamily="@font/roboto_bold"
             android:text="@string/login"
-            android:textSize="18sp"
+            android:textSize="@dimen/text_normal"
             android:theme="@style/Spinner"
-            android:entries="@array/sort_directions"
-            app:layout_constraintBottom_toBottomOf="@+id/typeIcon"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/typeIcon"
-            app:layout_constraintTop_toTopOf="@+id/typeIcon" />
+            app:layout_constraintTop_toTopOf="parent" />
 
     </android.support.constraint.ConstraintLayout>
 
@@ -119,28 +123,28 @@
         android:id="@+id/filterLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/space_normal"
         app:layout_constraintStart_toStartOf="@+id/typeLayout"
         app:layout_constraintTop_toBottomOf="@+id/typeLayout">
 
         <ImageView
             android:id="@+id/filterIcon"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size"
             android:layout_gravity="center"
-            android:background="@drawable/ic_filter" />
+            android:background="@drawable/ic_filter"
+            tools:ignore="MissingConstraints" />
 
         <Spinner
             android:id="@+id/filterTypeText"
-            android:layout_width="150dp"
+            android:layout_width="@dimen/bottom_sheet_spinner_width"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="@dimen/space_normal"
             android:entries="@array/filter_product_types"
             android:fontFamily="@font/roboto_bold"
             android:text="@string/login"
-            android:textSize="18sp"
+            android:textSize="@dimen/text_normal"
             android:theme="@style/Spinner"
             app:layout_constraintBottom_toBottomOf="@+id/filterIcon"
             app:layout_constraintStart_toEndOf="@+id/filterIcon"
@@ -151,14 +155,11 @@
     <android.support.design.button.MaterialButton
         android:id="@+id/confirmButton"
         style="@style/Widget.MaterialComponents.Button"
-        android:layout_width="0dp"
-        app:layout_constraintWidth_percent="0.5"
+        android:layout_width="@dimen/bottom_sheet_button_width"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginTop="@dimen/space_big"
         android:text="@string/confirm"
-        app:cornerRadius="5dp"
+        app:cornerRadius="@dimen/corner_radius"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
